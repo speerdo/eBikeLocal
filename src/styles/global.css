@@ -1,30 +1,116 @@
 @import "tailwindcss";
 
-@theme {
-  /* Brand colors */
-  --color-brand-600: #2563eb;
-  --color-brand-700: #1d4ed8;
-  --color-brand-50: #eff6ff;
+/* ── Google Fonts ───────────────────────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@700;800&display=swap');
 
+/* ── Design Tokens ──────────────────────────────────────────────────────── */
+@theme {
+  /* Brand — electric indigo-blue */
+  --color-brand-50:  #eef2ff;
+  --color-brand-100: #e0e7ff;
+  --color-brand-200: #c7d2fe;
+  --color-brand-400: #818cf8;
+  --color-brand-500: #6366f1;
+  --color-brand-600: #4f46e5;
+  --color-brand-700: #4338ca;
+  --color-brand-800: #3730a3;
+  --color-brand-900: #312e81;
+
+  /* Accent — electric green */
+  --color-accent-400: #34d399;
   --color-accent-500: #10b981;
   --color-accent-600: #059669;
+  --color-accent-50:  #ecfdf5;
 
-  --color-surface-50: #f8fafc;
+  /* Warning / highlight */
+  --color-amber-400: #fbbf24;
+  --color-amber-500: #f59e0b;
+
+  /* Surface — cool slate */
+  --color-surface-50:  #f8fafc;
   --color-surface-100: #f1f5f9;
   --color-surface-200: #e2e8f0;
+  --color-surface-300: #cbd5e1;
+  --color-surface-400: #94a3b8;
+  --color-surface-500: #64748b;
+  --color-surface-600: #475569;
   --color-surface-700: #334155;
   --color-surface-800: #1e293b;
   --color-surface-900: #0f172a;
+  --color-surface-950: #020617;
 
   /* Typography */
-  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-sans:    'Inter', ui-sans-serif, system-ui, sans-serif;
+  --font-display: 'Plus Jakarta Sans', 'Inter', ui-sans-serif, sans-serif;
 
-  /* Spacing tokens */
-  --spacing-page: 1.5rem;
+  /* Shadows */
+  --shadow-card: 0 1px 3px 0 rgb(0 0 0 / 0.07), 0 1px 2px -1px rgb(0 0 0 / 0.07);
+  --shadow-card-hover: 0 10px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.06);
+  --shadow-glow: 0 0 0 3px rgb(79 70 229 / 0.15);
 }
 
-@media (min-width: 768px) {
-  @theme {
-    --spacing-page: 3rem;
-  }
+/* ── Base ───────────────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-sans);
+  color: var(--color-surface-900);
+  background: #ffffff;
+  line-height: 1.6;
+}
+
+/* ── Utilities ──────────────────────────────────────────────────────────── */
+.font-display { font-family: var(--font-display); }
+
+.text-gradient {
+  background: linear-gradient(135deg, var(--color-brand-600) 0%, var(--color-brand-400) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.shadow-card        { box-shadow: var(--shadow-card); }
+.shadow-card-hover  { box-shadow: var(--shadow-card-hover); }
+.shadow-glow        { box-shadow: var(--shadow-glow); }
+
+/* ── Card hover transitions ─────────────────────────────────────────────── */
+.card-hover {
+  transition: box-shadow 0.2s ease, transform 0.2s ease, border-color 0.2s ease;
+}
+.card-hover:hover {
+  box-shadow: var(--shadow-card-hover);
+  transform: translateY(-2px);
+}
+
+/* ── Focus ring ─────────────────────────────────────────────────────────── */
+:focus-visible {
+  outline: 2px solid var(--color-brand-500);
+  outline-offset: 2px;
+}
+
+/* ── Scrollbar ──────────────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--color-surface-100); }
+::-webkit-scrollbar-thumb { background: var(--color-surface-300); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--color-surface-400); }
+
+/* ── Page padding ───────────────────────────────────────────────────────── */
+.page-x { padding-left: 1.25rem; padding-right: 1.25rem; }
+@media (min-width: 640px)  { .page-x { padding-left: 2rem; padding-right: 2rem; } }
+@media (min-width: 1024px) { .page-x { padding-left: 3rem; padding-right: 3rem; } }
+
+/* ── Section dividers ───────────────────────────────────────────────────── */
+.section-y { padding-top: 4rem; padding-bottom: 4rem; }
+@media (min-width: 768px) { .section-y { padding-top: 5rem; padding-bottom: 5rem; } }
+
+/* ── Dot grid background ────────────────────────────────────────────────── */
+.bg-dot-grid {
+  background-image: radial-gradient(circle, var(--color-surface-200) 1px, transparent 1px);
+  background-size: 24px 24px;
 }

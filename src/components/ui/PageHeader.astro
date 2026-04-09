@@ -1,0 +1,37 @@
+---
+/**
+ * Reusable page hero header used on directory hub pages.
+ */
+interface Props {
+  eyebrow?: string;
+  title: string;
+  subtitle?: string;
+  imageUrl?: string;
+}
+
+const { eyebrow, title, subtitle, imageUrl } = Astro.props;
+---
+
+<section class="relative overflow-hidden bg-surface-950 py-12 md:py-16">
+  {imageUrl && (
+    <div class="absolute inset-0">
+      <img src={imageUrl} alt="" class="h-full w-full object-cover opacity-20" loading="lazy" />
+      <div class="absolute inset-0 bg-gradient-to-r from-surface-950 via-surface-950/80 to-transparent"></div>
+    </div>
+  )}
+  <div class="absolute inset-0 bg-dot-grid opacity-10 pointer-events-none"></div>
+  <div class="absolute -top-20 right-0 h-64 w-64 rounded-full bg-brand-600/15 blur-3xl pointer-events-none"></div>
+
+  <div class="relative mx-auto max-w-7xl page-x">
+    {eyebrow && (
+      <p class="text-xs font-semibold uppercase tracking-widest text-brand-400">{eyebrow}</p>
+    )}
+    <h1 class="font-display mt-2 text-3xl font-extrabold text-white md:text-4xl lg:text-5xl">
+      {title}
+    </h1>
+    {subtitle && (
+      <p class="mt-3 max-w-2xl text-lg text-surface-400">{subtitle}</p>
+    )}
+    <slot />
+  </div>
+</section>

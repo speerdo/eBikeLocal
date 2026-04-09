@@ -19,6 +19,15 @@ const {
 
 const siteUrl = import.meta.env.SITE_URL || 'https://ebikelocal.com';
 const fullOgImage = ogImage.startsWith('http') ? ogImage : `${siteUrl}${ogImage}`;
+
+const currentPath = Astro.url.pathname;
+const navLinks = [
+  { href: '/shops/', label: 'Find Shops' },
+  { href: '/brands/', label: 'Brands' },
+  { href: '/bikes/', label: 'Bikes' },
+  { href: '/best/', label: 'Best Picks' },
+  { href: '/guides/', label: 'Guides' },
+];
 ---
 
 <!doctype html>
@@ -47,91 +56,175 @@ const fullOgImage = ogImage.startsWith('http') ? ogImage : `${siteUrl}${ogImage}
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 
-    <!-- JSON-LD Structured Data -->
-    {jsonLd && (
-      <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
-    )}
+    <!-- JSON-LD -->
+    {jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
 
     <slot name="head" />
   </head>
+
   <body class="min-h-screen bg-white text-surface-900 font-sans antialiased">
-    <header class="sticky top-0 z-50 border-b border-surface-200 bg-white/95 backdrop-blur-sm">
-      <nav class="mx-auto flex max-w-7xl items-center justify-between px-(--spacing-page) py-3">
-        <a href="/" class="text-xl font-bold text-brand-700">
-          eBikeLocal
-        </a>
 
-        <!-- Desktop nav -->
-        <ul class="hidden items-center gap-6 text-sm font-medium md:flex">
-          <li><a href="/shops/" class="hover:text-brand-600 transition-colors">Shops</a></li>
-          <li><a href="/brands/" class="hover:text-brand-600 transition-colors">Brands</a></li>
-          <li><a href="/bikes/" class="hover:text-brand-600 transition-colors">Bikes</a></li>
-          <li><a href="/guides/" class="hover:text-brand-600 transition-colors">Guides</a></li>
-        </ul>
+    <!-- ── Navigation ── -->
+    <header id="site-header" class="sticky top-0 z-50 transition-all duration-200">
+      <div class="border-b border-surface-200/80 bg-white/95 backdrop-blur-md">
+        <nav class="mx-auto flex max-w-7xl items-center justify-between page-x py-3">
 
-        <!-- Mobile menu button -->
-        <button
-          id="mobile-menu-btn"
-          class="md:hidden p-2 -mr-2"
-          aria-label="Open menu"
-          aria-expanded="false"
-        >
-          <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-          </svg>
-        </button>
-      </nav>
+          <!-- Logo -->
+          <a href="/" class="flex items-center gap-2.5 group" aria-label="eBikeLocal home">
+            <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-brand-600 shadow-sm group-hover:bg-brand-700 transition-colors">
+              <svg viewBox="0 0 32 32" fill="none" class="h-5 w-5">
+                <circle cx="8" cy="22" r="5" stroke="white" stroke-width="2" fill="none"/>
+                <circle cx="24" cy="22" r="5" stroke="white" stroke-width="2" fill="none"/>
+                <path d="M8 22 L16 12 L24 22" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M16 12 L18 22" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                <path d="M20 12 L24 12 L24 15" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M13 12 L19 12" stroke="white" stroke-width="1.8" stroke-linecap="round"/>
+                <path d="M15 7 L13 11 L15.5 11 L13.5 16 L19 10 L16 10 L18 7 Z" fill="#fbbf24"/>
+              </svg>
+            </div>
+            <div class="leading-tight">
+              <span class="font-display text-lg font-bold text-surface-900 group-hover:text-brand-600 transition-colors">
+                eBike<span class="text-brand-600">Local</span>
+              </span>
+              <span class="hidden sm:block text-[10px] font-medium tracking-wide text-surface-400 uppercase -mt-0.5">Find. Compare. Ride.</span>
+            </div>
+          </a>
 
-      <!-- Mobile nav -->
-      <div id="mobile-menu" class="hidden border-t border-surface-200 md:hidden">
-        <ul class="flex flex-col gap-1 px-(--spacing-page) py-3 text-sm font-medium">
-          <li><a href="/shops/" class="block py-2 hover:text-brand-600">Shops</a></li>
-          <li><a href="/brands/" class="block py-2 hover:text-brand-600">Brands</a></li>
-          <li><a href="/bikes/" class="block py-2 hover:text-brand-600">Bikes</a></li>
-          <li><a href="/guides/" class="block py-2 hover:text-brand-600">Guides</a></li>
-        </ul>
+          <!-- Desktop nav -->
+          <ul class="hidden items-center gap-1 lg:flex">
+            {navLinks.map(link => (
+              <li>
+                <a
+                  href={link.href}
+                  class={`relative px-3 py-1.5 text-sm font-medium rounded-lg transition-colors ${
+                    currentPath.startsWith(link.href)
+                      ? 'text-brand-600 bg-brand-50'
+                      : 'text-surface-600 hover:text-surface-900 hover:bg-surface-50'
+                  }`}
+                >
+                  {link.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+
+          <!-- Right side -->
+          <div class="flex items-center gap-2">
+            <a
+              href="/shops/"
+              class="hidden sm:inline-flex items-center gap-1.5 rounded-lg bg-brand-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-brand-700 transition-colors"
+            >
+              <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+              Find a Shop
+            </a>
+
+            <!-- Mobile menu button -->
+            <button
+              id="mobile-menu-btn"
+              class="lg:hidden flex h-9 w-9 items-center justify-center rounded-lg text-surface-600 hover:bg-surface-100 transition-colors"
+              aria-label="Open menu"
+              aria-expanded="false"
+            >
+              <svg id="menu-icon" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+              <svg id="close-icon" class="h-5 w-5 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+        </nav>
+
+        <!-- Mobile nav -->
+        <div id="mobile-menu" class="hidden border-t border-surface-100 lg:hidden">
+          <div class="mx-auto max-w-7xl page-x py-3 space-y-0.5">
+            {navLinks.map(link => (
+              <a
+                href={link.href}
+                class={`flex items-center py-2.5 px-3 rounded-lg text-sm font-medium transition-colors ${
+                  currentPath.startsWith(link.href)
+                    ? 'text-brand-600 bg-brand-50'
+                    : 'text-surface-700 hover:text-surface-900 hover:bg-surface-50'
+                }`}
+              >
+                {link.label}
+              </a>
+            ))}
+            <div class="pt-2 pb-1">
+              <a href="/shops/" class="flex items-center justify-center gap-2 rounded-lg bg-brand-600 py-2.5 text-sm font-semibold text-white">
+                Find a Shop Near Me
+              </a>
+            </div>
+          </div>
+        </div>
       </div>
     </header>
 
+    <!-- ── Main content ── -->
     <main>
       <slot />
     </main>
 
-    <footer class="mt-20 border-t border-surface-200 bg-surface-50">
-      <div class="mx-auto max-w-7xl px-(--spacing-page) py-12">
-        <div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
-          <div>
-            <h3 class="font-bold text-surface-900">eBikeLocal</h3>
-            <p class="mt-2 text-sm text-surface-700">Find eBike shops, brands, and bikes near you.</p>
+    <!-- ── Footer ── -->
+    <footer class="mt-20 border-t border-surface-100 bg-surface-950 text-surface-400">
+      <div class="mx-auto max-w-7xl page-x py-14">
+        <div class="grid gap-10 sm:grid-cols-2 lg:grid-cols-5">
+          <!-- Brand -->
+          <div class="lg:col-span-2">
+            <a href="/" class="flex items-center gap-2.5">
+              <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-brand-600">
+                <svg viewBox="0 0 32 32" fill="none" class="h-5 w-5">
+                  <circle cx="8" cy="22" r="5" stroke="white" stroke-width="2" fill="none"/>
+                  <circle cx="24" cy="22" r="5" stroke="white" stroke-width="2" fill="none"/>
+                  <path d="M8 22 L16 12 L24 22" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M16 12 L18 22" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                  <path d="M15 7 L13 11 L15.5 11 L13.5 16 L19 10 L16 10 L18 7 Z" fill="#fbbf24"/>
+                </svg>
+              </div>
+              <span class="font-display text-lg font-bold text-white">eBike<span class="text-brand-400">Local</span></span>
+            </a>
+            <p class="mt-3 text-sm leading-relaxed">
+              The only directory that tells you which eBike brands each shop carries. Find local dealers, compare models, and ride smarter.
+            </p>
+            <p class="mt-4 text-xs text-surface-600">
+              We earn commissions from affiliate links. This doesn't affect our editorial independence.
+            </p>
           </div>
+
           <div>
-            <h4 class="text-sm font-semibold text-surface-900">Directory</h4>
-            <ul class="mt-2 space-y-1 text-sm text-surface-700">
-              <li><a href="/shops/" class="hover:text-brand-600">Shop Directory</a></li>
-              <li><a href="/brands/" class="hover:text-brand-600">Brands</a></li>
-              <li><a href="/bikes/" class="hover:text-brand-600">Bikes</a></li>
-              <li><a href="/categories/" class="hover:text-brand-600">Categories</a></li>
+            <h4 class="text-xs font-semibold uppercase tracking-wider text-surface-500 mb-3">Directory</h4>
+            <ul class="space-y-2 text-sm">
+              <li><a href="/shops/" class="hover:text-white transition-colors">Shop Directory</a></li>
+              <li><a href="/brands/" class="hover:text-white transition-colors">eBike Brands</a></li>
+              <li><a href="/bikes/" class="hover:text-white transition-colors">Browse Bikes</a></li>
+              <li><a href="/categories/" class="hover:text-white transition-colors">Categories</a></li>
             </ul>
           </div>
+
           <div>
-            <h4 class="text-sm font-semibold text-surface-900">Resources</h4>
-            <ul class="mt-2 space-y-1 text-sm text-surface-700">
-              <li><a href="/guides/" class="hover:text-brand-600">Guides</a></li>
-              <li><a href="/best/" class="hover:text-brand-600">Buying Guides</a></li>
-              <li><a href="/guides/ebike-laws-by-state/" class="hover:text-brand-600">eBike Laws by State</a></li>
+            <h4 class="text-xs font-semibold uppercase tracking-wider text-surface-500 mb-3">Resources</h4>
+            <ul class="space-y-2 text-sm">
+              <li><a href="/best/" class="hover:text-white transition-colors">Best Picks</a></li>
+              <li><a href="/guides/" class="hover:text-white transition-colors">Guides</a></li>
+              <li><a href="/guides/ebike-laws-by-state/" class="hover:text-white transition-colors">eBike Laws</a></li>
             </ul>
           </div>
+
           <div>
-            <h4 class="text-sm font-semibold text-surface-900">Legal</h4>
-            <ul class="mt-2 space-y-1 text-sm text-surface-700">
-              <li><a href="/privacy/" class="hover:text-brand-600">Privacy Policy</a></li>
-              <li><a href="/terms/" class="hover:text-brand-600">Terms of Service</a></li>
-              <li><a href="/disclosure/" class="hover:text-brand-600">Affiliate Disclosure</a></li>
+            <h4 class="text-xs font-semibold uppercase tracking-wider text-surface-500 mb-3">Company</h4>
+            <ul class="space-y-2 text-sm">
+              <li><a href="/disclosure/" class="hover:text-white transition-colors">Affiliate Disclosure</a></li>
+              <li><a href="/privacy/" class="hover:text-white transition-colors">Privacy Policy</a></li>
+              <li><a href="/terms/" class="hover:text-white transition-colors">Terms of Service</a></li>
             </ul>
           </div>
         </div>
-        <div class="mt-10 border-t border-surface-200 pt-6 text-center text-xs text-surface-700">
-          &copy; {new Date().getFullYear()} eBikeLocal. All rights reserved.
+
+        <div class="mt-12 flex flex-col items-center justify-between gap-4 border-t border-surface-800 pt-8 text-xs sm:flex-row">
+          <p>&copy; {new Date().getFullYear()} eBikeLocal. All rights reserved.</p>
+          <p class="text-surface-600">Built for eBike riders, by eBike riders.</p>
         </div>
       </div>
     </footer>
@@ -139,11 +232,26 @@ const fullOgImage = ogImage.startsWith('http') ? ogImage : `${siteUrl}${ogImage}
     <script>
       const btn = document.getElementById('mobile-menu-btn');
       const menu = document.getElementById('mobile-menu');
+      const menuIcon = document.getElementById('menu-icon');
+      const closeIcon = document.getElementById('close-icon');
+
       btn?.addEventListener('click', () => {
-        const expanded = btn.getAttribute('aria-expanded') === 'true';
-        btn.setAttribute('aria-expanded', String(!expanded));
+        const isOpen = btn.getAttribute('aria-expanded') === 'true';
+        btn.setAttribute('aria-expanded', String(!isOpen));
         menu?.classList.toggle('hidden');
+        menuIcon?.classList.toggle('hidden');
+        closeIcon?.classList.toggle('hidden');
       });
+
+      // Shadow nav on scroll
+      const header = document.getElementById('site-header');
+      window.addEventListener('scroll', () => {
+        if (window.scrollY > 10) {
+          header?.classList.add('shadow-sm');
+        } else {
+          header?.classList.remove('shadow-sm');
+        }
+      }, { passive: true });
     </script>
   </body>
 </html>

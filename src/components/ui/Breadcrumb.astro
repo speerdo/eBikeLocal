@@ -3,11 +3,9 @@ interface BreadcrumbItem {
   label: string;
   href?: string;
 }
-
 interface Props {
   items: BreadcrumbItem[];
 }
-
 const { items } = Astro.props;
 
 const jsonLd = {
@@ -22,15 +20,19 @@ const jsonLd = {
 };
 ---
 
-<nav aria-label="Breadcrumb" class="text-sm text-surface-700">
-  <ol class="flex flex-wrap items-center gap-1">
+<nav aria-label="Breadcrumb">
+  <ol class="flex flex-wrap items-center gap-1 text-sm text-surface-500">
     {items.map((item, i) => (
       <li class="flex items-center gap-1">
-        {i > 0 && <span class="text-surface-200">/</span>}
+        {i > 0 && (
+          <svg class="h-3.5 w-3.5 shrink-0 text-surface-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+          </svg>
+        )}
         {item.href && i < items.length - 1 ? (
           <a href={item.href} class="hover:text-brand-600 transition-colors">{item.label}</a>
         ) : (
-          <span class="text-surface-900 font-medium">{item.label}</span>
+          <span class="font-medium text-surface-700">{item.label}</span>
         )}
       </li>
     ))}
