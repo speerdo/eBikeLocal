@@ -1,0 +1,40 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+import Breadcrumb from '@components/ui/Breadcrumb.astro';
+
+// Placeholder — will be populated from content collection
+const guides = [
+  { title: 'eBike Tax Credit 2026', slug: 'ebike-tax-credit-2026', description: 'Everything you need to know about the federal eBike tax credit.' },
+  { title: 'eBike Laws by State', slug: 'ebike-laws-by-state', description: 'A comprehensive guide to eBike regulations in all 50 states.' },
+  { title: 'eBike Classes Explained', slug: 'ebike-classes-explained', description: 'Class 1, 2, and 3 — what they mean and where you can ride.' },
+  { title: 'How to Choose an eBike', slug: 'how-to-choose-an-ebike', description: 'A step-by-step guide to finding the right electric bike for you.' },
+  { title: 'What to Look for in an eBike Shop', slug: 'what-to-look-for-in-an-ebike-shop', description: 'Tips for finding a great local eBike dealer.' },
+];
+---
+
+<BaseLayout
+  title="eBike Guides — Electric Bike Tips, Laws & Buying Advice"
+  description="Expert eBike guides: tax credits, state laws, class explanations, buying guides, and more."
+>
+  <div class="mx-auto max-w-7xl px-(--spacing-page) py-8">
+    <Breadcrumb items={[
+      { label: 'Home', href: '/' },
+      { label: 'Guides' },
+    ]} />
+
+    <h1 class="mt-6 text-3xl font-extrabold text-surface-900 md:text-4xl">eBike Guides</h1>
+    <p class="mt-2 text-lg text-surface-700">Expert advice on eBike laws, tax credits, buying tips, and more.</p>
+
+    <div class="mt-10 space-y-4">
+      {guides.map((guide) => (
+        <a
+          href={`/guides/${guide.slug}/`}
+          class="group block rounded-lg border border-surface-200 p-5 transition-shadow hover:shadow-md"
+        >
+          <h2 class="text-lg font-bold text-surface-900 group-hover:text-brand-600 transition-colors">{guide.title}</h2>
+          <p class="mt-1 text-surface-700">{guide.description}</p>
+        </a>
+      ))}
+    </div>
+  </div>
+</BaseLayout>

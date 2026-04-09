@@ -1,0 +1,58 @@
+---
+interface MapPin {
+  name: string;
+  href: string;
+  latitude: number;
+  longitude: number;
+}
+
+interface Props {
+  pins: MapPin[];
+  centerLat?: number;
+  centerLng?: number;
+  zoom?: number;
+  height?: string;
+}
+
+const { pins, centerLat, centerLng, zoom = 11, height = '400px' } = Astro.props;
+
+const center = {
+  lat: centerLat ?? (pins.length ? pins.reduce((s, p) => s + p.latitude, 0) / pins.length : 39.8),
+  lng: centerLng ?? (pins.length ? pins.reduce((s, p) => s + p.longitude, 0) / pins.length : -98.5),
+};
+
+const mapId = `map-${Math.random().toString(36).slice(2, 8)}`;
+---
+
+<div id={mapId} style={`height: ${height}; width: 100%;`} class="rounded-lg bg-surface-100"></div>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+<script define:vars={{ mapId, pins, center, zoom }}>
+  async function initMap() {
+    const L = await import('https://unpkg.com/leaflet@1.9.4/dist/leaflet-src.esm.js');
+    const map = L.map(mapId).setView([center.lat, center.lng], zoom);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+      maxZoom: 18,
+    }).addTo(map);
+
+    const bounds = [];
+    pins.forEach((pin) => {
+      const marker = L.marker([pin.latitude, pin.longitude]).addTo(map);
+      marker.bindPopup(`<a href="${pin.href}" class="font-semibold">${pin.name}</a>`);
+      bounds.push([pin.latitude, pin.longitude]);
+    });
+
+    if (bounds.length > 1) {
+      map.fitBounds(bounds, { padding: [30, 30] });
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initMap);
+  } else {
+    initMap();
+  }
+</script>

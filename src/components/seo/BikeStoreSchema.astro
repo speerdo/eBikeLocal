@@ -1,0 +1,73 @@
+---
+interface Props {
+  name: string;
+  description?: string;
+  address: {
+    street: string;
+    city: string;
+    state: string;
+    zip?: string;
+    country?: string;
+  };
+  latitude: number;
+  longitude: number;
+  phone?: string | null;
+  website?: string | null;
+  rating?: number | null;
+  reviewCount?: number | null;
+  openingHours?: Record<string, string>[] | null;
+  imageUrl?: string | null;
+  priceRange?: string;
+}
+
+const {
+  name,
+  description,
+  address,
+  latitude,
+  longitude,
+  phone,
+  website,
+  rating,
+  reviewCount,
+  openingHours,
+  imageUrl,
+  priceRange,
+} = Astro.props;
+
+const schema: Record<string, unknown> = {
+  '@context': 'https://schema.org',
+  '@type': 'BikeStore',
+  name,
+  ...(description && { description }),
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: address.street,
+    addressLocality: address.city,
+    addressRegion: address.state,
+    ...(address.zip && { postalCode: address.zip }),
+    addressCountry: address.country || 'US',
+  },
+  geo: {
+    '@type': 'GeoCoordinates',
+    latitude,
+    longitude,
+  },
+  ...(phone && { telephone: phone }),
+  ...(website && { url: website }),
+  ...(imageUrl && { image: imageUrl }),
+  ...(priceRange && { priceRange }),
+};
+
+if (rating && reviewCount) {
+  schema.aggregateRating = {
+    '@type': 'AggregateRating',
+    ratingValue: rating,
+    reviewCount,
+    bestRating: 5,
+    worstRating: 1,
+  };
+}
+---
+
+<script type="application/ld+json" set:html={JSON.stringify(schema)} />

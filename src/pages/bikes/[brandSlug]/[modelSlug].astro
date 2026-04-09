@@ -1,0 +1,232 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+import Breadcrumb from '@components/ui/Breadcrumb.astro';
+import SpecRow from '@components/ui/SpecRow.astro';
+import CTAButton from '@components/ui/CTAButton.astro';
+import ProductSchema from '@components/seo/ProductSchema.astro';
+import sql from '@lib/neon';
+
+export async function getStaticPaths() {
+  const bikes = await sql`
+    SELECT bk.slug as model_slug, br.slug as brand_slug
+    FROM bikes bk
+    JOIN brands br ON br.id = bk.brand_id
+    WHERE bk.is_active = true
+  `;
+  return bikes.map((b) => ({
+    params: { brandSlug: b.brand_slug, modelSlug: b.model_slug },
+  }));
+}
+
+const { brandSlug, modelSlug } = Astro.params;
+
+const [bike] = await sql`
+  SELECT bk.*, br.name as brand_name, br.slug as brand_slug, br.logo_url as brand_logo
+  FROM bikes bk
+  JOIN brands br ON br.id = bk.brand_id
+  WHERE bk.slug = ${modelSlug} AND br.slug = ${brandSlug}
+  LIMIT 1
+`;
+
+if (!bike) return Astro.redirect('/404');
+
+const relatedBikes = await sql`
+  SELECT bk.*, br.name as brand_name, br.slug as brand_slug
+  FROM bikes bk
+  JOIN brands br ON br.id = bk.brand_id
+  WHERE bk.category = ${bike.category} AND bk.id != ${bike.id} AND bk.is_active = true
+  ORDER BY bk.expert_rating DESC NULLS LAST
+  LIMIT 4
+`;
+
+const dealers = await sql`
+  SELECT s.name, s.slug, s.city, s.state_code, c.slug as city_slug, st.slug as state_slug
+  FROM shop_brands sb
+  JOIN shops s ON s.id = sb.shop_id
+  JOIN cities c ON c.name = s.city AND c.state_code = s.state_code
+  JOIN states st ON st.code = s.state_code
+  WHERE sb.brand_id = ${bike.brand_id}
+  ORDER BY s.state, s.city
+  LIMIT 10
+`;
+
+const buyUrls = bike.buy_urls || {};
+---
+
+<BaseLayout
+  title={`${bike.brand_name} ${bike.model_name} — Specs, Price & Where to Buy`}
+  description={`${bike.brand_name} ${bike.model_name} eBike. ${bike.msrp ? `$${bike.msrp.toLocaleString()} MSRP.` : ''} ${bike.motor_watts ? `${bike.motor_watts}W motor.` : ''} ${bike.battery_wh ? `${bike.battery_wh}Wh battery.` : ''} ${bike.range_miles_high ? `Up to ${bike.range_miles_high} miles range.` : ''}`}
+>
+  <ProductSchema
+    name={`${bike.brand_name} ${bike.model_name}`}
+    brandName={bike.brand_name}
+    description={bike.best_for || `${bike.category} eBike by ${bike.brand_name}`}
+    imageUrl={bike.hero_image_url}
+    msrp={bike.msrp}
+    salePrice={bike.sale_price}
+    rating={bike.expert_rating ? Number(bike.expert_rating) : null}
+    reviewCount={null}
+    url={`${import.meta.env.SITE_URL}/bikes/${brandSlug}/${modelSlug}/`}
+  />
+
+  <div class="mx-auto max-w-7xl px-(--spacing-page) py-8">
+    <Breadcrumb items={[
+      { label: 'Home', href: '/' },
+      { label: 'Bikes', href: '/bikes/' },
+      { label: bike.brand_name, href: `/brands/${brandSlug}/` },
+      { label: bike.model_name },
+    ]} />
+
+    <div class="mt-6 grid gap-8 lg:grid-cols-2">
+      <!-- Image -->
+      <div>
+        {bike.hero_image_url ? (
+          <img
+            src={bike.hero_image_url}
+            alt={`${bike.brand_name} ${bike.model_name}`}
+            class="w-full rounded-lg bg-surface-50 object-contain p-8"
+          />
+        ) : (
+          <div class="flex h-96 items-center justify-center rounded-lg bg-surface-50">
+            <span class="text-surface-700">No image available</span>
+          </div>
+        )}
+
+        {bike.gallery_images?.length > 0 && (
+          <div class="mt-3 grid grid-cols-4 gap-2">
+            {bike.gallery_images.slice(0, 4).map((img: string) => (
+              <img src={img} alt="" class="rounded bg-surface-50 object-contain p-2 aspect-square" loading="lazy" />
+            ))}
+          </div>
+        )}
+      </div>
+
+      <!-- Details -->
+      <div>
+        <p class="text-sm font-medium text-surface-700">
+          <a href={`/brands/${brandSlug}/`} class="hover:text-brand-600">{bike.brand_name}</a>
+        </p>
+        <h1 class="mt-1 text-3xl font-extrabold text-surface-900">{bike.model_name}</h1>
+
+        {bike.best_for && (
+          <span class="mt-2 inline-block rounded bg-accent-500/10 px-2.5 py-1 text-sm font-medium text-accent-600">
+            {bike.best_for}
+          </span>
+        )}
+
+        <!-- Price + CTA -->
+        <div class="mt-4 flex flex-wrap items-baseline gap-3">
+          {bike.msrp && (
+            <span class={`text-3xl font-bold text-surface-900 ${bike.sale_price ? 'line-through text-lg text-surface-700' : ''}`}>
+              ${bike.msrp.toLocaleString()}
+            </span>
+          )}
+          {bike.sale_price && (
+            <span class="text-3xl font-bold text-surface-900">${bike.sale_price.toLocaleString()}</span>
+          )}
+        </div>
+
+        <div class="mt-4 flex flex-wrap gap-2">
+          {bike.affiliate_url && (
+            <CTAButton href={bike.affiliate_url} brandName={bike.brand_name} price={bike.sale_price || bike.msrp} />
+          )}
+          {Object.entries(buyUrls).map(([retailer, url]) => (
+            <CTAButton href={url as string} brandName={retailer} variant="secondary" />
+          ))}
+        </div>
+
+        <!-- Expert rating -->
+        {bike.expert_rating && (
+          <div class="mt-6 rounded-lg bg-surface-50 p-4">
+            <div class="flex items-center gap-3">
+              <span class="rounded-lg bg-brand-600 px-3 py-1.5 text-xl font-bold text-white">
+                {Number(bike.expert_rating).toFixed(1)}
+              </span>
+              <span class="text-sm text-surface-700">/10 Expert Rating</span>
+            </div>
+          </div>
+        )}
+
+        <!-- Pros/Cons -->
+        {(bike.pros?.length > 0 || bike.cons?.length > 0) && (
+          <div class="mt-6 grid gap-4 sm:grid-cols-2">
+            {bike.pros?.length > 0 && (
+              <div>
+                <h3 class="font-semibold text-accent-600">Pros</h3>
+                <ul class="mt-1 space-y-1 text-sm">
+                  {bike.pros.map((pro: string) => (
+                    <li class="flex gap-2"><span class="text-accent-500">✓</span> {pro}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
+            {bike.cons?.length > 0 && (
+              <div>
+                <h3 class="font-semibold text-red-600">Cons</h3>
+                <ul class="mt-1 space-y-1 text-sm">
+                  {bike.cons.map((con: string) => (
+                    <li class="flex gap-2"><span class="text-red-500">✗</span> {con}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
+        )}
+
+        <!-- Key specs -->
+        <div class="mt-6">
+          <h2 class="text-lg font-bold text-surface-900">Specifications</h2>
+          <dl class="mt-2 divide-y divide-surface-200">
+            {bike.ebike_class && <SpecRow icon="📋" label="eBike Class" value={`Class ${bike.ebike_class}`} />}
+            {bike.motor_watts && <SpecRow icon="⚡" label="Motor" value={`${bike.motor_watts}W ${bike.motor_type || ''}`} />}
+            {bike.motor_torque_nm && <SpecRow icon="💪" label="Torque" value={`${bike.motor_torque_nm} Nm`} />}
+            {bike.battery_wh && <SpecRow icon="🔋" label="Battery" value={`${bike.battery_wh} Wh`} />}
+            {bike.range_miles_low && bike.range_miles_high && <SpecRow icon="📏" label="Range" value={`${bike.range_miles_low}–${bike.range_miles_high} miles`} />}
+            {bike.top_speed_mph && <SpecRow icon="🏎️" label="Top Speed" value={`${bike.top_speed_mph} mph`} />}
+            {bike.charge_time_hours && <SpecRow icon="🔌" label="Charge Time" value={`${bike.charge_time_hours} hours`} />}
+            {bike.weight_lbs && <SpecRow icon="⚖️" label="Weight" value={`${bike.weight_lbs} lbs`} />}
+            {bike.max_payload_lbs && <SpecRow icon="📦" label="Max Payload" value={`${bike.max_payload_lbs} lbs`} />}
+            {bike.wheel_size && <SpecRow icon="🛞" label="Wheels" value={bike.wheel_size} />}
+            {bike.gearing && <SpecRow icon="⚙️" label="Gearing" value={bike.gearing} />}
+            {bike.brakes && <SpecRow icon="🛑" label="Brakes" value={bike.brakes} />}
+            {bike.suspension && <SpecRow icon="🔄" label="Suspension" value={bike.suspension} />}
+          </dl>
+        </div>
+      </div>
+    </div>
+
+    <!-- Find a dealer -->
+    {dealers.length > 0 && (
+      <section class="mt-12">
+        <h2 class="text-xl font-bold text-surface-900">Find a {bike.brand_name} Dealer</h2>
+        <div class="mt-4 grid gap-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
+          {dealers.map((d) => (
+            <a
+              href={`/shops/${d.state_slug}/${d.city_slug}/${d.slug}/`}
+              class="rounded-lg border border-surface-200 px-3 py-2 text-sm transition-colors hover:border-brand-600"
+            >
+              <span class="font-medium">{d.name}</span>
+              <span class="block text-xs text-surface-700">{d.city}, {d.state_code}</span>
+            </a>
+          ))}
+        </div>
+      </section>
+    )}
+
+    <!-- Related models -->
+    {relatedBikes.length > 0 && (
+      <section class="mt-12">
+        <h2 class="text-xl font-bold text-surface-900">Related eBikes</h2>
+        <div class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {relatedBikes.map((rb) => (
+            <a href={`/bikes/${rb.brand_slug}/${rb.slug}/`} class="rounded-lg border border-surface-200 p-3 transition-colors hover:border-brand-600">
+              <p class="text-xs text-surface-700">{rb.brand_name}</p>
+              <p class="font-semibold">{rb.model_name}</p>
+              {rb.msrp && <p class="text-sm font-bold">${rb.msrp.toLocaleString()}</p>}
+            </a>
+          ))}
+        </div>
+      </section>
+    )}
+  </div>
+</BaseLayout>

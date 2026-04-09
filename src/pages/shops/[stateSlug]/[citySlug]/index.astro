@@ -1,0 +1,156 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+import Breadcrumb from '@components/ui/Breadcrumb.astro';
+import ShopCard from '@components/ui/ShopCard.astro';
+import MultiPinMap from '@components/ui/MultiPinMap.astro';
+import sql from '@lib/neon';
+
+export async function getStaticPaths() {
+  const cities = await sql`
+    SELECT c.id, c.name, c.slug, c.state_code, c.latitude, c.longitude, c.shop_count,
+           s.name as state_name, s.slug as state_slug
+    FROM cities c
+    JOIN states s ON s.code = c.state_code
+    WHERE c.has_dedicated_page = true
+  `;
+
+  return cities.map((city) => ({
+    params: { stateSlug: city.state_slug, citySlug: city.slug },
+    props: { city },
+  }));
+}
+
+const { city } = Astro.props;
+
+const shops = await sql`
+  SELECT s.*, array_agg(DISTINCT b.name) FILTER (WHERE b.name IS NOT NULL) as brand_names
+  FROM shops s
+  LEFT JOIN shop_brands sb ON sb.shop_id = s.id
+  LEFT JOIN brands b ON b.id = sb.brand_id
+  WHERE s.city = ${city.name} AND s.state_code = ${city.state_code}
+    AND (s.google_business_status IS NULL OR s.google_business_status != 'CLOSED_PERMANENTLY')
+  GROUP BY s.id
+  ORDER BY s.google_rating DESC NULLS LAST, s.name
+`;
+
+const brandCounts = await sql`
+  SELECT b.name, b.slug, COUNT(*) as count
+  FROM shop_brands sb
+  JOIN brands b ON b.id = sb.brand_id
+  JOIN shops s ON s.id = sb.shop_id
+  WHERE s.city = ${city.name} AND s.state_code = ${city.state_code}
+  GROUP BY b.id, b.name, b.slug
+  ORDER BY count DESC
+`;
+
+const nearbyCities = await sql`
+  SELECT c.name, c.slug, c.shop_count, s.slug as state_slug
+  FROM cities c
+  JOIN states s ON s.code = c.state_code
+  WHERE c.state_code = ${city.state_code}
+    AND c.slug != ${city.slug}
+    AND c.has_dedicated_page = true
+  ORDER BY c.shop_count DESC
+  LIMIT 8
+`;
+
+const mapPins = shops
+  .filter((s) => s.latitude && s.longitude)
+  .map((s) => ({
+    name: s.name,
+    href: `/shops/${city.state_slug}/${city.slug}/${s.slug}/`,
+    latitude: Number(s.latitude),
+    longitude: Number(s.longitude),
+  }));
+---
+
+<BaseLayout
+  title={`eBike Shops in ${city.name}, ${city.state_code} — ${shops.length} Local Dealers`}
+  description={`Find ${shops.length} electric bike shops in ${city.name}, ${city.state_code}. Compare brands carried, services, ratings, and more.`}
+>
+  <div class="mx-auto max-w-7xl px-(--spacing-page) py-8">
+    <Breadcrumb items={[
+      { label: 'Home', href: '/' },
+      { label: 'Shops', href: '/shops/' },
+      { label: city.state_name, href: `/shops/${Astro.params.stateSlug}/` },
+      { label: city.name },
+    ]} />
+
+    <h1 class="mt-6 text-3xl font-extrabold text-surface-900 md:text-4xl">
+      eBike Shops in {city.name}, {city.state_code}
+    </h1>
+    <p class="mt-2 text-lg text-surface-700">
+      {shops.length} electric bike {shops.length === 1 ? 'shop' : 'shops'} in {city.name}.
+    </p>
+
+    <!-- Map -->
+    {mapPins.length > 0 && (
+      <div class="mt-6">
+        <MultiPinMap
+          pins={mapPins}
+          centerLat={city.latitude ? Number(city.latitude) : undefined}
+          centerLng={city.longitude ? Number(city.longitude) : undefined}
+        />
+      </div>
+    )}
+
+    <!-- Brands in city -->
+    {brandCounts.length > 0 && (
+      <section class="mt-8">
+        <h2 class="text-lg font-bold text-surface-900">Brands Available in {city.name}</h2>
+        <div class="mt-3 flex flex-wrap gap-2">
+          {brandCounts.map((b) => (
+            <a
+              href={`/brands/${b.slug}/`}
+              class="rounded-full border border-surface-200 px-3 py-1 text-sm font-medium text-surface-900 transition-colors hover:border-brand-600 hover:text-brand-600"
+            >
+              {b.name} ({b.count})
+            </a>
+          ))}
+        </div>
+      </section>
+    )}
+
+    <!-- Shop list -->
+    <section class="mt-8">
+      <h2 class="text-lg font-bold text-surface-900">All Shops</h2>
+      <div class="mt-4 space-y-3">
+        {shops.map((shop) => (
+          <ShopCard
+            name={shop.name}
+            slug={shop.slug}
+            stateSlug={Astro.params.stateSlug}
+            citySlug={city.slug}
+            address={shop.address_line1 || ''}
+            city={shop.city}
+            stateCode={shop.state_code}
+            rating={shop.google_rating ? Number(shop.google_rating) : null}
+            reviewCount={shop.google_review_count}
+            brands={shop.brand_names || []}
+            services={shop.services || []}
+            featuredImageUrl={shop.featured_image_url}
+            isEbikeSpecialist={shop.is_ebike_specialist}
+          />
+        ))}
+      </div>
+    </section>
+
+    <!-- Nearby cities -->
+    {nearbyCities.length > 0 && (
+      <section class="mt-12">
+        <h2 class="text-lg font-bold text-surface-900">Nearby Cities with eBike Shops</h2>
+        <div class="mt-4 grid gap-3 sm:grid-cols-2 md:grid-cols-4">
+          {nearbyCities.map((nc) => (
+            <a
+              href={`/shops/${nc.state_slug}/${nc.slug}/`}
+              class="rounded-lg border border-surface-200 px-4 py-3 text-sm transition-colors hover:border-brand-600 hover:bg-brand-50"
+            >
+              <span class="font-medium text-surface-900">{nc.name}</span>
+              <span class="ml-1 text-surface-700">({nc.shop_count})</span>
+            </a>
+          ))}
+        </div>
+      </section>
+    )}
+  </div>
+</BaseLayout>

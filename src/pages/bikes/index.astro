@@ -1,0 +1,65 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+import Breadcrumb from '@components/ui/Breadcrumb.astro';
+import BikeCard from '@components/ui/BikeCard.astro';
+import sql from '@lib/neon';
+
+const bikes = await sql`
+  SELECT bk.*, br.name as brand_name, br.slug as brand_slug
+  FROM bikes bk
+  JOIN brands br ON br.id = bk.brand_id
+  WHERE bk.is_active = true
+  ORDER BY bk.expert_rating DESC NULLS LAST, bk.msrp ASC
+`;
+
+const categories = await sql`SELECT * FROM categories ORDER BY sort_order, name`;
+---
+
+<BaseLayout
+  title="eBike Catalog — Compare Electric Bikes by Brand, Price & Category"
+  description="Browse and compare electric bikes from top brands. Filter by category, price, and specs to find your perfect eBike."
+>
+  <div class="mx-auto max-w-7xl px-(--spacing-page) py-8">
+    <Breadcrumb items={[
+      { label: 'Home', href: '/' },
+      { label: 'Bikes' },
+    ]} />
+
+    <h1 class="mt-6 text-3xl font-extrabold text-surface-900 md:text-4xl">eBike Catalog</h1>
+    <p class="mt-2 text-lg text-surface-700">Compare {bikes.length} electric bikes from top brands.</p>
+
+    <!-- Category filter chips -->
+    {categories.length > 0 && (
+      <div class="mt-6 flex flex-wrap gap-2">
+        {categories.map((cat) => (
+          <a
+            href={`/categories/${cat.slug}/`}
+            class="rounded-full border border-surface-200 px-3 py-1.5 text-sm font-medium transition-colors hover:border-brand-600 hover:text-brand-600"
+          >
+            {cat.name}
+          </a>
+        ))}
+      </div>
+    )}
+
+    <div class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+      {bikes.map((bike) => (
+        <BikeCard
+          modelName={bike.model_name}
+          brandName={bike.brand_name}
+          brandSlug={bike.brand_slug}
+          slug={bike.slug}
+          msrp={bike.msrp}
+          salePrice={bike.sale_price}
+          heroImageUrl={bike.hero_image_url}
+          motorWatts={bike.motor_watts}
+          batteryWh={bike.battery_wh}
+          rangeMilesHigh={bike.range_miles_high}
+          bestFor={bike.best_for}
+          expertRating={bike.expert_rating ? Number(bike.expert_rating) : null}
+          affiliateUrl={bike.affiliate_url}
+        />
+      ))}
+    </div>
+  </div>
+</BaseLayout>

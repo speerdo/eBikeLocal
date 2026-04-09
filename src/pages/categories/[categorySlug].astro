@@ -1,0 +1,90 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+import Breadcrumb from '@components/ui/Breadcrumb.astro';
+import BikeCard from '@components/ui/BikeCard.astro';
+import sql from '@lib/neon';
+
+export async function getStaticPaths() {
+  const categories = await sql`SELECT slug FROM categories`;
+  return categories.map((c) => ({ params: { categorySlug: c.slug } }));
+}
+
+const { categorySlug } = Astro.params;
+const [category] = await sql`SELECT * FROM categories WHERE slug = ${categorySlug} LIMIT 1`;
+if (!category) return Astro.redirect('/404');
+
+const bikes = await sql`
+  SELECT bk.*, br.name as brand_name, br.slug as brand_slug
+  FROM bikes bk
+  JOIN brands br ON br.id = bk.brand_id
+  JOIN bike_categories bc ON bc.bike_id = bk.id
+  WHERE bc.category_id = ${category.id} AND bk.is_active = true
+  ORDER BY bk.expert_rating DESC NULLS LAST, bk.msrp ASC
+`;
+
+const topPicks = bikes.filter((b) => b.best_for).slice(0, 3);
+---
+
+<BaseLayout
+  title={`Best ${category.name} eBikes — Compare Top ${category.name} Electric Bikes`}
+  description={`Compare the best ${category.name.toLowerCase()} electric bikes. ${category.description || ''}`}
+>
+  <div class="mx-auto max-w-7xl px-(--spacing-page) py-8">
+    <Breadcrumb items={[
+      { label: 'Home', href: '/' },
+      { label: 'Categories', href: '/categories/' },
+      { label: category.name },
+    ]} />
+
+    <h1 class="mt-6 text-3xl font-extrabold text-surface-900 md:text-4xl">{category.name} eBikes</h1>
+    {category.description && <p class="mt-2 text-lg text-surface-700">{category.description}</p>}
+
+    {topPicks.length > 0 && (
+      <section class="mt-10">
+        <h2 class="text-xl font-bold text-surface-900">Top Picks</h2>
+        <div class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {topPicks.map((bike) => (
+            <BikeCard
+              modelName={bike.model_name}
+              brandName={bike.brand_name}
+              brandSlug={bike.brand_slug}
+              slug={bike.slug}
+              msrp={bike.msrp}
+              salePrice={bike.sale_price}
+              heroImageUrl={bike.hero_image_url}
+              motorWatts={bike.motor_watts}
+              batteryWh={bike.battery_wh}
+              rangeMilesHigh={bike.range_miles_high}
+              bestFor={bike.best_for}
+              expertRating={bike.expert_rating ? Number(bike.expert_rating) : null}
+              affiliateUrl={bike.affiliate_url}
+            />
+          ))}
+        </div>
+      </section>
+    )}
+
+    <section class="mt-12">
+      <h2 class="text-xl font-bold text-surface-900">All {category.name} eBikes</h2>
+      <div class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        {bikes.map((bike) => (
+          <BikeCard
+            modelName={bike.model_name}
+            brandName={bike.brand_name}
+            brandSlug={bike.brand_slug}
+            slug={bike.slug}
+            msrp={bike.msrp}
+            salePrice={bike.sale_price}
+            heroImageUrl={bike.hero_image_url}
+            motorWatts={bike.motor_watts}
+            batteryWh={bike.battery_wh}
+            rangeMilesHigh={bike.range_miles_high}
+            bestFor={bike.best_for}
+            expertRating={bike.expert_rating ? Number(bike.expert_rating) : null}
+            affiliateUrl={bike.affiliate_url}
+          />
+        ))}
+      </div>
+    </section>
+  </div>
+</BaseLayout>

@@ -1,0 +1,17 @@
+---
+interface Props {
+  icon: string;
+  label: string;
+  value: string;
+}
+
+const { icon, label, value } = Astro.props;
+---
+
+<div class="flex items-center gap-3 py-2">
+  <span class="text-lg" aria-hidden="true">{icon}</span>
+  <div>
+    <dt class="text-xs text-surface-700">{label}</dt>
+    <dd class="font-medium text-surface-900">{value}</dd>
+  </div>
+</div>

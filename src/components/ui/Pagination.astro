@@ -1,0 +1,70 @@
+---
+interface Props {
+  currentPage: number;
+  totalPages: number;
+  baseUrl: string;
+}
+
+const { currentPage, totalPages, baseUrl } = Astro.props;
+
+function pageUrl(page: number) {
+  return page === 1 ? baseUrl : `${baseUrl}?page=${page}`;
+}
+
+const range = (start: number, end: number) =>
+  Array.from({ length: end - start + 1 }, (_, i) => start + i);
+
+// Show max 7 page buttons with ellipsis
+let pages: (number | '...')[];
+if (totalPages <= 7) {
+  pages = range(1, totalPages);
+} else if (currentPage <= 3) {
+  pages = [...range(1, 4), '...', totalPages - 1, totalPages];
+} else if (currentPage >= totalPages - 2) {
+  pages = [1, 2, '...', ...range(totalPages - 3, totalPages)];
+} else {
+  pages = [1, '...', currentPage - 1, currentPage, currentPage + 1, '...', totalPages];
+}
+---
+
+{totalPages > 1 && (
+  <nav aria-label="Pagination" class="mt-8 flex items-center justify-center gap-1">
+    {currentPage > 1 && (
+      <a
+        href={pageUrl(currentPage - 1)}
+        class="rounded-lg px-3 py-2 text-sm font-medium text-surface-700 transition-colors hover:bg-surface-100"
+        aria-label="Previous page"
+      >
+        ← Prev
+      </a>
+    )}
+
+    {pages.map((page) =>
+      page === '...' ? (
+        <span class="px-2 py-2 text-sm text-surface-700">…</span>
+      ) : (
+        <a
+          href={pageUrl(page)}
+          class={`rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
+            page === currentPage
+              ? 'bg-brand-600 text-white'
+              : 'text-surface-700 hover:bg-surface-100'
+          }`}
+          aria-current={page === currentPage ? 'page' : undefined}
+        >
+          {page}
+        </a>
+      )
+    )}
+
+    {currentPage < totalPages && (
+      <a
+        href={pageUrl(currentPage + 1)}
+        class="rounded-lg px-3 py-2 text-sm font-medium text-surface-700 transition-colors hover:bg-surface-100"
+        aria-label="Next page"
+      >
+        Next →
+      </a>
+    )}
+  </nav>
+)}

@@ -1,0 +1,65 @@
+---
+export const prerender = false;
+
+import BaseLayout from '@layouts/BaseLayout.astro';
+import Breadcrumb from '@components/ui/Breadcrumb.astro';
+import ShopCard from '@components/ui/ShopCard.astro';
+import sql from '@lib/neon';
+
+const { brandSlug } = Astro.params;
+
+const [brand] = await sql`SELECT * FROM brands WHERE slug = ${brandSlug} LIMIT 1`;
+if (!brand) return Astro.redirect('/404');
+
+const shops = await sql`
+  SELECT s.*, st.slug as state_slug, c.slug as city_slug,
+         array_agg(DISTINCT b2.name) FILTER (WHERE b2.name IS NOT NULL) as brand_names
+  FROM shop_brands sb
+  JOIN shops s ON s.id = sb.shop_id
+  JOIN states st ON st.code = s.state_code
+  JOIN cities c ON c.name = s.city AND c.state_code = s.state_code
+  LEFT JOIN shop_brands sb2 ON sb2.shop_id = s.id
+  LEFT JOIN brands b2 ON b2.id = sb2.brand_id
+  WHERE sb.brand_id = ${brand.id}
+    AND (s.google_business_status IS NULL OR s.google_business_status != 'CLOSED_PERMANENTLY')
+  GROUP BY s.id, st.slug, c.slug
+  ORDER BY s.state, s.city, s.name
+`;
+---
+
+<BaseLayout
+  title={`${brand.name} Dealers — Find Authorized ${brand.name} Shops Near You`}
+  description={`Find ${shops.length} authorized ${brand.name} dealers across the US. Locate your nearest ${brand.name} eBike shop.`}
+>
+  <div class="mx-auto max-w-7xl px-(--spacing-page) py-8">
+    <Breadcrumb items={[
+      { label: 'Home', href: '/' },
+      { label: 'Brands', href: '/brands/' },
+      { label: brand.name, href: `/brands/${brand.slug}/` },
+      { label: 'Dealers' },
+    ]} />
+
+    <h1 class="mt-6 text-3xl font-extrabold text-surface-900">{brand.name} Dealers</h1>
+    <p class="mt-2 text-lg text-surface-700">{shops.length} authorized dealers across the US.</p>
+
+    <div class="mt-8 space-y-3">
+      {shops.map((shop) => (
+        <ShopCard
+          name={shop.name}
+          slug={shop.slug}
+          stateSlug={shop.state_slug}
+          citySlug={shop.city_slug}
+          address={shop.address_line1 || ''}
+          city={shop.city}
+          stateCode={shop.state_code}
+          rating={shop.google_rating ? Number(shop.google_rating) : null}
+          reviewCount={shop.google_review_count}
+          brands={shop.brand_names || []}
+          services={shop.services || []}
+          featuredImageUrl={shop.featured_image_url}
+          isEbikeSpecialist={shop.is_ebike_specialist}
+        />
+      ))}
+    </div>
+  </div>
+</BaseLayout>

@@ -1,0 +1,55 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+import Breadcrumb from '@components/ui/Breadcrumb.astro';
+import sql from '@lib/neon';
+
+const states = await sql`
+  SELECT code, name, slug, shop_count
+  FROM states
+  ORDER BY name
+`;
+
+const totalShops = states.reduce((sum, s) => sum + (s.shop_count || 0), 0);
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: 'eBike Shop Directory',
+  description: `Find eBike shops across all 50 states. ${totalShops.toLocaleString()} shops listed.`,
+  url: `${import.meta.env.SITE_URL}/shops/`,
+};
+---
+
+<BaseLayout
+  title="eBike Shop Directory — Find Electric Bike Dealers in Every State"
+  description={`Browse ${totalShops.toLocaleString()} eBike shops across all 50 states. Find local dealers, see which brands they carry, and compare services.`}
+  jsonLd={jsonLd}
+>
+  <div class="mx-auto max-w-7xl px-(--spacing-page) py-8">
+    <Breadcrumb items={[
+      { label: 'Home', href: '/' },
+      { label: 'Shops' },
+    ]} />
+
+    <h1 class="mt-6 text-3xl font-extrabold text-surface-900 md:text-4xl">
+      eBike Shop Directory
+    </h1>
+    <p class="mt-2 text-lg text-surface-700">
+      Browse {totalShops.toLocaleString()} electric bike shops across the United States.
+    </p>
+
+    <div class="mt-10 grid gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+      {states.map((state) => (
+        <a
+          href={`/shops/${state.slug}/`}
+          class="flex items-center justify-between rounded-lg border border-surface-200 px-4 py-3 transition-colors hover:border-brand-600 hover:bg-brand-50"
+        >
+          <span class="font-medium text-surface-900">{state.name}</span>
+          {state.shop_count > 0 && (
+            <span class="text-sm text-surface-700">{state.shop_count} shops</span>
+          )}
+        </a>
+      ))}
+    </div>
+  </div>
+</BaseLayout>

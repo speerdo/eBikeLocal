@@ -8,41 +8,41 @@
 
 ### Astro.js Project Initialization
 
-- [ ] Initialize Astro.js 6.x project with TypeScript (`npm create astro@latest`)
-- [ ] Install and configure Tailwind CSS 4.x integration (`npx astro add tailwind`)
-- [ ] Install Vercel adapter (`npx astro add vercel`)
-- [ ] Configure hybrid rendering in `astro.config.mjs` (SSG default + SSR for API routes and dynamic pages)
-- [ ] Set up project directory structure:
-  - [ ] `src/pages/` — route pages
-  - [ ] `src/components/` — reusable UI components
-  - [ ] `src/layouts/` — page layout templates
-  - [ ] `src/lib/` — utilities, DB connection, helpers
-  - [ ] `src/styles/` — global styles
-  - [ ] `src/content/` — editorial content (guides, articles)
-  - [ ] `scripts/` — scraping and data pipeline scripts
-- [ ] Configure `.env` file with all required environment variables (see SPEC.md Section 2)
-- [ ] Add `.env` to `.gitignore`
+- [x] Initialize Astro.js 6.x project with TypeScript (`npm create astro@latest`)
+- [x] Install and configure Tailwind CSS 4.x integration (`npx astro add tailwind`)
+- [x] Install Vercel adapter (`npx astro add vercel`)
+- [x] Configure hybrid rendering in `astro.config.mjs` (SSG default + SSR for API routes and dynamic pages)
+- [x] Set up project directory structure:
+  - [x] `src/pages/` — route pages
+  - [x] `src/components/` — reusable UI components
+  - [x] `src/layouts/` — page layout templates
+  - [x] `src/lib/` — utilities, DB connection, helpers
+  - [x] `src/styles/` — global styles
+  - [x] `src/content/` — editorial content (guides, articles)
+  - [x] `scripts/` — scraping and data pipeline scripts
+- [x] Configure `.env` file with all required environment variables (see SPEC.md Section 2)
+- [x] Add `.env` to `.gitignore`
 - [ ] Set up Pagefind for client-side search
 
 ### Neon DB Setup
 
-- [ ] Create Neon project (Launch tier)
-- [ ] Enable PostGIS extension (`CREATE EXTENSION IF NOT EXISTS postgis`)
-- [ ] Enable pg_trgm extension (`CREATE EXTENSION IF NOT EXISTS pg_trgm`)
-- [ ] Enable uuid-ossp extension (`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`)
-- [ ] Create `shops` table with all columns per SPEC.md schema
-- [ ] Create `brands` table
-- [ ] Create `shop_brands` junction table
-- [ ] Create `bikes` table
-- [ ] Create `categories` table
-- [ ] Create `bike_categories` junction table
-- [ ] Create `states` table
-- [ ] Create `cities` table
-- [ ] Create `reviews` table
-- [ ] Create all indexes per SPEC.md schema (spatial, text search, foreign keys)
+- [x] Create Neon project (Launch tier)
+- [x] Enable PostGIS extension (`CREATE EXTENSION IF NOT EXISTS postgis`)
+- [x] Enable pg_trgm extension (`CREATE EXTENSION IF NOT EXISTS pg_trgm`)
+- [x] Enable uuid-ossp extension (`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`)
+- [x] Create `shops` table with all columns per SPEC.md schema
+- [x] Create `brands` table
+- [x] Create `shop_brands` junction table
+- [x] Create `bikes` table
+- [x] Create `categories` table
+- [x] Create `bike_categories` junction table
+- [x] Create `states` table
+- [x] Create `cities` table
+- [x] Create `reviews` table
+- [x] Create all indexes per SPEC.md schema (spatial, text search, foreign keys)
 - [ ] Set up `dev` branch for development
-- [ ] Verify connection from Astro via `postgres.js` driver
-- [ ] Install `postgres` npm package and create `src/lib/neon.ts` DB connection utility
+- [x] Verify connection from Astro via `postgres.js` driver
+- [x] Install `postgres` npm package and create `src/lib/neon.ts` DB connection utility
 
 ### Vercel Setup
 
@@ -55,9 +55,9 @@
 
 ### Version Control & CI
 
-- [ ] Initialize Git repository
-- [ ] Create `.gitignore` (node_modules, .env, dist, .vercel)
-- [ ] Set up initial commit with project skeleton
+- [x] Initialize Git repository
+- [x] Create `.gitignore` (node_modules, .env, dist, .vercel)
+- [x] Set up initial commit with project skeleton
 - [ ] Configure branch protection for `main`
 
 ---
@@ -66,39 +66,39 @@
 
 ### Base Layout & Navigation
 
-- [ ] Create `BaseLayout.astro` with HTML head (meta, OG tags, JSON-LD slot, Tailwind)
-- [ ] Create responsive header/navigation component
-- [ ] Create footer component with site links, legal pages
-- [ ] Create breadcrumb component (with `BreadcrumbList` JSON-LD)
-- [ ] Create mobile hamburger menu
-- [ ] Set up global CSS/Tailwind theme tokens (colors, typography, spacing)
+- [x] Create `BaseLayout.astro` with HTML head (meta, OG tags, JSON-LD slot, Tailwind)
+- [x] Create responsive header/navigation component
+- [x] Create footer component with site links, legal pages
+- [x] Create breadcrumb component (with `BreadcrumbList` JSON-LD)
+- [x] Create mobile hamburger menu
+- [x] Set up global CSS/Tailwind theme tokens (colors, typography, spacing)
 
 ### Shared UI Components
 
-- [ ] `ShopCard.astro` — shop listing card (name, address, rating, brands, services)
-- [ ] `BikeCard.astro` — product card (image, name, price, specs, CTA button)
-- [ ] `BrandBadge.astro` — small brand logo/name badge for shop listings
-- [ ] `RatingStars.astro` — star rating display component
-- [ ] `FilterBar.astro` — filterable chip/dropdown bar (brand, service, category)
-- [ ] `MapEmbed.astro` — Google Maps embed for single shop
-- [ ] `MultiPinMap.astro` — Leaflet.js multi-pin map for city/state pages
-- [ ] `Pagination.astro` — page navigation for long shop lists
-- [ ] `SearchBar.astro` — homepage/header search input with autocomplete
-- [ ] `CTAButton.astro` — affiliate CTA button ("Check Price at [Brand]")
-- [ ] `SpecRow.astro` — icon + value pair for bike specs display
-- [ ] `AwardBadge.astro` — corner overlay badge ("Best Commuter", "Best Value")
-- [ ] `ServiceTag.astro` — service indicator chips (Sales, Repair, Rental, Test Rides)
+- [x] `ShopCard.astro` — shop listing card (name, address, rating, brands, services)
+- [x] `BikeCard.astro` — product card (image, name, price, specs, CTA button)
+- [x] `BrandBadge.astro` — small brand logo/name badge for shop listings
+- [x] `RatingStars.astro` — star rating display component
+- [x] `FilterBar.astro` — filterable chip/dropdown bar (brand, service, category)
+- [x] `MapEmbed.astro` — Google Maps embed for single shop
+- [x] `MultiPinMap.astro` — Leaflet.js multi-pin map for city/state pages
+- [x] `Pagination.astro` — page navigation for long shop lists
+- [x] `SearchBar.astro` — homepage/header search input with autocomplete
+- [x] `CTAButton.astro` — affiliate CTA button ("Check Price at [Brand]")
+- [x] `SpecRow.astro` — icon + value pair for bike specs display
+- [x] `AwardBadge.astro` — corner overlay badge ("Best Commuter", "Best Value")
+- [x] `ServiceTag.astro` — service indicator chips (Sales, Repair, Rental, Test Rides)
 
 ### SEO Components
 
-- [ ] `JsonLd.astro` — generic JSON-LD injection component
-- [ ] `BikeStoreSchema.astro` — `BikeStore` structured data for shop listings
-- [ ] `ProductSchema.astro` — `Product` structured data for bike pages
-- [ ] `FAQSchema.astro` — `FAQPage` structured data for guide pages
-- [ ] `BreadcrumbSchema.astro` — `BreadcrumbList` structured data
-- [ ] `MetaTags.astro` — OpenGraph + Twitter Card meta tags
-- [ ] Dynamic `<title>` and `<meta description>` generation per page type
-- [ ] Canonical URL configuration
+- [x] `JsonLd.astro` — generic JSON-LD injection component
+- [x] `BikeStoreSchema.astro` — `BikeStore` structured data for shop listings
+- [x] `ProductSchema.astro` — `Product` structured data for bike pages
+- [x] `FAQSchema.astro` — `FAQPage` structured data for guide pages
+- [x] `BreadcrumbSchema.astro` — `BreadcrumbList` structured data
+- [x] `MetaTags.astro` — OpenGraph + Twitter Card meta tags
+- [x] Dynamic `<title>` and `<meta description>` generation per page type
+- [x] Canonical URL configuration
 - [ ] XML sitemap generation (split by page type for large sitemaps)
 
 ---
@@ -107,8 +107,8 @@
 
 ### Homepage (`/`)
 
-- [ ] Hero section with search bar (city/zip search)
-- [ ] "How it works" brief explainer section
+- [x] Hero section with search bar (city/zip search)
+- [x] "How it works" brief explainer section
 - [ ] Featured/popular cities grid
 - [ ] Featured brands row
 - [ ] Latest guides/articles section
@@ -117,77 +117,77 @@
 
 ### Shop Directory Pages
 
-- [ ] `/shops/` — national hub page (SSG)
-  - [ ] State grid/list with shop counts
-  - [ ] National stats summary
-- [ ] `/shops/[state-slug]/` — state page (SSG via `getStaticPaths`)
+- [x] `/shops/` — national hub page (SSG)
+  - [x] State grid/list with shop counts
+  - [x] National stats summary
+- [x] `/shops/[state-slug]/` — state page (SSG via `getStaticPaths`)
   - [ ] State map with city markers (Leaflet)
-  - [ ] City list with shop counts
-  - [ ] State eBike law summary
-  - [ ] Rebate/incentive programs section
-  - [ ] Top brands in state (aggregated from `shop_brands`)
-- [ ] `/shops/[state-slug]/[city-slug]/` — city page (SSG via `getStaticPaths`)
-  - [ ] City map with all shop pins (Leaflet)
-  - [ ] Filterable shop list (by brand, service, rating)
-  - [ ] "Brands available in [City]" section
+  - [x] City list with shop counts
+  - [x] State eBike law summary
+  - [x] Rebate/incentive programs section
+  - [x] Top brands in state (aggregated from `shop_brands`)
+- [x] `/shops/[state-slug]/[city-slug]/` — city page (SSG via `getStaticPaths`)
+  - [x] City map with all shop pins (Leaflet)
+  - [x] Filterable shop list (by brand, service, rating)
+  - [x] "Brands available in [City]" section
   - [ ] State law summary callout with link
-  - [ ] Nearby cities section
-  - [ ] Shop count and services summary
-- [ ] `/shops/[state-slug]/[city-slug]/[shop-slug]/` — shop listing page (SSG)
-  - [ ] Shop name, address, phone, website, hours
-  - [ ] Google Maps embed
-  - [ ] Brands carried section (from `shop_brands`) with affiliate CTAs
-  - [ ] Services offered tags
-  - [ ] Google rating display
-  - [ ] Native reviews section
-  - [ ] Photo gallery
-  - [ ] "Nearby eBike Shops" section
-  - [ ] `BikeStore` JSON-LD structured data
+  - [x] Nearby cities section
+  - [x] Shop count and services summary
+- [x] `/shops/[state-slug]/[city-slug]/[shop-slug]/` — shop listing page (SSG)
+  - [x] Shop name, address, phone, website, hours
+  - [x] Google Maps embed
+  - [x] Brands carried section (from `shop_brands`) with affiliate CTAs
+  - [x] Services offered tags
+  - [x] Google rating display
+  - [x] Native reviews section
+  - [x] Photo gallery
+  - [x] "Nearby eBike Shops" section
+  - [x] `BikeStore` JSON-LD structured data
 
 ### Brand Pages
 
-- [ ] `/brands/` — brand directory hub (SSG)
-  - [ ] All brands grid with logos, price ranges, dealer counts
-- [ ] `/brands/[brand-slug]/` — brand page (SSG via `getStaticPaths`)
-  - [ ] Brand header with logo and overview
-  - [ ] Quick stats bar (models, price range, avg rating, categories)
-  - [ ] "Best Of" picks (top 3 product cards)
-  - [ ] All models grid (filterable/sortable)
-  - [ ] Brand info (warranty, support, where to buy)
-  - [ ] Cross-links to city pages where brand has dealers
-  - [ ] Affiliate CTA ("Shop [Brand] Online")
-- [ ] `/brands/[brand-slug]/dealers/` — brand dealer finder (SSR)
+- [x] `/brands/` — brand directory hub (SSG)
+  - [x] All brands grid with logos, price ranges, dealer counts
+- [x] `/brands/[brand-slug]/` — brand page (SSG via `getStaticPaths`)
+  - [x] Brand header with logo and overview
+  - [x] Quick stats bar (models, price range, avg rating, categories)
+  - [x] "Best Of" picks (top 3 product cards)
+  - [x] All models grid (filterable/sortable)
+  - [x] Brand info (warranty, support, where to buy)
+  - [x] Cross-links to city pages where brand has dealers
+  - [x] Affiliate CTA ("Shop [Brand] Online")
+- [x] `/brands/[brand-slug]/dealers/` — brand dealer finder (SSR)
   - [ ] Search by city/zip
   - [ ] Map with dealer locations
-  - [ ] Dealer list with distance
+  - [x] Dealer list with distance
 
 ### Bike/Product Pages
 
-- [ ] `/bikes/` — product catalog hub (SSG)
-  - [ ] Featured/popular bikes grid
-  - [ ] Filter by category, brand, price range
-- [ ] `/bikes/[brand-slug]/[model-slug]/` — model page (SSG via `getStaticPaths`)
-  - [ ] Hero image
-  - [ ] Price with affiliate CTA buttons (multiple retailers)
-  - [ ] Full spec table
-  - [ ] Pros/cons list
-  - [ ] Expert rating and "Best For" tag
-  - [ ] "Find a Dealer" section (shops carrying this brand)
-  - [ ] Related models
-  - [ ] `Product` JSON-LD structured data
+- [x] `/bikes/` — product catalog hub (SSG)
+  - [x] Featured/popular bikes grid
+  - [x] Filter by category, brand, price range
+- [x] `/bikes/[brand-slug]/[model-slug]/` — model page (SSG via `getStaticPaths`)
+  - [x] Hero image
+  - [x] Price with affiliate CTA buttons (multiple retailers)
+  - [x] Full spec table
+  - [x] Pros/cons list
+  - [x] Expert rating and "Best For" tag
+  - [x] "Find a Dealer" section (shops carrying this brand)
+  - [x] Related models
+  - [x] `Product` JSON-LD structured data
 
 ### Category Pages
 
-- [ ] `/categories/` — category hub (SSG)
-- [ ] `/categories/[category-slug]/` — category page (SSG via `getStaticPaths`)
-  - [ ] Category description and icon
-  - [ ] Top picks product cards
-  - [ ] All bikes in category (filterable grid)
+- [x] `/categories/` — category hub (SSG)
+- [x] `/categories/[category-slug]/` — category page (SSG via `getStaticPaths`)
+  - [x] Category description and icon
+  - [x] Top picks product cards
+  - [x] All bikes in category (filterable grid)
   - [ ] Comparison table
 
 ### Guide & Content Pages
 
-- [ ] `/guides/` — content hub (SSG)
+- [x] `/guides/` — content hub (SSG)
 - [ ] `/guides/[topic-slug]/` — individual guide (SSG from content collection)
 - [ ] `/guides/ebike-laws/[state-slug]/` — state law page (SSG via `getStaticPaths`)
   - [ ] State-specific eBike class rules
@@ -203,9 +203,9 @@
 
 ### API Routes
 
-- [ ] `/api/search` — shop search by city/zip/coordinates (SSR)
-- [ ] `/api/suggest` — autocomplete for city/shop names (SSR)
-- [ ] `/api/rebuild` — webhook endpoint to trigger Vercel rebuild (SSR, authenticated)
+- [x] `/api/search` — shop search by city/zip/coordinates (SSR)
+- [x] `/api/suggest` — autocomplete for city/shop names (SSR)
+- [x] `/api/rebuild` — webhook endpoint to trigger Vercel rebuild (SSR, authenticated)
 
 ---
 

@@ -1,0 +1,106 @@
+---
+interface Props {
+  modelName: string;
+  brandName: string;
+  brandSlug: string;
+  slug: string;
+  msrp?: number | null;
+  salePrice?: number | null;
+  heroImageUrl?: string | null;
+  motorWatts?: number | null;
+  batteryWh?: number | null;
+  rangeMilesHigh?: number | null;
+  bestFor?: string | null;
+  expertRating?: number | null;
+  affiliateUrl?: string | null;
+}
+
+const {
+  modelName,
+  brandName,
+  brandSlug,
+  slug,
+  msrp,
+  salePrice,
+  heroImageUrl,
+  motorWatts,
+  batteryWh,
+  rangeMilesHigh,
+  bestFor,
+  expertRating,
+  affiliateUrl,
+} = Astro.props;
+
+const displayPrice = salePrice || msrp;
+const hasDiscount = salePrice && msrp && salePrice < msrp;
+const href = `/bikes/${brandSlug}/${slug}/`;
+---
+
+<div class="group relative rounded-lg border border-surface-200 bg-white shadow-sm transition-shadow hover:shadow-md">
+  {bestFor && (
+    <span class="absolute top-2 left-2 z-10 rounded bg-accent-500 px-2 py-0.5 text-xs font-semibold text-white shadow-sm">
+      {bestFor}
+    </span>
+  )}
+
+  <a href={href} class="block">
+    {heroImageUrl ? (
+      <img
+        src={heroImageUrl}
+        alt={`${brandName} ${modelName}`}
+        class="h-48 w-full rounded-t-lg object-contain bg-surface-50 p-4"
+        loading="lazy"
+      />
+    ) : (
+      <div class="flex h-48 w-full items-center justify-center rounded-t-lg bg-surface-50">
+        <svg class="h-16 w-16 text-surface-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+        </svg>
+      </div>
+    )}
+  </a>
+
+  <div class="p-4">
+    <a href={href}>
+      <p class="text-xs font-medium text-surface-700">{brandName}</p>
+      <h3 class="mt-0.5 font-semibold text-surface-900 group-hover:text-brand-600 transition-colors">
+        {modelName}
+      </h3>
+    </a>
+
+    {displayPrice && (
+      <div class="mt-1 flex items-baseline gap-2">
+        <span class="text-lg font-bold text-surface-900">
+          ${displayPrice.toLocaleString()}
+        </span>
+        {hasDiscount && (
+          <span class="text-sm text-surface-700 line-through">${msrp.toLocaleString()}</span>
+        )}
+      </div>
+    )}
+
+    {expertRating && (
+      <div class="mt-1.5 inline-flex items-center rounded bg-brand-600 px-1.5 py-0.5 text-xs font-bold text-white">
+        {expertRating.toFixed(1)}/10
+      </div>
+    )}
+
+    <div class="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-xs text-surface-700">
+      {motorWatts && <span>⚡ {motorWatts}W</span>}
+      {batteryWh && <span>🔋 {batteryWh} Wh</span>}
+      {rangeMilesHigh && <span>📏 {rangeMilesHigh} mi</span>}
+    </div>
+
+    {affiliateUrl && (
+      <a
+        href={affiliateUrl}
+        target="_blank"
+        rel="nofollow noopener"
+        class="mt-3 block rounded-lg bg-brand-600 py-2 text-center text-sm font-semibold text-white transition-colors hover:bg-brand-700"
+        onclick="event.stopPropagation()"
+      >
+        Check Price at {brandName}
+      </a>
+    )}
+  </div>
+</div>

@@ -1,0 +1,61 @@
+---
+interface Props {
+  name: string;
+  brandName: string;
+  description?: string;
+  imageUrl?: string | null;
+  msrp?: number | null;
+  salePrice?: number | null;
+  rating?: number | null;
+  reviewCount?: number | null;
+  url: string;
+}
+
+const {
+  name,
+  brandName,
+  description,
+  imageUrl,
+  msrp,
+  salePrice,
+  rating,
+  reviewCount,
+  url,
+} = Astro.props;
+
+const price = salePrice || msrp;
+
+const schema: Record<string, unknown> = {
+  '@context': 'https://schema.org',
+  '@type': 'Product',
+  name,
+  brand: { '@type': 'Brand', name: brandName },
+  ...(description && { description }),
+  ...(imageUrl && { image: imageUrl }),
+  url,
+};
+
+if (price) {
+  schema.offers = {
+    '@type': 'Offer',
+    price,
+    priceCurrency: 'USD',
+    availability: 'https://schema.org/InStock',
+    ...(msrp && salePrice && salePrice < msrp
+      ? { priceValidUntil: new Date(Date.now() + 30 * 86400000).toISOString().split('T')[0] }
+      : {}),
+  };
+}
+
+if (rating && reviewCount) {
+  schema.aggregateRating = {
+    '@type': 'AggregateRating',
+    ratingValue: rating,
+    reviewCount,
+    bestRating: 10,
+    worstRating: 1,
+  };
+}
+---
+
+<script type="application/ld+json" set:html={JSON.stringify(schema)} />

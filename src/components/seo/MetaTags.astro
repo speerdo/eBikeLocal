@@ -1,0 +1,40 @@
+---
+/**
+ * Standalone meta tags component for pages that don't use BaseLayout.
+ * BaseLayout already includes OG + Twitter meta tags.
+ */
+interface Props {
+  title: string;
+  description: string;
+  canonicalUrl: string;
+  ogImage?: string;
+  ogType?: string;
+}
+
+const {
+  title,
+  description,
+  canonicalUrl,
+  ogImage = '/og-default.png',
+  ogType = 'website',
+} = Astro.props;
+
+const siteUrl = import.meta.env.SITE_URL || 'https://ebikelocal.com';
+const fullOgImage = ogImage.startsWith('http') ? ogImage : `${siteUrl}${ogImage}`;
+---
+
+<title>{title}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={canonicalUrl} />
+
+<meta property="og:type" content={ogType} />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:image" content={fullOgImage} />
+<meta property="og:url" content={canonicalUrl} />
+<meta property="og:site_name" content="eBikeLocal" />
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={fullOgImage} />

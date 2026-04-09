@@ -1,0 +1,33 @@
+---
+interface Props {
+  service: string;
+}
+
+const { service } = Astro.props;
+
+const icons: Record<string, string> = {
+  sales: '🛒',
+  repair: '🔧',
+  rental: '🚲',
+  test_rides: '🏍️',
+  fitting: '📐',
+  assembly: '🔩',
+};
+
+const labels: Record<string, string> = {
+  sales: 'Sales',
+  repair: 'Repair',
+  rental: 'Rental',
+  test_rides: 'Test Rides',
+  fitting: 'Fitting',
+  assembly: 'Assembly',
+};
+
+const icon = icons[service] || '✓';
+const label = labels[service] || service;
+---
+
+<span class="inline-flex items-center gap-1 rounded-full bg-surface-100 px-2.5 py-1 text-xs font-medium text-surface-700">
+  <span>{icon}</span>
+  {label}
+</span>

@@ -1,0 +1,254 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+import Breadcrumb from '@components/ui/Breadcrumb.astro';
+import RatingStars from '@components/ui/RatingStars.astro';
+import MapEmbed from '@components/ui/MapEmbed.astro';
+import ServiceTag from '@components/ui/ServiceTag.astro';
+import CTAButton from '@components/ui/CTAButton.astro';
+import BikeStoreSchema from '@components/seo/BikeStoreSchema.astro';
+import sql from '@lib/neon';
+
+export async function getStaticPaths() {
+  const shops = await sql`
+    SELECT s.slug as shop_slug, s.city, s.state_code,
+           c.slug as city_slug, st.slug as state_slug
+    FROM shops s
+    JOIN cities c ON c.name = s.city AND c.state_code = s.state_code
+    JOIN states st ON st.code = s.state_code
+    WHERE s.google_business_status IS NULL OR s.google_business_status != 'CLOSED_PERMANENTLY'
+  `;
+
+  return shops.map((s) => ({
+    params: {
+      stateSlug: s.state_slug,
+      citySlug: s.city_slug,
+      shopSlug: s.shop_slug,
+    },
+  }));
+}
+
+const { stateSlug, citySlug, shopSlug } = Astro.params;
+
+const [shop] = await sql`
+  SELECT s.*, st.name as state_name, st.slug as state_slug
+  FROM shops s
+  JOIN states st ON st.code = s.state_code
+  WHERE s.slug = ${shopSlug}
+  LIMIT 1
+`;
+
+if (!shop) return Astro.redirect('/404');
+
+const brands = await sql`
+  SELECT b.name, b.slug, b.logo_url, b.affiliate_program_url, sb.dealer_tier
+  FROM shop_brands sb
+  JOIN brands b ON b.id = sb.brand_id
+  WHERE sb.shop_id = ${shop.id}
+  ORDER BY b.name
+`;
+
+const nearbyShops = await sql`
+  SELECT s.name, s.slug, s.google_rating, s.address_line1,
+         c.slug as city_slug, st.slug as state_slug
+  FROM shops s
+  JOIN cities c ON c.name = s.city AND c.state_code = s.state_code
+  JOIN states st ON st.code = s.state_code
+  WHERE s.city = ${shop.city} AND s.state_code = ${shop.state_code}
+    AND s.id != ${shop.id}
+    AND (s.google_business_status IS NULL OR s.google_business_status != 'CLOSED_PERMANENTLY')
+  ORDER BY s.google_rating DESC NULLS LAST
+  LIMIT 5
+`;
+
+const reviews = await sql`
+  SELECT * FROM reviews
+  WHERE shop_id = ${shop.id}
+  ORDER BY created_at DESC
+  LIMIT 10
+`;
+---
+
+<BaseLayout
+  title={`${shop.name} — eBike Shop in ${shop.city}, ${shop.state_code}`}
+  description={`${shop.name} in ${shop.city}, ${shop.state_code}. ${brands.length ? `Carries ${brands.map(b => b.name).join(', ')}.` : ''} ${shop.services?.length ? `Services: ${shop.services.join(', ')}.` : ''}`}
+>
+  <BikeStoreSchema
+    name={shop.name}
+    description={shop.description || `eBike shop in ${shop.city}, ${shop.state_code}`}
+    address={{
+      street: shop.address_line1 || '',
+      city: shop.city,
+      state: shop.state,
+      zip: shop.zip,
+    }}
+    latitude={Number(shop.latitude)}
+    longitude={Number(shop.longitude)}
+    phone={shop.phone}
+    website={shop.website}
+    rating={shop.google_rating ? Number(shop.google_rating) : null}
+    reviewCount={shop.google_review_count}
+    imageUrl={shop.featured_image_url}
+  />
+
+  <div class="mx-auto max-w-7xl px-(--spacing-page) py-8">
+    <Breadcrumb items={[
+      { label: 'Home', href: '/' },
+      { label: 'Shops', href: '/shops/' },
+      { label: shop.state_name, href: `/shops/${stateSlug}/` },
+      { label: shop.city, href: `/shops/${stateSlug}/${citySlug}/` },
+      { label: shop.name },
+    ]} />
+
+    <div class="mt-6 grid gap-8 lg:grid-cols-3">
+      <!-- Main content -->
+      <div class="lg:col-span-2">
+        <h1 class="text-3xl font-extrabold text-surface-900">{shop.name}</h1>
+
+        <div class="mt-2 flex flex-wrap items-center gap-3">
+          {shop.google_rating && (
+            <RatingStars rating={Number(shop.google_rating)} reviewCount={shop.google_review_count} />
+          )}
+          {shop.is_ebike_specialist && (
+            <span class="rounded-full bg-accent-500/10 px-2.5 py-1 text-xs font-medium text-accent-600">
+              eBike Specialist
+            </span>
+          )}
+        </div>
+
+        {shop.description && (
+          <p class="mt-4 text-surface-700">{shop.description}</p>
+        )}
+
+        <!-- Services -->
+        {shop.services?.length > 0 && (
+          <section class="mt-6">
+            <h2 class="text-lg font-bold text-surface-900">Services</h2>
+            <div class="mt-2 flex flex-wrap gap-2">
+              {shop.services.map((service: string) => (
+                <ServiceTag service={service} />
+              ))}
+            </div>
+          </section>
+        )}
+
+        <!-- Brands carried -->
+        {brands.length > 0 && (
+          <section class="mt-8">
+            <h2 class="text-lg font-bold text-surface-900">Brands Carried</h2>
+            <div class="mt-3 space-y-3">
+              {brands.map((brand) => (
+                <div class="flex items-center justify-between rounded-lg border border-surface-200 p-3">
+                  <a href={`/brands/${brand.slug}/`} class="flex items-center gap-3 font-medium text-surface-900 hover:text-brand-600">
+                    {brand.logo_url && (
+                      <img src={brand.logo_url} alt={brand.name} class="h-8 w-8 object-contain" loading="lazy" />
+                    )}
+                    {brand.name}
+                    {brand.dealer_tier && (
+                      <span class="rounded bg-surface-100 px-1.5 py-0.5 text-xs text-surface-700">{brand.dealer_tier}</span>
+                    )}
+                  </a>
+                  {brand.affiliate_program_url && (
+                    <CTAButton href={brand.affiliate_program_url} brandName={brand.name} variant="secondary" />
+                  )}
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
+        <!-- Reviews -->
+        {reviews.length > 0 && (
+          <section class="mt-8">
+            <h2 class="text-lg font-bold text-surface-900">Reviews</h2>
+            <div class="mt-3 space-y-4">
+              {reviews.map((review) => (
+                <div class="rounded-lg border border-surface-200 p-4">
+                  <div class="flex items-center gap-2">
+                    <span class="font-medium text-surface-900">{review.user_name || 'Anonymous'}</span>
+                    <RatingStars rating={review.rating} size="sm" />
+                  </div>
+                  {review.review_text && (
+                    <p class="mt-2 text-sm text-surface-700">{review.review_text}</p>
+                  )}
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
+        <!-- Photos -->
+        {shop.photos?.length > 0 && (
+          <section class="mt-8">
+            <h2 class="text-lg font-bold text-surface-900">Photos</h2>
+            <div class="mt-3 grid grid-cols-2 gap-2 md:grid-cols-3">
+              {shop.photos.map((url: string) => (
+                <img src={url} alt={shop.name} class="rounded-lg object-cover aspect-square" loading="lazy" />
+              ))}
+            </div>
+          </section>
+        )}
+      </div>
+
+      <!-- Sidebar -->
+      <aside class="space-y-6">
+        <!-- Map -->
+        {shop.latitude && shop.longitude && (
+          <MapEmbed name={shop.name} latitude={Number(shop.latitude)} longitude={Number(shop.longitude)} />
+        )}
+
+        <!-- Contact info -->
+        <div class="rounded-lg border border-surface-200 p-4 space-y-3">
+          <h3 class="font-bold text-surface-900">Contact Info</h3>
+
+          <div class="text-sm text-surface-700 space-y-2">
+            {shop.address_line1 && (
+              <p>{shop.address_line1}{shop.address_line2 ? `, ${shop.address_line2}` : ''}<br/>{shop.city}, {shop.state_code} {shop.zip}</p>
+            )}
+            {shop.phone && (
+              <p><a href={`tel:${shop.phone}`} class="text-brand-600 hover:underline">{shop.phone}</a></p>
+            )}
+            {shop.website && (
+              <p><a href={shop.website} target="_blank" rel="noopener" class="text-brand-600 hover:underline">Visit Website</a></p>
+            )}
+            {shop.google_maps_uri && (
+              <p><a href={shop.google_maps_uri} target="_blank" rel="noopener" class="text-brand-600 hover:underline">View on Google Maps</a></p>
+            )}
+          </div>
+
+          <!-- Hours -->
+          {shop.opening_hours && (
+            <div class="border-t border-surface-200 pt-3">
+              <h4 class="text-sm font-semibold text-surface-900">Hours</h4>
+              <div class="mt-1 text-sm text-surface-700 space-y-0.5">
+                {Object.entries(shop.opening_hours).map(([day, hours]) => (
+                  <div class="flex justify-between">
+                    <span>{day}</span>
+                    <span>{hours as string}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+
+        <!-- Nearby shops -->
+        {nearbyShops.length > 0 && (
+          <div class="rounded-lg border border-surface-200 p-4">
+            <h3 class="font-bold text-surface-900">Nearby eBike Shops</h3>
+            <div class="mt-3 space-y-2">
+              {nearbyShops.map((ns) => (
+                <a
+                  href={`/shops/${ns.state_slug}/${ns.city_slug}/${ns.slug}/`}
+                  class="block text-sm hover:text-brand-600 transition-colors"
+                >
+                  <span class="font-medium">{ns.name}</span>
+                  {ns.google_rating && <span class="text-surface-700"> — {Number(ns.google_rating).toFixed(1)}★</span>}
+                </a>
+              ))}
+            </div>
+          </div>
+        )}
+      </aside>
+    </div>
+  </div>
+</BaseLayout>

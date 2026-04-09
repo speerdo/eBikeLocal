@@ -1,0 +1,42 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+import Breadcrumb from '@components/ui/Breadcrumb.astro';
+import sql from '@lib/neon';
+
+const categories = await sql`
+  SELECT c.*, COUNT(bc.bike_id) as bike_count
+  FROM categories c
+  LEFT JOIN bike_categories bc ON bc.category_id = c.id
+  GROUP BY c.id
+  ORDER BY c.sort_order, c.name
+`;
+---
+
+<BaseLayout
+  title="eBike Categories — Browse Electric Bikes by Type"
+  description="Browse electric bikes by category: commuter, cargo, mountain, folding, fat tire, and more."
+>
+  <div class="mx-auto max-w-7xl px-(--spacing-page) py-8">
+    <Breadcrumb items={[
+      { label: 'Home', href: '/' },
+      { label: 'Categories' },
+    ]} />
+
+    <h1 class="mt-6 text-3xl font-extrabold text-surface-900 md:text-4xl">eBike Categories</h1>
+    <p class="mt-2 text-lg text-surface-700">Browse electric bikes by type to find the perfect ride for you.</p>
+
+    <div class="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      {categories.map((cat) => (
+        <a
+          href={`/categories/${cat.slug}/`}
+          class="group rounded-lg border border-surface-200 p-6 transition-shadow hover:shadow-md"
+        >
+          {cat.icon && <span class="text-3xl">{cat.icon}</span>}
+          <h2 class="mt-2 text-lg font-bold text-surface-900 group-hover:text-brand-600 transition-colors">{cat.name}</h2>
+          {cat.description && <p class="mt-1 text-sm text-surface-700 line-clamp-2">{cat.description}</p>}
+          {cat.bike_count > 0 && <p class="mt-2 text-xs text-surface-700">{cat.bike_count} bikes</p>}
+        </a>
+      ))}
+    </div>
+  </div>
+</BaseLayout>
