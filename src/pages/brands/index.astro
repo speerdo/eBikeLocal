@@ -2,6 +2,7 @@
 import BaseLayout from '@layouts/BaseLayout.astro';
 import Breadcrumb from '@components/ui/Breadcrumb.astro';
 import PageHeader from '@components/ui/PageHeader.astro';
+import { getBrandLogoUrl } from '@lib/brandLogos';
 import sql from '@lib/neon';
 
 const brands = await sql`
@@ -36,12 +37,19 @@ const brands = await sql`
         >
           <!-- Logo area -->
           <div class="flex h-12 items-center">
-            {brand.logo_url ? (
-              <img src={brand.logo_url} alt={brand.name} class="max-h-10 max-w-[160px] object-contain" loading="lazy" />
+            {getBrandLogoUrl(brand) ? (
+              <img
+                src={getBrandLogoUrl(brand)!}
+                alt={brand.name}
+                class={brand.slug === 'velotric'
+                  ? 'h-8 w-auto max-w-[150px] object-contain'
+                  : brand.slug === 'aventon'
+                    ? 'h-10 w-auto max-w-[180px] object-contain'
+                    : 'max-h-10 max-w-[160px] object-contain'}
+                loading="lazy"
+              />
             ) : (
-              <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-600 font-display text-base font-extrabold text-white">
-                {brand.name[0]}
-              </div>
+              <span class="text-sm font-semibold text-surface-500">{brand.name}</span>
             )}
           </div>
 
