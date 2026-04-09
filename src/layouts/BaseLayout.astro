@@ -1,0 +1,149 @@
+---
+import '@/styles/global.css';
+
+interface Props {
+  title: string;
+  description?: string;
+  canonicalUrl?: string;
+  ogImage?: string;
+  jsonLd?: Record<string, unknown>;
+}
+
+const {
+  title,
+  description = 'Find eBike shops, brands, and bikes near you. Compare dealers, check which brands they carry, and shop the best electric bikes.',
+  canonicalUrl = Astro.url.href,
+  ogImage = '/og-default.png',
+  jsonLd,
+} = Astro.props;
+
+const siteUrl = import.meta.env.SITE_URL || 'https://ebikelocal.com';
+const fullOgImage = ogImage.startsWith('http') ? ogImage : `${siteUrl}${ogImage}`;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalUrl} />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={fullOgImage} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:site_name" content="eBikeLocal" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={fullOgImage} />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <!-- JSON-LD Structured Data -->
+    {jsonLd && (
+      <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+    )}
+
+    <slot name="head" />
+  </head>
+  <body class="min-h-screen bg-white text-surface-900 font-sans antialiased">
+    <header class="sticky top-0 z-50 border-b border-surface-200 bg-white/95 backdrop-blur-sm">
+      <nav class="mx-auto flex max-w-7xl items-center justify-between px-(--spacing-page) py-3">
+        <a href="/" class="text-xl font-bold text-brand-700">
+          eBikeLocal
+        </a>
+
+        <!-- Desktop nav -->
+        <ul class="hidden items-center gap-6 text-sm font-medium md:flex">
+          <li><a href="/shops/" class="hover:text-brand-600 transition-colors">Shops</a></li>
+          <li><a href="/brands/" class="hover:text-brand-600 transition-colors">Brands</a></li>
+          <li><a href="/bikes/" class="hover:text-brand-600 transition-colors">Bikes</a></li>
+          <li><a href="/guides/" class="hover:text-brand-600 transition-colors">Guides</a></li>
+        </ul>
+
+        <!-- Mobile menu button -->
+        <button
+          id="mobile-menu-btn"
+          class="md:hidden p-2 -mr-2"
+          aria-label="Open menu"
+          aria-expanded="false"
+        >
+          <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+      </nav>
+
+      <!-- Mobile nav -->
+      <div id="mobile-menu" class="hidden border-t border-surface-200 md:hidden">
+        <ul class="flex flex-col gap-1 px-(--spacing-page) py-3 text-sm font-medium">
+          <li><a href="/shops/" class="block py-2 hover:text-brand-600">Shops</a></li>
+          <li><a href="/brands/" class="block py-2 hover:text-brand-600">Brands</a></li>
+          <li><a href="/bikes/" class="block py-2 hover:text-brand-600">Bikes</a></li>
+          <li><a href="/guides/" class="block py-2 hover:text-brand-600">Guides</a></li>
+        </ul>
+      </div>
+    </header>
+
+    <main>
+      <slot />
+    </main>
+
+    <footer class="mt-20 border-t border-surface-200 bg-surface-50">
+      <div class="mx-auto max-w-7xl px-(--spacing-page) py-12">
+        <div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+          <div>
+            <h3 class="font-bold text-surface-900">eBikeLocal</h3>
+            <p class="mt-2 text-sm text-surface-700">Find eBike shops, brands, and bikes near you.</p>
+          </div>
+          <div>
+            <h4 class="text-sm font-semibold text-surface-900">Directory</h4>
+            <ul class="mt-2 space-y-1 text-sm text-surface-700">
+              <li><a href="/shops/" class="hover:text-brand-600">Shop Directory</a></li>
+              <li><a href="/brands/" class="hover:text-brand-600">Brands</a></li>
+              <li><a href="/bikes/" class="hover:text-brand-600">Bikes</a></li>
+              <li><a href="/categories/" class="hover:text-brand-600">Categories</a></li>
+            </ul>
+          </div>
+          <div>
+            <h4 class="text-sm font-semibold text-surface-900">Resources</h4>
+            <ul class="mt-2 space-y-1 text-sm text-surface-700">
+              <li><a href="/guides/" class="hover:text-brand-600">Guides</a></li>
+              <li><a href="/best/" class="hover:text-brand-600">Buying Guides</a></li>
+              <li><a href="/guides/ebike-laws-by-state/" class="hover:text-brand-600">eBike Laws by State</a></li>
+            </ul>
+          </div>
+          <div>
+            <h4 class="text-sm font-semibold text-surface-900">Legal</h4>
+            <ul class="mt-2 space-y-1 text-sm text-surface-700">
+              <li><a href="/privacy/" class="hover:text-brand-600">Privacy Policy</a></li>
+              <li><a href="/terms/" class="hover:text-brand-600">Terms of Service</a></li>
+              <li><a href="/disclosure/" class="hover:text-brand-600">Affiliate Disclosure</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="mt-10 border-t border-surface-200 pt-6 text-center text-xs text-surface-700">
+          &copy; {new Date().getFullYear()} eBikeLocal. All rights reserved.
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      const btn = document.getElementById('mobile-menu-btn');
+      const menu = document.getElementById('mobile-menu');
+      btn?.addEventListener('click', () => {
+        const expanded = btn.getAttribute('aria-expanded') === 'true';
+        btn.setAttribute('aria-expanded', String(!expanded));
+        menu?.classList.toggle('hidden');
+      });
+    </script>
+  </body>
+</html>
