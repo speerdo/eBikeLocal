@@ -22,7 +22,7 @@
   - [x] `scripts/` — scraping and data pipeline scripts
 - [x] Configure `.env` file with all required environment variables (see SPEC.md Section 2)
 - [x] Add `.env` to `.gitignore`
-- [ ] Set up Pagefind for client-side search
+- [ ] Set up Pagefind for client-side search (deferred — needs real content indexed)
 
 ### Neon DB Setup
 
@@ -99,7 +99,7 @@
 - [x] `MetaTags.astro` — OpenGraph + Twitter Card meta tags
 - [x] Dynamic `<title>` and `<meta description>` generation per page type
 - [x] Canonical URL configuration
-- [ ] XML sitemap generation (split by page type for large sitemaps)
+- [x] XML sitemap generation (split by page type for large sitemaps)
 
 ---
 
@@ -109,11 +109,11 @@
 
 - [x] Hero section with search bar (city/zip search)
 - [x] "How it works" brief explainer section
-- [ ] Featured/popular cities grid
-- [ ] Featured brands row
-- [ ] Latest guides/articles section
-- [ ] Stats bar (total shops, brands, cities covered)
-- [ ] SSR rendering for personalized content
+- [x] Featured/popular cities grid
+- [x] Featured brands row
+- [x] Latest guides/articles section
+- [x] Stats bar (total shops, brands, cities covered)
+- [x] SSR rendering for personalized content
 
 ### Shop Directory Pages
 
@@ -130,7 +130,7 @@
   - [x] City map with all shop pins (Leaflet)
   - [x] Filterable shop list (by brand, service, rating)
   - [x] "Brands available in [City]" section
-  - [ ] State law summary callout with link
+  - [x] State law summary callout with link
   - [x] Nearby cities section
   - [x] Shop count and services summary
 - [x] `/shops/[state-slug]/[city-slug]/[shop-slug]/` — shop listing page (SSG)
@@ -189,13 +189,13 @@
 
 - [x] `/guides/` — content hub (SSG)
 - [ ] `/guides/[topic-slug]/` — individual guide (SSG from content collection)
-- [ ] `/guides/ebike-laws/[state-slug]/` — state law page (SSG via `getStaticPaths`)
-  - [ ] State-specific eBike class rules
-  - [ ] Helmet requirements, age limits, registration
-  - [ ] Trail/path access rules
-  - [ ] Rebate programs
-  - [ ] `FAQPage` JSON-LD
-- [ ] `/best/` — buying guide hub (SSG)
+- [x] `/guides/ebike-laws/[state-slug]/` — state law page (SSG via `getStaticPaths`)
+  - [x] State-specific eBike class rules
+  - [x] Helmet requirements, age limits, registration
+  - [x] Trail/path access rules
+  - [x] Rebate programs
+  - [x] `FAQPage` JSON-LD
+- [x] `/best/` — buying guide hub (SSG)
 - [ ] `/best/[topic-slug]/` — buying guide page (SSG)
   - [ ] Product comparison table
   - [ ] Individual product cards with affiliate CTAs
@@ -245,9 +245,9 @@
 - [x] **Trek** scraper (`trekbikes.com/us/en_US/store-finder/`)
   - [x] Intercept Vue.js SPA internal REST API calls
   - [x] Capture JSON dealer data from API responses
-- [ ] **Specialized** scraper (`specialized.com/us/en/store-finder`)
-  - [ ] Playwright with Amplience CMS content
-  - [ ] Extract store features filter data
+- [x] **Specialized** scraper (`specialized.com/us/en/store-finder`)
+  - [x] Playwright with Amplience CMS content
+  - [x] Extract store features filter data
 - [x] **Giant** scraper (`giant-bicycles.com/us/stores`)
   - [x] Extract capability badges (E-Bike Service, Fitting, Rentals, etc.)
   - [x] Capture all ~1,224 US locations
@@ -337,8 +337,8 @@
 
 ### Geographic Data Population
 
-- [ ] Populate `states` table (50 states + DC)
-- [ ] Research and populate state eBike law fields for all states
+- [x] Populate `states` table (50 states + DC)
+- [x] Research and populate state eBike law fields for all states
 - [ ] Populate `cities` table from shop data (unique city/state combinations)
 - [ ] Calculate and store `shop_count` for each city and state
 - [ ] Set `has_dedicated_page = true` for cities with 2+ shops
@@ -346,11 +346,11 @@
 
 ### Brand & Product Data Population
 
-- [ ] Seed `brands` table with 15 initial brands and all metadata
-  - [ ] Name, slug, logo, website, description
-  - [ ] Affiliate program details (platform, commission rate, cookie duration)
-  - [ ] Dealer locator URL, estimated US dealers
-- [ ] Seed `categories` table with 10 primary eBike categories
+- [x] Seed `brands` table with 15 initial brands and all metadata
+  - [x] Name, slug, logo, website, description
+  - [x] Affiliate program details (platform, commission rate, cookie duration)
+  - [x] Dealer locator URL, estimated US dealers
+- [x] Seed `categories` table with 10 primary eBike categories
 - [ ] Begin populating `bikes` table with top models per brand (MVP: 5–10 per brand)
   - [ ] Model name, slug, MSRP, category, class
   - [ ] Motor specs, battery specs, range, weight

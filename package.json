@@ -18,8 +18,13 @@
     "scrape:giant": "node scripts/scrapers/giant.mjs",
     "scrape:locally": "node scripts/scrapers/locally.mjs",
     "scrape:tern": "node scripts/scrapers/tern.mjs",
+    "scrape:specialized": "node scripts/scrapers/specialized.mjs",
     "db:schema": "node scripts/run-schema.mjs",
-    "db:sql": "node scripts/run-sql.mjs"
+    "db:sql": "node scripts/run-sql.mjs",
+    "seed:states": "node scripts/seed-states.mjs",
+    "seed:categories": "node scripts/seed-categories.mjs",
+    "seed:brands": "node scripts/seed-brands.mjs",
+    "seed": "npm run seed:states && npm run seed:categories && npm run seed:brands"
   },
   "dependencies": {
     "@astrojs/vercel": "^10.0.4",

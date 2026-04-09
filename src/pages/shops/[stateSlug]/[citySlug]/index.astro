@@ -135,6 +135,24 @@ const mapPins = shops
       </div>
     </section>
 
+    <!-- State law callout -->
+    {(() => {
+      // We need state law data — fetch inline
+      return null; // Populated via state prop passed from getStaticPaths
+    })()}
+    <section class="mt-10 rounded-lg border border-surface-200 bg-surface-50 p-5">
+      <h2 class="text-sm font-bold uppercase tracking-wide text-surface-700">eBike Laws in {city.state_name}</h2>
+      <p class="mt-1 text-surface-900">
+        Check the rules for riding eBikes in {city.state_name} — class restrictions, helmet requirements, and trail access.
+      </p>
+      <a
+        href={`/guides/ebike-laws/${Astro.params.stateSlug}/`}
+        class="mt-2 inline-block text-sm font-medium text-brand-600 hover:underline"
+      >
+        Read {city.state_name} eBike Law Guide →
+      </a>
+    </section>
+
     <!-- Nearby cities -->
     {nearbyCities.length > 0 && (
       <section class="mt-12">

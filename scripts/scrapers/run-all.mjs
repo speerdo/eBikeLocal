@@ -9,15 +9,16 @@
 import { log, sleep } from './utils.mjs';
 
 const SCRAPERS = {
-  aventon:  () => import('./aventon.mjs').then(m => m.scrapeAventon?.() ?? 0),
-  lectric:  () => import('./lectric.mjs').then(m => m.scrapeLectric?.() ?? 0),
-  velotric: () => import('./velotric.mjs').then(m => m.scrapeVelotric?.() ?? 0),
-  pedego:   () => import('./pedego.mjs').then(m => m.scrapePedego?.() ?? 0),
-  rad:      () => import('./rad.mjs').then(m => m.scrapeRad?.() ?? 0),
-  trek:     () => import('./trek.mjs').then(m => m.scrapeTrek?.() ?? 0),
-  giant:    () => import('./giant.mjs').then(m => m.scrapeGiant?.() ?? 0),
-  locally:  () => import('./locally.mjs').then(m => m.scrapeLocally?.() ?? 0),
-  tern:     () => import('./tern.mjs').then(m => m.scrapeTern?.() ?? 0),
+  aventon:     () => import('./aventon.mjs').then(m => m.scrapeAventon?.() ?? 0),
+  lectric:     () => import('./lectric.mjs').then(m => m.scrapeLectric?.() ?? 0),
+  velotric:    () => import('./velotric.mjs').then(m => m.scrapeVelotric?.() ?? 0),
+  pedego:      () => import('./pedego.mjs').then(m => m.scrapePedego?.() ?? 0),
+  rad:         () => import('./rad.mjs').then(m => m.scrapeRad?.() ?? 0),
+  trek:        () => import('./trek.mjs').then(m => m.scrapeTrek?.() ?? 0),
+  specialized: () => import('./specialized.mjs').then(m => m.scrapeSpecialized?.() ?? 0),
+  giant:       () => import('./giant.mjs').then(m => m.scrapeGiant?.() ?? 0),
+  locally:     () => import('./locally.mjs').then(m => m.scrapeLocally?.() ?? 0),
+  tern:        () => import('./tern.mjs').then(m => m.scrapeTern?.() ?? 0),
 };
 
 const requested = process.argv.slice(2);
