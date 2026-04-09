@@ -213,59 +213,59 @@
 
 ### Scraper Infrastructure
 
-- [ ] Set up `scripts/` directory with shared utilities
-- [ ] Create scraper base class/module with rate limiting (1 req/sec per domain)
-- [ ] Create raw data staging table in Neon for unprocessed scraper output
-- [ ] Set up error logging and retry logic for failed scrapes
-- [ ] Respect `robots.txt` — build checker utility
+- [x] Set up `scripts/` directory with shared utilities
+- [x] Create scraper base class/module with rate limiting (1 req/sec per domain)
+- [x] Create raw data staging table in Neon for unprocessed scraper output
+- [x] Set up error logging and retry logic for failed scrapes
+- [x] Respect `robots.txt` — build checker utility
 
 ### Tier 1: Shopify-Based Brand Scrapers (Playwright)
 
-- [ ] **Aventon** scraper (`aventon.com/pages/electric-bike-shop-dealer-locator`)
-  - [ ] Launch Playwright, intercept XHR for JSON dealer data
-  - [ ] Extract: name, address, city, state, zip, coordinates, test ride badge
-  - [ ] Store raw results in staging table
-- [ ] **Lectric eBikes** scraper (Stockist API)
-  - [ ] Query `app.stockist.co/api/v1/{tag}/locations/search` with lat/lng grid
-  - [ ] Extract: name, address, phone, email, website, category tags
-  - [ ] Store raw results
-- [ ] **Rad Power Bikes** scraper (`radpowerbikes.com/pages/locations`)
-  - [ ] Verify site is still operational (post Life EV acquisition)
-  - [ ] Extract RadRetail stores + service partner locations
-  - [ ] Flag as uncertain source
-- [ ] **Velotric** scraper (`velotricbike.com/pages/find-a-dealer`)
-  - [ ] Extract dealer list + Showcase Store designations
-  - [ ] Note model-specific availability if present
-- [ ] **Pedego** scraper (`dealers.pedegoelectricbikes.com`)
-  - [ ] Crawl franchise store sitemap
-  - [ ] Extract rich data: products, rentals, local content
+- [x] **Aventon** scraper (`aventon.com/pages/electric-bike-shop-dealer-locator`)
+  - [x] Launch Playwright, intercept XHR for JSON dealer data
+  - [x] Extract: name, address, city, state, zip, coordinates, test ride badge
+  - [x] Store raw results in staging table
+- [x] **Lectric eBikes** scraper (Stockist API)
+  - [x] Query `app.stockist.co/api/v1/{tag}/locations/search` with lat/lng grid
+  - [x] Extract: name, address, phone, email, website, category tags
+  - [x] Store raw results
+- [x] **Rad Power Bikes** scraper (`radpowerbikes.com/pages/locations`)
+  - [x] Verify site is still operational (post Life EV acquisition)
+  - [x] Extract RadRetail stores + service partner locations
+  - [x] Flag as uncertain source
+- [x] **Velotric** scraper (`velotricbike.com/pages/find-a-dealer`)
+  - [x] Extract dealer list + Showcase Store designations
+  - [x] Note model-specific availability if present
+- [x] **Pedego** scraper (`dealers.pedegoelectricbikes.com`)
+  - [x] Crawl franchise store sitemap
+  - [x] Extract rich data: products, rentals, local content
 
 ### Tier 2: Enterprise Platform Scrapers (Playwright)
 
-- [ ] **Trek** scraper (`trekbikes.com/us/en_US/store-finder/`)
-  - [ ] Intercept Vue.js SPA internal REST API calls
-  - [ ] Capture JSON dealer data from API responses
+- [x] **Trek** scraper (`trekbikes.com/us/en_US/store-finder/`)
+  - [x] Intercept Vue.js SPA internal REST API calls
+  - [x] Capture JSON dealer data from API responses
 - [ ] **Specialized** scraper (`specialized.com/us/en/store-finder`)
   - [ ] Playwright with Amplience CMS content
   - [ ] Extract store features filter data
-- [ ] **Giant** scraper (`giant-bicycles.com/us/stores`)
-  - [ ] Extract capability badges (E-Bike Service, Fitting, Rentals, etc.)
-  - [ ] Capture all ~1,224 US locations
+- [x] **Giant** scraper (`giant-bicycles.com/us/stores`)
+  - [x] Extract capability badges (E-Bike Service, Fitting, Rentals, etc.)
+  - [x] Capture all ~1,224 US locations
 
 ### Tier 3: Third-Party Platform Scrapers (API/HTTP)
 
-- [ ] **Cannondale** via Locally.com API
-  - [ ] Query `api.locally.com/stores/search` with brand filter
-  - [ ] Extract: store info + real-time inventory/pricing data
-- [ ] **Gazelle** via Locally.com API + Magento fallback
+- [x] **Cannondale** via Locally.com API
+  - [x] Query `api.locally.com/stores/search` with brand filter
+  - [x] Extract: store info + real-time inventory/pricing data
+- [x] **Gazelle** via Locally.com API + Magento fallback
 - [ ] **BULLS Bikes** via Beeline Connect
   - [ ] Identify Beeline API endpoints from network requests
   - [ ] Extract dealer data from Beeline's Dynamic Dealer Locator
 - [ ] **Priority Bicycles** via Beeline Connect (same pattern as BULLS)
-- [ ] **Tern** scraper (`ternbicycles.com/us/dealers/map`)
-  - [ ] Cheerio (server-rendered Drupal)
-  - [ ] Extract dealer pages at `/us/dealers/{id}`
-  - [ ] Capture "Preferred Dealer" badges
+- [x] **Tern** scraper (`ternbicycles.com/us/dealers/map`)
+  - [x] Cheerio (server-rendered Drupal)
+  - [x] Extract dealer pages at `/us/dealers/{id}`
+  - [x] Capture "Preferred Dealer" badges
 - [ ] **Riese & Muller** scraper (`r-m.de/en-us/dealer-search/`)
   - [ ] Intercept Google Maps API marker data
   - [ ] Capture dealer tier: Regular, Experience Store, Cargo Hub
