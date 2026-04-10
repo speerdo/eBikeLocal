@@ -5,6 +5,7 @@
  * Method: Direct HTTP API — most structured data source
  */
 import { stageRecord, rateLimit, log, sql, sleep } from './utils.mjs';
+import { fileURLToPath } from 'url';
 
 const SOURCE = 'locally';
 
@@ -81,7 +82,6 @@ export async function scrapeLocally() {
   }
 
   log(SOURCE, `Total staged: ${totalSaved}`);
-  await sql.end();
   return totalSaved;
 }
 
@@ -109,10 +109,14 @@ function normalizeLocally(raw, brand) {
   };
 }
 
-scrapeLocally().then(n => {
-  console.log(`\nLocally scrape complete: ${n} records staged.`);
-  process.exit(0);
-}).catch(err => {
-  console.error('Locally scrape failed:', err);
-  process.exit(1);
-});
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
+  scrapeLocally().then(n => {
+    console.log(`\nLocally scrape complete: ${n} records staged.`);
+    sql.end();
+    process.exit(0);
+  }).catch(err => {
+    console.error('Locally scrape failed:', err);
+    sql.end();
+    process.exit(1);
+  });
+}

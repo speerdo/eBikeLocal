@@ -7,6 +7,7 @@
  */
 import { load } from 'cheerio';
 import { stageRecord, rateLimit, log, sql, sleep, toStateCode } from './utils.mjs';
+import { fileURLToPath } from 'url';
 
 const SOURCE = 'tern';
 const BASE = 'https://www.ternbicycles.com';
@@ -46,7 +47,6 @@ export async function scrapeTern() {
   }
 
   log(SOURCE, `Staged ${totalSaved} Tern dealers.`);
-  await sql.end();
   return totalSaved;
 }
 
@@ -139,10 +139,14 @@ function parseTernPage(html, url) {
   };
 }
 
-scrapeTern().then(n => {
-  console.log(`\nTern scrape complete: ${n} records staged.`);
-  process.exit(0);
-}).catch(err => {
-  console.error('Tern scrape failed:', err);
-  process.exit(1);
-});
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
+  scrapeTern().then(n => {
+    console.log(`\nTern scrape complete: ${n} records staged.`);
+    sql.end();
+    process.exit(0);
+  }).catch(err => {
+    console.error('Tern scrape failed:', err);
+    sql.end();
+    process.exit(1);
+  });
+}

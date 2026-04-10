@@ -1,139 +1,213 @@
 /**
  * Specialized Store Finder Scraper
- * URL: specialized.com/us/en/store-finder
- * Method: Playwright — intercept Amplience CMS API calls
+ * Method: Yext GraphQL API (direct HTTP — no browser needed)
+ * Endpoint: www.specialized.com/api/graphql
+ * Strategy: Grid of US metros with radius=150 miles, paginate with offset
  * Est. dealers: 1,000+
  */
-import { launchBrowser, newPage, stageRecord, rateLimit, log, sql, sleep } from './utils.mjs';
+import { stageRecord, rateLimit, log, sql } from './utils.mjs';
+import { fileURLToPath } from 'url';
 
 const SOURCE = 'specialized';
-const LOCATOR_URL = 'https://www.specialized.com/us/en/store-finder';
+const GRAPHQL_URL = 'https://www.specialized.com/api/graphql';
+
+const GQL_QUERY = `
+  query getYextGeoSearch(
+    $location: String!
+    $limit: String
+    $radius: String
+    $fieldList: String
+    $filter: [String]
+    $offset: String
+  ) {
+    getYextGeoSearch(
+      location: $location
+      limit: $limit
+      fieldList: $fieldList
+      filter: $filter
+      radius: $radius
+      offset: $offset
+    ) {
+      response {
+        count
+        stores {
+          name
+          address { line1 city region postalCode countryCode }
+          mainPhone
+          meta { id }
+          c_IsActive
+          featuresArray { featureDisplayTitle isAvailable }
+        }
+      }
+    }
+  }
+`;
+
+// US coverage grid with radius=150 miles
+const US_GRID = [
+  { lat: 47.61, lng: -122.33 }, // Seattle
+  { lat: 45.52, lng: -122.68 }, // Portland
+  { lat: 37.77, lng: -122.42 }, // San Francisco
+  { lat: 34.05, lng: -118.24 }, // Los Angeles
+  { lat: 32.72, lng: -117.16 }, // San Diego
+  { lat: 33.45, lng: -112.07 }, // Phoenix
+  { lat: 36.17, lng: -115.14 }, // Las Vegas
+  { lat: 39.74, lng: -104.98 }, // Denver
+  { lat: 35.08, lng: -106.65 }, // Albuquerque
+  { lat: 41.85, lng: -87.65 }, // Chicago
+  { lat: 44.98, lng: -93.27 }, // Minneapolis
+  { lat: 39.10, lng: -94.58 }, // Kansas City
+  { lat: 38.63, lng: -90.20 }, // St. Louis
+  { lat: 41.50, lng: -81.69 }, // Cleveland
+  { lat: 42.33, lng: -83.05 }, // Detroit
+  { lat: 39.10, lng: -84.51 }, // Cincinnati
+  { lat: 33.75, lng: -84.39 }, // Atlanta
+  { lat: 25.77, lng: -80.19 }, // Miami
+  { lat: 27.95, lng: -82.46 }, // Tampa
+  { lat: 29.76, lng: -95.37 }, // Houston
+  { lat: 30.27, lng: -97.74 }, // Austin
+  { lat: 32.79, lng: -96.80 }, // Dallas
+  { lat: 35.47, lng: -97.52 }, // Oklahoma City
+  { lat: 36.17, lng: -86.78 }, // Nashville
+  { lat: 35.15, lng: -90.05 }, // Memphis
+  { lat: 35.23, lng: -80.84 }, // Charlotte
+  { lat: 40.71, lng: -74.01 }, // New York
+  { lat: 42.36, lng: -71.06 }, // Boston
+  { lat: 39.95, lng: -75.17 }, // Philadelphia
+  { lat: 38.91, lng: -77.04 }, // Washington DC
+  { lat: 39.29, lng: -76.61 }, // Baltimore
+  { lat: 43.62, lng: -116.20 }, // Boise
+  { lat: 39.53, lng: -119.81 }, // Reno
+  { lat: 43.05, lng: -76.15 }, // Syracuse
+  { lat: 30.33, lng: -81.66 }, // Jacksonville
+  { lat: 29.95, lng: -90.07 }, // New Orleans
+  { lat: 43.00, lng: -88.00 }, // Milwaukee
+  { lat: 39.96, lng: -82.99 }, // Columbus
+  { lat: 36.17, lng: -115.14 }, // Las Vegas (extra)
+  { lat: 46.60, lng: -112.03 }, // Helena
+  { lat: 44.06, lng: -121.31 }, // Bend OR
+  { lat: 43.66, lng: -70.26 }, // Portland ME
+  { lat: 42.65, lng: -73.75 }, // Albany
+];
+
+async function searchStores(location, offset = 0, radius = '150') {
+  const res = await fetch(GRAPHQL_URL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-apollo-operation-name': 'getYextGeoSearch',
+      'User-Agent': 'eBikeLocalBot/1.0 (+https://ebikelocal.com/bot)',
+    },
+    body: JSON.stringify({
+      operationName: 'getYextGeoSearch',
+      variables: {
+        location,
+        limit: '50',
+        radius,
+        offset: String(offset),
+      },
+      query: GQL_QUERY,
+    }),
+    signal: AbortSignal.timeout(20000),
+  });
+
+  if (!res.ok) return null;
+  const data = await res.json();
+  return data?.data?.getYextGeoSearch?.response || null;
+}
 
 export async function scrapeSpecialized() {
-  log(SOURCE, 'Starting Specialized store finder scrape...');
-  const browser = await launchBrowser();
-  const stores = [];
+  log(SOURCE, 'Starting Specialized store scrape via Yext GraphQL API...');
+
   const seenIds = new Set();
   let totalSaved = 0;
 
-  try {
-    const page = await newPage(browser);
+  for (const { lat, lng } of US_GRID) {
+    await rateLimit('www.specialized.com', 1000);
 
-    // Intercept Amplience CMS and any store API responses
-    page.on('response', async (response) => {
-      const url = response.url();
-      const ct = response.headers()['content-type'] || '';
-      if (!ct.includes('json')) return;
+    const location = `${lat},${lng}`;
+    let offset = 0;
 
-      const isRelevant =
-        url.includes('specialized') ||
-        url.includes('amplience') ||
-        url.includes('store') ||
-        url.includes('dealer') ||
-        url.includes('location');
+    try {
+      let response = await searchStores(location, offset);
+      if (!response) continue;
 
-      if (!isRelevant) return;
+      const total = response.count || 0;
 
-      try {
-        const data = await response.json();
-
-        // Amplience CMS often wraps in a content/results structure
-        const records =
-          Array.isArray(data) ? data :
-          data.stores || data.dealers || data.locations ||
-          data.content?.stores || data.results || data.data || [];
-
-        if (Array.isArray(records) && records.length > 0) {
-          log(SOURCE, `Captured ${records.length} from ${url.slice(0, 80)}`);
-          stores.push(...records);
+      while (offset < total) {
+        if (offset > 0) {
+          await rateLimit('www.specialized.com', 800);
+          response = await searchStores(location, offset);
+          if (!response) break;
         }
-      } catch { /* skip */ }
-    });
 
-    await rateLimit('specialized.com', 2000);
-    await page.goto(LOCATOR_URL, { waitUntil: 'networkidle', timeout: 30000 });
-    await sleep(5000);
+        const stores = response.stores || [];
+        for (const store of stores) {
+          const id = store.meta?.id;
+          if (!id || seenIds.has(id)) continue;
+          seenIds.add(id);
 
-    // Try store feature filters to trigger additional API calls
-    const filterBtns = page.locator('[data-filter], [class*="filter"] button, button:has-text("E-Bike")');
-    const filterCount = await filterBtns.count();
-    for (let i = 0; i < Math.min(filterCount, 5); i++) {
-      try {
-        await filterBtns.nth(i).click();
-        await sleep(2000);
-      } catch { /* skip */ }
-    }
+          // Skip inactive stores
+          if (store.c_IsActive === false) continue;
+          // US only
+          if (store.address?.countryCode && store.address.countryCode !== 'US') continue;
 
-    // Search major metros
-    const metros = ['10001', '90210', '60601', '77001', '85001', '98101', '80201', '30301', '33101', '75201'];
-    const input = page.locator('input[type="text"], input[type="search"], input[placeholder*="zip"], input[placeholder*="city"]').first();
+          const record = normalizeSpecialized(store);
+          if (!record.name || !record.stateCode) continue;
 
-    for (const zip of metros) {
-      await rateLimit('specialized.com', 2000);
-      if (await input.isVisible({ timeout: 2000 }).catch(() => false)) {
-        await input.click({ clickCount: 3 });
-        await input.fill(zip);
-        await input.press('Enter');
-        await sleep(3000);
+          const saved = await stageRecord(record);
+          if (saved) totalSaved++;
+        }
+
+        offset += stores.length || 50;
+        if (stores.length < 50) break;
       }
+    } catch (err) {
+      log(SOURCE, `Error at (${lat},${lng}): ${err.message}`);
     }
-
-    // Deduplicate and stage
-    for (const store of stores) {
-      const id = String(store.id || store.storeId || store.externalId || `${store.name}-${store.city}`);
-      if (seenIds.has(id)) continue;
-      seenIds.add(id);
-
-      const record = normalizeSpecialized(store);
-      if (!record.name || !record.stateCode) continue;
-
-      const saved = await stageRecord(record);
-      if (saved) totalSaved++;
-    }
-
-    log(SOURCE, `Staged ${totalSaved} Specialized stores.`);
-  } finally {
-    await browser.close();
-    await sql.end();
   }
 
+  log(SOURCE, `Staged ${totalSaved} Specialized stores (${seenIds.size} unique found).`);
   return totalSaved;
 }
 
 function normalizeSpecialized(raw) {
-  const state = raw.state || raw.stateProvince || raw.addressRegion || raw.region || '';
-  const stateCode = state.length === 2 ? state.toUpperCase() : null;
+  const addr = raw.address || {};
+  const state = addr.region || '';
 
-  const features = raw.features || raw.storeFeatures || raw.capabilities || [];
-  const services = [];
-  if (features.some((f: string) => /ebike|electric/i.test(String(f)))) services.push('sales');
-  if (features.some((f: string) => /service|repair/i.test(String(f)))) services.push('repair');
-  if (features.some((f: string) => /rental|rent/i.test(String(f)))) services.push('rental');
+  // Features
+  const features = raw.featuresArray || [];
+  const activeFeatures = features.filter(f => f.isAvailable).map(f => f.featureDisplayTitle || '');
+  const tier = activeFeatures.some(f => /premier|flagship/i.test(f)) ? 'premier' : 'authorized';
 
   return {
-    source: 'specialized',
-    sourceId: raw.id ? String(raw.id) : raw.externalId ? String(raw.externalId) : null,
+    source: SOURCE,
+    sourceId: raw.meta?.id || null,
     rawData: raw,
-    name: raw.name || raw.storeName || '',
-    address: raw.address || raw.addressLine1 || raw.street || '',
-    city: raw.city || raw.addressCity || '',
+    name: raw.name || '',
+    address: addr.line1 || '',
+    city: addr.city || '',
     state,
-    stateCode,
-    zip: raw.zip || raw.postalCode || raw.zipCode || '',
-    latitude: raw.lat ? parseFloat(raw.lat) : raw.latitude ? parseFloat(raw.latitude) : null,
-    longitude: raw.lng ? parseFloat(raw.lng) : raw.longitude ? parseFloat(raw.longitude) : null,
-    phone: raw.phone || raw.telephone || '',
-    website: raw.website || raw.url || '',
-    email: raw.email || null,
+    stateCode: state.length === 2 ? state.toUpperCase() : null,
+    zip: addr.postalCode || '',
+    latitude: null,
+    longitude: null,
+    phone: raw.mainPhone || '',
+    website: '',
+    email: null,
     brandName: 'Specialized',
-    dealerTier: raw.type || raw.tier || null,
+    dealerTier: tier,
   };
 }
 
-scrapeSpecialized().then(n => {
-  console.log(`\nSpecialized scrape complete: ${n} records staged.`);
-  process.exit(0);
-}).catch(err => {
-  console.error('Specialized scrape failed:', err);
-  process.exit(1);
-});
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
+  scrapeSpecialized().then(n => {
+    console.log(`\nSpecialized scrape complete: ${n} records staged.`);
+    sql.end();
+    process.exit(0);
+  }).catch(err => {
+    console.error('Specialized scrape failed:', err);
+    sql.end();
+    process.exit(1);
+  });
+}

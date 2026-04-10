@@ -1,125 +1,133 @@
 /**
  * Giant Bicycles Store Finder Scraper
- * URL: giant-bicycles.com/us/stores
- * Method: Playwright — intercept API calls, capture capability badges
- * Est. dealers: ~1,224 US locations
+ * Method: Direct HTTP POST to /us/stores/dealers API
+ * No browser needed — just Content-Type + Referer headers
+ * Strategy: Two regional queries (East + West US) cover all ~1,224 stores
  */
-import { launchBrowser, newPage, stageRecord, rateLimit, log, sql, sleep } from './utils.mjs';
+import { stageRecord, rateLimit, log, sql } from './utils.mjs';
+import { fileURLToPath } from 'url';
 
 const SOURCE = 'giant';
-const LOCATOR_URL = 'https://www.giant-bicycles.com/us/stores';
+const API_URL = 'https://www.giant-bicycles.com/us/stores/dealers';
+
+const REGIONS = [
+  {
+    name: 'Eastern US',
+    lat: 40.71, lng: -74.01, keyword: 'New York',
+    NE_lat: 47, NE_lng: -65, SW_lat: 25, SW_lng: -90,
+  },
+  {
+    name: 'Western US',
+    lat: 39.74, lng: -104.98, keyword: 'Denver',
+    NE_lat: 50, NE_lng: -85, SW_lat: 24, SW_lng: -125,
+  },
+];
+
+async function searchRegion(region) {
+  const body = {
+    latitude: region.lat,
+    longitude: region.lng,
+    keyword: region.keyword,
+    NE_lat: region.NE_lat,
+    NE_lng: region.NE_lng,
+    SW_lat: region.SW_lat,
+    SW_lng: region.SW_lng,
+    campaigncodes: [],
+    onlyGiantStores: false,
+  };
+
+  const res = await fetch(API_URL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json;charset=UTF-8',
+      'Accept': 'application/json, text/plain, */*',
+      'Referer': 'https://www.giant-bicycles.com/us/stores',
+      'request-context': 'appId=cid-v1:bcbdd0de-c1e2-42db-800f-95f4bbafeac3',
+      'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+    },
+    body: JSON.stringify(body),
+    signal: AbortSignal.timeout(30000),
+  });
+
+  if (!res.ok) throw new Error(`API error ${res.status}`);
+  const data = await res.json();
+  return data.dealers || [];
+}
 
 export async function scrapeGiant() {
-  log(SOURCE, 'Starting Giant store finder scrape...');
-  const browser = await launchBrowser();
-  const stores = [];
+  log(SOURCE, 'Starting Giant store scrape via direct HTTP API...');
+
   const seenIds = new Set();
   let totalSaved = 0;
 
-  try {
-    const page = await newPage(browser);
+  for (const region of REGIONS) {
+    await rateLimit('www.giant-bicycles.com', 2000);
+    try {
+      const dealers = await searchRegion(region);
+      log(SOURCE, `${region.name}: ${dealers.length} dealers`);
 
-    page.on('response', async (response) => {
-      const url = response.url();
-      const ct = response.headers()['content-type'] || '';
-      if (!ct.includes('json')) return;
-      if (!url.includes('store') && !url.includes('dealer') && !url.includes('location') && !url.includes('giant')) return;
+      for (const dealer of dealers) {
+        const id = String(dealer.Id);
+        if (seenIds.has(id)) continue;
+        seenIds.add(id);
 
-      try {
-        const data = await response.json();
-        const records = Array.isArray(data) ? data
-          : data.stores || data.dealers || data.locations || data.data?.stores || [];
-        if (records.length) {
-          log(SOURCE, `Captured ${records.length} stores from: ${url}`);
-          stores.push(...records);
-        }
-      } catch { /* skip */ }
-    });
+        const record = normalizeGiant(dealer);
+        if (!record.name || !record.stateCode) continue;
 
-    await rateLimit('giant-bicycles.com', 2000);
-    await page.goto(LOCATOR_URL, { waitUntil: 'networkidle', timeout: 30000 });
-    await sleep(5000);
-
-    // Giant has a country-wide view option — try to load all US stores
-    // Check for "list view" or "show all" button
-    const showAllBtn = page.locator('button:has-text("All"), button:has-text("List"), [data-view="list"]').first();
-    if (await showAllBtn.isVisible({ timeout: 2000 }).catch(() => false)) {
-      await showAllBtn.click();
-      await sleep(3000);
-    }
-
-    // Search major metros
-    const zips = ['10001', '90210', '60601', '77001', '85001', '19101', '98101', '80201', '02101', '30301'];
-    const input = page.locator('input[type="text"], input[type="search"]').first();
-
-    for (const zip of zips) {
-      await rateLimit('giant-bicycles.com', 2000);
-      if (await input.isVisible({ timeout: 2000 }).catch(() => false)) {
-        await input.click({ clickCount: 3 });
-        await input.fill(zip);
-        await input.press('Enter');
-        await sleep(3000);
+        const saved = await stageRecord(record);
+        if (saved) totalSaved++;
       }
+    } catch (err) {
+      log(SOURCE, `Error for ${region.name}: ${err.message}`);
     }
-
-    // Deduplicate and stage
-    for (const store of stores) {
-      const id = String(store.id || store.storeId || `${store.name}-${store.city}`);
-      if (seenIds.has(id)) continue;
-      seenIds.add(id);
-
-      const record = normalizeGiant(store);
-      if (!record.name) continue;
-
-      const saved = await stageRecord(record);
-      if (saved) totalSaved++;
-    }
-
-    log(SOURCE, `Staged ${totalSaved} Giant stores.`);
-  } finally {
-    await browser.close();
-    await sql.end();
   }
 
+  log(SOURCE, `Staged ${totalSaved} Giant stores (${seenIds.size} unique found).`);
   return totalSaved;
 }
 
 function normalizeGiant(raw) {
-  const state = raw.state || raw.stateProvince || raw.region || '';
-  const stateCode = state.length === 2 ? state.toUpperCase() : null;
+  // AddressLocalized: "590 W. 45th Street, New York,  NY  10036"
+  const addrStr = raw.AddressLocalized || '';
+  const addrParts = addrStr.split(',').map(s => s.trim());
 
-  // Giant's capability badges
-  const capabilities = raw.capabilities || raw.features || raw.badges || [];
-  const services = [];
-  if (capabilities.some(c => String(c).toLowerCase().includes('ebike') || String(c).toLowerCase().includes('electric'))) services.push('sales');
-  if (capabilities.some(c => String(c).toLowerCase().includes('service') || String(c).toLowerCase().includes('repair'))) services.push('repair');
-  if (capabilities.some(c => String(c).toLowerCase().includes('rental') || String(c).toLowerCase().includes('rent'))) services.push('rental');
-  if (capabilities.some(c => String(c).toLowerCase().includes('fitting'))) services.push('fitting');
+  const address = addrParts[0] || '';
+  const city = addrParts[1] || '';
+  const stateZip = addrParts[2] || '';
+  const stateMatch = stateZip.match(/([A-Z]{2})\s*(\d{5}(-\d{4})?)?/);
+  const state = stateMatch ? stateMatch[1] : '';
+  const zip = stateMatch ? (stateMatch[2] || '').split('-')[0] : '';
+
+  const isGiantStore = raw.IsGiantStore || false;
 
   return {
-    source: 'giant',
-    sourceId: raw.id ? String(raw.id) : null,
+    source: SOURCE,
+    sourceId: raw.Id ? String(raw.Id) : null,
     rawData: raw,
-    name: raw.name || raw.storeName || '',
-    address: raw.address || raw.address1 || raw.street || '',
-    city: raw.city || '',
+    name: raw.Name || '',
+    address,
+    city,
     state,
-    stateCode,
-    zip: raw.zip || raw.postalCode || '',
-    latitude: raw.lat ? parseFloat(raw.lat) : null,
-    longitude: raw.lng ? parseFloat(raw.lng) : null,
-    phone: raw.phone || raw.telephone || '',
-    website: raw.website || raw.url || '',
-    email: raw.email || null,
+    stateCode: state.length === 2 ? state : null,
+    zip,
+    latitude: raw.Latitude ? parseFloat(raw.Latitude) : null,
+    longitude: raw.Longitude ? parseFloat(raw.Longitude) : null,
+    phone: raw.Phone || '',
+    website: raw.WebAdd || raw.WebSite || '',
+    email: raw.Email || null,
     brandName: 'Giant',
-    dealerTier: raw.tier || raw.type || null,
+    dealerTier: isGiantStore ? 'giant_store' : 'authorized',
   };
 }
 
-scrapeGiant().then(n => {
-  console.log(`\nGiant scrape complete: ${n} records staged.`);
-  process.exit(0);
-}).catch(err => {
-  console.error('Giant scrape failed:', err);
-  process.exit(1);
-});
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
+  scrapeGiant().then(n => {
+    console.log(`\nGiant scrape complete: ${n} records staged.`);
+    sql.end();
+    process.exit(0);
+  }).catch(err => {
+    console.error('Giant scrape failed:', err);
+    sql.end();
+    process.exit(1);
+  });
+}

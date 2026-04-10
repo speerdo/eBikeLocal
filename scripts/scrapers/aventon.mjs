@@ -1,131 +1,124 @@
 /**
  * Aventon Dealer Locator Scraper
- * URL: aventon.com/pages/electric-bike-shop-dealer-locator
- * Method: Playwright — intercept XHR/fetch for JSON dealer data
- * Est. dealers: 1,800+
+ * Method: Beeline Connect API (direct HTTP — no browser needed)
+ * API: cdn.brand-api.beelineconnect.com
+ * API key: public, embedded in dealer locator page
+ * Est. dealers: ~1,200
  */
-import { launchBrowser, newPage, stageRecord, rateLimit, log, sql, sleep } from './utils.mjs';
+import { stageRecord, rateLimit, log, sql } from './utils.mjs';
+import { fileURLToPath } from 'url';
 
 const SOURCE = 'aventon';
-const LOCATOR_URL = 'https://www.aventon.com/pages/electric-bike-shop-dealer-locator';
+const API_KEY = 'PqXmqO494jBCn90Z2J3FLMdkwnW2C0duJL9fa1k0DmA';
+const BASE = 'https://cdn.brand-api.beelineconnect.com/api/v1/locator';
 
 export async function scrapeAventon() {
-  log(SOURCE, 'Starting Aventon dealer scrape...');
-  const browser = await launchBrowser();
+  log(SOURCE, 'Starting Aventon dealer scrape via Beeline Connect API...');
+
+  // Step 1: Get all 1,202 shop points (coords + tags + postal_code)
+  await rateLimit('cdn.brand-api.beelineconnect.com', 500);
+  const pointsRes = await fetch(`${BASE}/points?limit=0&tags=&api_key=${API_KEY}`, {
+    headers: { 'User-Agent': 'eBikeLocalBot/1.0 (+https://ebikelocal.com/bot)' },
+    signal: AbortSignal.timeout(30000),
+  });
+
+  if (!pointsRes.ok) throw new Error(`Points API error: ${pointsRes.status}`);
+  const pointsData = await pointsRes.json();
+  const points = pointsData.locator_shop_points || [];
+  log(SOURCE, `Fetched ${points.length} shop points`);
+
+  // Step 2: Group by postal code, pick one representative lat/lng per zip
+  const zipToPoint = new Map();
+  for (const p of points) {
+    if (!p.postal_code) continue;
+    if (!zipToPoint.has(p.postal_code)) {
+      zipToPoint.set(p.postal_code, p);
+    }
+  }
+  log(SOURCE, `${zipToPoint.size} unique postal codes to query`);
+
+  // Step 3: For each zip, call search endpoint to get full shop details
+  const seenIds = new Set();
   let totalSaved = 0;
 
-  try {
-    const page = await newPage(browser);
-    const dealers = [];
+  for (const [zip, point] of zipToPoint) {
+    await rateLimit('cdn.brand-api.beelineconnect.com', 600);
+    const { latitude, longitude } = point.geolocation;
 
-    // Intercept XHR/fetch responses that contain dealer JSON
-    page.on('response', async (response) => {
-      const url = response.url();
-      // Look for store locator API calls (Shopify store locator apps often use these patterns)
-      if (
-        (url.includes('store-locator') || url.includes('locations') || url.includes('dealers') || url.includes('stockist')) &&
-        response.headers()['content-type']?.includes('json')
-      ) {
-        try {
-          const data = await response.json();
-          const records = Array.isArray(data) ? data : data.locations || data.dealers || data.results || data.stores || [];
-          if (records.length > 0) {
-            log(SOURCE, `Intercepted ${records.length} records from ${url}`);
-            dealers.push(...records);
-          }
-        } catch { /* non-JSON or already consumed */ }
+    try {
+      const res = await fetch(
+        `${BASE}/search?latitude=${latitude}&longitude=${longitude}&radius=10&tags=&api_key=${API_KEY}`,
+        {
+          headers: { 'User-Agent': 'eBikeLocalBot/1.0 (+https://ebikelocal.com/bot)' },
+          signal: AbortSignal.timeout(15000),
+        }
+      );
+
+      if (!res.ok) continue;
+      const data = await res.json();
+      const shops = data.locator_shops || [];
+
+      for (const shop of shops) {
+        const id = String(shop.id || shop.shop_id);
+        if (seenIds.has(id)) continue;
+        seenIds.add(id);
+
+        const record = normalizeBeeline(shop, 'Aventon');
+        if (!record.name || !record.stateCode) continue;
+
+        const saved = await stageRecord(record);
+        if (saved) totalSaved++;
       }
-    });
-
-    await rateLimit('aventon.com');
-    await page.goto(LOCATOR_URL, { waitUntil: 'networkidle', timeout: 30000 });
-
-    // Try triggering a broad search to load all dealers
-    // Some locators require a search term or zip
-    const searchInputs = [
-      'input[placeholder*="zip"]',
-      'input[placeholder*="city"]',
-      'input[placeholder*="location"]',
-      'input[type="search"]',
-      'input[type="text"]',
-    ];
-
-    for (const selector of searchInputs) {
-      const input = page.locator(selector).first();
-      if (await input.isVisible({ timeout: 2000 }).catch(() => false)) {
-        await input.fill('90210'); // Beverly Hills — triggers initial load
-        await input.press('Enter');
-        await sleep(3000);
-        break;
-      }
+    } catch (err) {
+      log(SOURCE, `Error for zip ${zip}: ${err.message}`);
     }
-
-    // Also try clicking a "Search" button
-    const searchBtn = page.locator('button[type="submit"], button:has-text("Search"), button:has-text("Find")').first();
-    if (await searchBtn.isVisible({ timeout: 2000 }).catch(() => false)) {
-      await searchBtn.click();
-      await sleep(3000);
-    }
-
-    await page.waitForTimeout(5000); // Wait for all XHR to complete
-
-    log(SOURCE, `Captured ${dealers.length} raw dealer records via network intercept`);
-
-    // Process and stage records
-    for (const dealer of dealers) {
-      const record = normalizeAventon(dealer);
-      if (!record.name || !record.stateCode) continue;
-      const saved = await stageRecord(record);
-      if (saved) totalSaved++;
-    }
-
-    log(SOURCE, `Staged ${totalSaved} dealers.`);
-  } finally {
-    await browser.close();
-    await sql.end();
   }
 
+  log(SOURCE, `Staged ${totalSaved} Aventon dealers (${seenIds.size} unique found).`);
   return totalSaved;
 }
 
-function normalizeAventon(raw) {
-  // Aventon store locator returns varied structures depending on the app version
-  // Handle common patterns
-  const name = raw.name || raw.store_name || raw.business_name || '';
-  const address = raw.address || raw.address1 || raw.street || '';
-  const city = raw.city || raw.city_locality || '';
-  const state = raw.state || raw.state_province || raw.province || '';
-  const zip = raw.zip || raw.zip_code || raw.postal_code || '';
-  const lat = raw.lat || raw.latitude || raw.coordinates?.lat;
-  const lng = raw.lng || raw.longitude || raw.coordinates?.lng;
-  const phone = raw.phone || raw.telephone || '';
-  const website = raw.url || raw.website || '';
+export function normalizeBeeline(raw, brandName) {
+  const addr = raw.physical_address || raw.shipping_address || {};
+  const geo = raw.geolocation || {};
+  const state = addr.state || '';
+
+  // Dealer tier from tags
+  const tags = raw.tags || [];
+  const tier = tags.includes('signature_dealer') ? 'signature'
+    : tags.includes('elite_dealer') ? 'elite'
+    : tags.includes('stocking_dealer') ? 'stocking'
+    : 'authorized';
 
   return {
-    source: 'aventon',
-    sourceId: raw.id ? String(raw.id) : null,
+    source: SOURCE,
+    sourceId: raw.shop_key || String(raw.id || raw.shop_id || ''),
     rawData: raw,
-    name,
-    address,
-    city,
+    name: raw.name || '',
+    address: addr.address1 || '',
+    city: addr.city || '',
     state,
-    stateCode: state?.length === 2 ? state.toUpperCase() : null,
-    zip,
-    latitude: lat ? parseFloat(lat) : null,
-    longitude: lng ? parseFloat(lng) : null,
-    phone,
-    website,
+    stateCode: state.length === 2 ? state.toUpperCase() : null,
+    zip: addr.zip || addr.postal_code || '',
+    latitude: geo.latitude ? parseFloat(geo.latitude) : null,
+    longitude: geo.longitude ? parseFloat(geo.longitude) : null,
+    phone: raw.phone || '',
+    website: raw.website_url || '',
     email: raw.email || null,
-    brandName: 'Aventon',
-    dealerTier: raw.test_ride ? 'test_ride' : null,
+    brandName,
+    dealerTier: tier,
   };
 }
 
 // Run directly
-scrapeAventon().then(n => {
-  console.log(`\nAventon scrape complete: ${n} records staged.`);
-  process.exit(0);
-}).catch(err => {
-  console.error('Aventon scrape failed:', err);
-  process.exit(1);
-});
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
+  scrapeAventon().then(n => {
+    console.log(`\nAventon scrape complete: ${n} records staged.`);
+    sql.end();
+    process.exit(0);
+  }).catch(err => {
+    console.error('Aventon scrape failed:', err);
+    sql.end();
+    process.exit(1);
+  });
+}

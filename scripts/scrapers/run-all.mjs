@@ -6,7 +6,7 @@
  *   node scripts/scrapers/run-all.mjs              # run all
  *   node scripts/scrapers/run-all.mjs aventon trek  # run specific
  */
-import { log, sleep } from './utils.mjs';
+import { log, sleep, sql } from './utils.mjs';
 
 const SCRAPERS = {
   aventon:     () => import('./aventon.mjs').then(m => m.scrapeAventon?.() ?? 0),
@@ -53,4 +53,5 @@ for (const [name, count] of Object.entries(results)) {
   total += count;
 }
 console.log(`  ${'TOTAL'.padEnd(10)} ${total} records`);
+await sql.end();
 process.exit(0);

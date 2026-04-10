@@ -1,111 +1,95 @@
 /**
- * Rad Power Bikes Scraper
- * URL: radpowerbikes.com/pages/locations
- * Method: Playwright — JS-rendered page
- * NOTE: Rad filed Chapter 11 in Dec 2025 and was acquired by Life EV.
- *       Dealer network status is uncertain — flag records accordingly.
- * Est. dealers: 1,200+ service partners (pre-acquisition)
+ * Rad Power Bikes Dealer Scraper
+ * Method: Beeline Connect API (direct HTTP — no browser needed)
+ * Note: Rad filed Chapter 11 in Dec 2025, acquired by Life EV. Site is operational.
+ * API key: thQlvPlW0vsP254YgdOvCG5A2LXuNTYhD0u2rKdk0wc
+ * Est. dealers: ~1,263
  */
-import { launchBrowser, newPage, stageRecord, rateLimit, log, sql, sleep } from './utils.mjs';
+import { stageRecord, rateLimit, log, sql } from './utils.mjs';
+import { normalizeBeeline } from './aventon.mjs';
+import { fileURLToPath } from 'url';
 
 const SOURCE = 'rad';
-const LOCATOR_URL = 'https://www.radpowerbikes.com/pages/locations';
+const API_KEY = 'thQlvPlW0vsP254YgdOvCG5A2LXuNTYhD0u2rKdk0wc';
+const BASE = 'https://cdn.brand-api.beelineconnect.com/api/v1/locator';
 
 export async function scrapeRad() {
-  log(SOURCE, '⚠️  Rad Power Bikes status uncertain (Chapter 11 / Life EV acquisition). Scraping with caution...');
-  const browser = await launchBrowser();
-  const stores = [];
+  log(SOURCE, 'Starting Rad Power Bikes dealer scrape via Beeline Connect API...');
+  log(SOURCE, 'Note: Rad filed Chapter 11 in Dec 2025, acquired by Life EV. Records flagged.');
+
+  // Step 1: Get all shop points
+  await rateLimit('cdn.brand-api.beelineconnect.com', 500);
+  const pointsRes = await fetch(`${BASE}/points?limit=0&tags=&api_key=${API_KEY}`, {
+    headers: { 'User-Agent': 'eBikeLocalBot/1.0 (+https://ebikelocal.com/bot)' },
+    signal: AbortSignal.timeout(30000),
+  });
+
+  if (!pointsRes.ok) throw new Error(`Points API error: ${pointsRes.status}`);
+  const pointsData = await pointsRes.json();
+  const points = pointsData.locator_shop_points || [];
+  log(SOURCE, `Fetched ${points.length} Rad shop points`);
+
+  // Step 2: Group by postal code
+  const zipToPoint = new Map();
+  for (const p of points) {
+    if (!p.postal_code) continue;
+    if (!zipToPoint.has(p.postal_code)) zipToPoint.set(p.postal_code, p);
+  }
+
+  // Step 3: Search each zip for full shop details
   const seenIds = new Set();
   let totalSaved = 0;
 
-  try {
-    const page = await newPage(browser);
+  for (const [zip, point] of zipToPoint) {
+    await rateLimit('cdn.brand-api.beelineconnect.com', 600);
+    const { latitude, longitude } = point.geolocation;
 
-    page.on('response', async (response) => {
-      const url = response.url();
-      const ct = response.headers()['content-type'] || '';
-      if (!ct.includes('json')) return;
-      if (!url.includes('location') && !url.includes('store') && !url.includes('dealer') && !url.includes('service')) return;
-
-      try {
-        const data = await response.json();
-        const records = Array.isArray(data) ? data
-          : data.locations || data.stores || data.partners || data.results || [];
-        if (records.length) {
-          log(SOURCE, `Captured ${records.length} records from ${url}`);
-          stores.push(...records);
-        }
-      } catch { /* skip */ }
-    });
-
-    await rateLimit('radpowerbikes.com', 2000);
-
-    let pageLoaded = false;
     try {
-      await page.goto(LOCATOR_URL, { waitUntil: 'networkidle', timeout: 30000 });
-      pageLoaded = true;
-    } catch (err) {
-      log(SOURCE, `Page load error (site may be down): ${err.message}`);
-    }
+      const res = await fetch(
+        `${BASE}/search?latitude=${latitude}&longitude=${longitude}&radius=10&tags=&api_key=${API_KEY}`,
+        {
+          headers: { 'User-Agent': 'eBikeLocalBot/1.0 (+https://ebikelocal.com/bot)' },
+          signal: AbortSignal.timeout(15000),
+        }
+      );
 
-    if (pageLoaded) {
-      await sleep(5000);
+      if (!res.ok) continue;
+      const data = await res.json();
+      const shops = data.locator_shops || [];
 
-      // Try to trigger location search
-      const input = page.locator('input[type="text"], input[type="search"]').first();
-      if (await input.isVisible({ timeout: 3000 }).catch(() => false)) {
-        await input.fill('90210');
-        await input.press('Enter');
-        await sleep(3000);
+      for (const shop of shops) {
+        const id = String(shop.id || shop.shop_id);
+        if (seenIds.has(id)) continue;
+        seenIds.add(id);
+
+        const base = normalizeBeeline(shop, 'Rad Power Bikes');
+        const record = {
+          ...base,
+          source: SOURCE,
+          rawData: { ...shop, _note: 'rad_life_ev_acquisition_2026' },
+        };
+        if (!record.name || !record.stateCode) continue;
+
+        const saved = await stageRecord(record);
+        if (saved) totalSaved++;
       }
+    } catch (err) {
+      log(SOURCE, `Error for zip ${zip}: ${err.message}`);
     }
-
-    for (const store of stores) {
-      const id = String(store.id || `${store.name}-${store.city}`);
-      if (seenIds.has(id)) continue;
-      seenIds.add(id);
-
-      const record = normalizeRad(store);
-      if (!record.name) continue;
-      const saved = await stageRecord(record);
-      if (saved) totalSaved++;
-    }
-
-    log(SOURCE, `Staged ${totalSaved} Rad Power Bikes locations (⚠️  verify operational status before publishing).`);
-  } finally {
-    await browser.close();
-    await sql.end();
   }
 
+  log(SOURCE, `Staged ${totalSaved} Rad Power Bikes locations.`);
   return totalSaved;
 }
 
-function normalizeRad(raw) {
-  const state = raw.state || raw.province || '';
-  return {
-    source: 'rad',
-    sourceId: raw.id ? String(raw.id) : null,
-    rawData: { ...raw, _uncertainty: 'rad_acquisition_2026' },
-    name: raw.name || raw.storeName || '',
-    address: raw.address || raw.address1 || '',
-    city: raw.city || '',
-    state,
-    stateCode: state.length === 2 ? state.toUpperCase() : null,
-    zip: raw.zip || raw.postalCode || '',
-    latitude: raw.lat ? parseFloat(raw.lat) : null,
-    longitude: raw.lng ? parseFloat(raw.lng) : null,
-    phone: raw.phone || '',
-    website: raw.website || raw.url || '',
-    email: raw.email || null,
-    brandName: 'Rad Power Bikes',
-    dealerTier: raw.type?.includes('RadRetail') ? 'brand_owned' : 'service_partner',
-  };
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
+  scrapeRad().then(n => {
+    console.log(`\nRad scrape complete: ${n} records staged.`);
+    sql.end();
+    process.exit(0);
+  }).catch(err => {
+    console.error('Rad scrape failed:', err);
+    sql.end();
+    process.exit(1);
+  });
 }
-
-scrapeRad().then(n => {
-  console.log(`\nRad scrape complete: ${n} records staged.`);
-  process.exit(0);
-}).catch(err => {
-  console.error('Rad scrape failed:', err);
-  process.exit(1);
-});

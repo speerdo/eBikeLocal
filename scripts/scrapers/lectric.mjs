@@ -5,6 +5,7 @@
  * Est. dealers: 500+
  */
 import { stageRecord, rateLimit, log, sql, sleep } from './utils.mjs';
+import { fileURLToPath } from 'url';
 
 const SOURCE = 'lectric';
 const BRAND = 'Lectric eBikes';
@@ -111,7 +112,6 @@ export async function scrapeLectric() {
   }
 
   log(SOURCE, `Staged ${totalSaved} Lectric dealers.`);
-  await sql.end();
   return totalSaved;
 }
 
@@ -141,10 +141,14 @@ function normalizeLectric(raw) {
   };
 }
 
-scrapeLectric().then(n => {
-  console.log(`\nLectric scrape complete: ${n} records staged.`);
-  process.exit(0);
-}).catch(err => {
-  console.error('Lectric scrape failed:', err);
-  process.exit(1);
-});
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
+  scrapeLectric().then(n => {
+    console.log(`\nLectric scrape complete: ${n} records staged.`);
+    sql.end();
+    process.exit(0);
+  }).catch(err => {
+    console.error('Lectric scrape failed:', err);
+    sql.end();
+    process.exit(1);
+  });
+}
