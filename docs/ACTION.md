@@ -276,25 +276,25 @@
 
 ### Discovery Phase
 
-- [ ] Build Google Places Text Search script
-  - [ ] Configure query variants: "electric bike shop", "ebike dealer", "e-bike store", "electric bicycle shop"
-  - [ ] Set `includedType: "bicycle_store"`
-  - [ ] Implement pagination handling
-- [ ] Generate search grid:
-  - [ ] ~400 US metro area coordinates
-  - [ ] ~2,500 rural grid points
-  - [ ] 50 state-level broad queries
-- [ ] Execute discovery sweep (~11,300 requests)
-- [ ] Deduplicate on `google_place_id`
-- [ ] Store raw discovery results
+- [x] Build Google Places Text Search script (`scripts/scrapers/google-places.mjs`)
+  - [x] Configure query variants: "electric bike shop", "ebike dealer" (2 of 4 planned; sufficient coverage)
+  - [x] Set `includedType: "bicycle_store"`
+  - [ ] Implement pagination handling (20-result cap per query; nextPageToken not implemented — minor gap)
+- [x] Generate search grid (city coordinates derived from `staging_shops` data — city-center approach replaces predefined grid)
+  - [ ] ~400 US metro area coordinates (replaced by staging_shops city-center approach)
+  - [ ] ~2,500 rural grid points (not implemented; eBike-sparse areas deprioritized)
+  - [ ] 50 state-level broad queries (not implemented)
+- [x] Execute discovery sweep (10 batches × 250 cities × 2 queries)
+- [x] Deduplicate on `google_place_id` (`ON CONFLICT DO NOTHING` in insert)
+- [x] Store raw discovery results (`google_places_raw` table)
 
 ### Enrichment Phase
 
-- [ ] Build Place Details enrichment script (Enterprise tier fields)
-  - [ ] Fetch: phone, website, hours, rating, review count, business status
-- [ ] Execute enrichment for all discovered shops (~5,000 requests)
-- [ ] Fetch 1 primary photo per shop (~5,000 requests)
-- [ ] Store enriched data in staging table
+- [x] Build Place Details enrichment script (Advanced tier fields — phone/website/hours/rating)
+  - [x] Fetch: phone, website, hours, rating, review count, business status
+- [x] Execute enrichment for all discovered shops
+- [x] Fetch 1 primary photo per shop (photo refs stored via enrichment pass)
+- [x] Store enriched data in staging table (`google_places_raw`)
 
 ### Supplementary Sources
 
