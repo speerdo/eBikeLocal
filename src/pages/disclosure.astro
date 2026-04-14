@@ -1,0 +1,82 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+import Breadcrumb from '@components/ui/Breadcrumb.astro';
+import PageHeader from '@components/ui/PageHeader.astro';
+---
+
+<BaseLayout
+  title="Affiliate Disclosure | eBikeLocal"
+  description="eBikeLocal's affiliate disclosure — how we earn commissions, which programs we participate in, and why it doesn't affect our editorial independence."
+>
+  <PageHeader
+    eyebrow="Legal"
+    title="Affiliate Disclosure"
+    subtitle="We believe in full transparency about how this site is monetized."
+    showBar={true}
+  />
+
+  <div class="mx-auto max-w-3xl page-x py-10 md:py-14">
+    <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: 'Affiliate Disclosure' }]} />
+
+    <div class="mt-8 prose prose-slate max-w-none
+      prose-headings:font-display prose-headings:font-700
+      prose-h2:text-xl prose-h2:mt-8 prose-h2:mb-3
+      prose-p:text-surface-700 prose-p:leading-relaxed
+      prose-a:text-brand-600 prose-a:font-500
+      prose-strong:font-700 prose-strong:text-surface-900
+      prose-ul:text-surface-700">
+
+      <p class="text-lg text-surface-700 leading-relaxed">
+        eBikeLocal participates in affiliate marketing programs. This means we may earn a commission when you click on certain links on this site and make a purchase — at no additional cost to you.
+      </p>
+
+      <h2>How We Earn Money</h2>
+      <p>
+        eBikeLocal generates revenue through affiliate partnerships with eBike brands and retailers. When you click a "Check Price" or "Buy Now" link and complete a purchase, we may receive a small commission.
+      </p>
+      <p>
+        We are currently enrolled in or applying to affiliate programs through:
+      </p>
+      <ul>
+        <li><strong>AvantLink</strong> — Aventon, Lectric eBikes, Rad Power Bikes, EVELO, QuietKat, and others</li>
+        <li><strong>ShareASale</strong> — Himiway, Heybike, Engwe</li>
+        <li><strong>Impact</strong> — Velotric</li>
+        <li><strong>Direct programs</strong> — Pedego, Ride1UP</li>
+        <li><strong>Amazon Associates</strong> — accessories and smaller brands</li>
+      </ul>
+
+      <h2>FTC Compliance</h2>
+      <p>
+        In accordance with the <a href="https://www.ftc.gov/business-guidance/resources/ftc-endorsement-guides-what-people-are-asking" target="_blank" rel="noopener">FTC's guidelines on endorsements and testimonials</a>, eBikeLocal discloses any material connection between this site and the brands or retailers it links to.
+      </p>
+      <p>
+        Affiliate links on this site are identified with <code>rel="nofollow sponsored"</code> attributes and are marked with language like "Check Price at [Brand]" or similar.
+      </p>
+
+      <h2>Editorial Independence</h2>
+      <p>
+        Our affiliate relationships do not influence our editorial content. Specifically:
+      </p>
+      <ul>
+        <li>We do not accept payment for positive reviews or higher rankings in buying guides.</li>
+        <li>Brands are included or excluded based on their relevance to our readers, not their affiliate commission rates.</li>
+        <li>Expert ratings and pros/cons are based on publicly available specifications, independent reviews, and community feedback — not brand relationships.</li>
+        <li>We will note known product issues or brand concerns (e.g., Rad Power Bikes' bankruptcy/acquisition) even when we have affiliate relationships with those brands.</li>
+      </ul>
+
+      <h2>Directory Data Independence</h2>
+      <p>
+        The shop directory data — which shops appear, their ratings, and which brands they carry — is derived entirely from Google Places data and brand dealer locators. It is not influenced by advertising or affiliate relationships. Shops cannot pay to be listed, ranked higher, or linked to affiliate programs.
+      </p>
+
+      <h2>Questions</h2>
+      <p>
+        If you have questions about our affiliate relationships or editorial policies, please contact us through the website. We are committed to maintaining reader trust as our primary asset.
+      </p>
+
+      <p class="text-sm text-surface-500 mt-8 pt-6 border-t border-surface-200">
+        Last updated: April 2026
+      </p>
+    </div>
+  </div>
+</BaseLayout>

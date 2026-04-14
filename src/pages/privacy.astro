@@ -1,0 +1,84 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+import Breadcrumb from '@components/ui/Breadcrumb.astro';
+import PageHeader from '@components/ui/PageHeader.astro';
+---
+
+<BaseLayout
+  title="Privacy Policy | eBikeLocal"
+  description="eBikeLocal's privacy policy — what data we collect, how we use it, and your rights."
+>
+  <PageHeader
+    eyebrow="Legal"
+    title="Privacy Policy"
+    subtitle="We collect minimal data and never sell it to third parties."
+    showBar={true}
+  />
+
+  <div class="mx-auto max-w-3xl page-x py-10 md:py-14">
+    <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: 'Privacy Policy' }]} />
+
+    <div class="mt-8 prose prose-slate max-w-none
+      prose-headings:font-display prose-headings:font-700
+      prose-h2:text-xl prose-h2:mt-8 prose-h2:mb-3
+      prose-p:text-surface-700 prose-p:leading-relaxed
+      prose-a:text-brand-600 prose-a:font-500
+      prose-strong:font-700 prose-strong:text-surface-900
+      prose-ul:text-surface-700">
+
+      <p class="text-lg text-surface-700 leading-relaxed">
+        This Privacy Policy describes how eBikeLocal.com ("we," "us," or "our") collects, uses, and handles information when you use our website.
+      </p>
+
+      <h2>Information We Collect</h2>
+      <p><strong>Analytics data.</strong> We use a privacy-focused analytics tool (Plausible or similar) to understand aggregate traffic patterns — pages viewed, referral sources, and general geographic regions. This data is anonymous and not linked to any individual. No cookies are set for analytics.</p>
+      <p><strong>Search queries.</strong> When you use the shop search feature, your search query is processed to return results. We do not store individual search queries linked to user identities.</p>
+      <p><strong>No accounts required.</strong> eBikeLocal does not require account creation. We do not collect names, email addresses, or personal information unless you voluntarily contact us.</p>
+
+      <h2>Cookies</h2>
+      <p>
+        eBikeLocal does not use tracking cookies for advertising or behavioral profiling. Affiliate links may result in a cookie being set by the destination retailer's website — this is outside our control and governed by their privacy policies.
+      </p>
+
+      <h2>Third-Party Services</h2>
+      <p>We use the following third-party services that may process data:</p>
+      <ul>
+        <li><strong>Google Maps Embed API</strong> — for displaying shop location maps. Governed by <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Google's Privacy Policy</a>.</li>
+        <li><strong>Vercel</strong> — for website hosting. May collect standard server logs (IP addresses, request headers). Governed by <a href="https://vercel.com/legal/privacy-policy" target="_blank" rel="noopener">Vercel's Privacy Policy</a>.</li>
+        <li><strong>Affiliate networks</strong> (AvantLink, ShareASale, Impact, Amazon) — when you click affiliate links, these services may set cookies. Each is governed by their own privacy policy.</li>
+      </ul>
+
+      <h2>Data We Do NOT Collect</h2>
+      <ul>
+        <li>We do not build individual user profiles</li>
+        <li>We do not sell data to third parties</li>
+        <li>We do not use retargeting or behavioral advertising</li>
+        <li>We do not collect payment information (all purchases happen on brand/retailer sites)</li>
+      </ul>
+
+      <h2>Your Rights</h2>
+      <p>
+        Since we collect minimal personal data, there is little to request or delete. If you believe we hold data about you and wish to request its deletion, contact us and we will respond promptly.
+      </p>
+
+      <h2>Children's Privacy</h2>
+      <p>
+        eBikeLocal is not directed at children under 13. We do not knowingly collect personal information from children under 13.
+      </p>
+
+      <h2>Changes to This Policy</h2>
+      <p>
+        We may update this Privacy Policy periodically. Material changes will be noted with an updated date. Continued use of the site constitutes acceptance of the revised policy.
+      </p>
+
+      <h2>Contact</h2>
+      <p>
+        For privacy-related questions, please contact us through the website.
+      </p>
+
+      <p class="text-sm text-surface-500 mt-8 pt-6 border-t border-surface-200">
+        Last updated: April 2026
+      </p>
+    </div>
+  </div>
+</BaseLayout>

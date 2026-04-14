@@ -1,0 +1,100 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+import Breadcrumb from '@components/ui/Breadcrumb.astro';
+import PageHeader from '@components/ui/PageHeader.astro';
+---
+
+<BaseLayout
+  title="Terms of Service | eBikeLocal"
+  description="eBikeLocal's terms of service — the rules governing use of this website and its directory data."
+>
+  <PageHeader
+    eyebrow="Legal"
+    title="Terms of Service"
+    subtitle="The terms governing your use of eBikeLocal.com."
+    showBar={true}
+  />
+
+  <div class="mx-auto max-w-3xl page-x py-10 md:py-14">
+    <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: 'Terms of Service' }]} />
+
+    <div class="mt-8 prose prose-slate max-w-none
+      prose-headings:font-display prose-headings:font-700
+      prose-h2:text-xl prose-h2:mt-8 prose-h2:mb-3
+      prose-p:text-surface-700 prose-p:leading-relaxed
+      prose-a:text-brand-600 prose-a:font-500
+      prose-strong:font-700 prose-strong:text-surface-900
+      prose-ul:text-surface-700">
+
+      <p class="text-lg text-surface-700 leading-relaxed">
+        By using eBikeLocal.com, you agree to these Terms of Service. Please read them carefully.
+      </p>
+
+      <h2>Use of the Site</h2>
+      <p>
+        eBikeLocal.com provides a directory of eBike shops and product information for personal, non-commercial use. You may not:
+      </p>
+      <ul>
+        <li>Scrape, crawl, or systematically copy our directory data without permission</li>
+        <li>Use our content for competing directories or commercial data products</li>
+        <li>Misrepresent shop listings or submit false information</li>
+        <li>Use automated tools to abuse our search API</li>
+      </ul>
+
+      <h2>Accuracy of Information</h2>
+      <p>
+        Shop listings, hours, phone numbers, and brand data are sourced from Google Places and brand dealer locators. This information may not always be current or accurate. We make reasonable efforts to keep data up to date but cannot guarantee accuracy.
+      </p>
+      <p>
+        <strong>Always verify shop hours and availability directly with the shop before visiting.</strong>
+      </p>
+
+      <h2>Affiliate Links</h2>
+      <p>
+        Product links on this site may be affiliate links. Clicking these links and making purchases may result in eBikeLocal earning a commission. See our <a href="/disclosure/">Affiliate Disclosure</a> for full details.
+      </p>
+
+      <h2>Intellectual Property</h2>
+      <p>
+        The eBikeLocal name, logo, and original editorial content are property of eBikeLocal.com. Brand logos and trademarks are property of their respective owners and are used for identification purposes only.
+      </p>
+      <p>
+        You may share links to eBikeLocal pages freely. Reproducing substantial portions of our content without attribution is not permitted.
+      </p>
+
+      <h2>Disclaimer of Warranties</h2>
+      <p>
+        eBikeLocal is provided "as is" without warranties of any kind. We do not warrant that the site will be error-free, that listings are complete or accurate, or that any particular shop will have a specific product in stock.
+      </p>
+
+      <h2>Limitation of Liability</h2>
+      <p>
+        eBikeLocal shall not be liable for any indirect, incidental, or consequential damages arising from your use of this site, reliance on directory information, or purchases made through affiliate links.
+      </p>
+
+      <h2>Third-Party Links</h2>
+      <p>
+        eBikeLocal links to shop websites, brand websites, and affiliate retailers. We are not responsible for the content or privacy practices of these third-party sites.
+      </p>
+
+      <h2>eBike Laws Content</h2>
+      <p>
+        State eBike law summaries on this site are provided for informational purposes only and do not constitute legal advice. Laws change — always verify current law with your state's Department of Transportation or a qualified attorney before making decisions based on our content.
+      </p>
+
+      <h2>Changes to These Terms</h2>
+      <p>
+        We may update these Terms of Service. Continued use of the site after changes constitutes acceptance of the revised terms.
+      </p>
+
+      <h2>Governing Law</h2>
+      <p>
+        These terms are governed by the laws of the United States. Disputes shall be resolved in the applicable jurisdiction.
+      </p>
+
+      <p class="text-sm text-surface-500 mt-8 pt-6 border-t border-surface-200">
+        Last updated: April 2026
+      </p>
+    </div>
+  </div>
+</BaseLayout>

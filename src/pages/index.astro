@@ -54,67 +54,80 @@ const jsonLd = {
   <!-- ═══════════════════════════════════════════════════════════
        HERO
   ══════════════════════════════════════════════════════════════ -->
-  <section class="relative overflow-hidden bg-surface-950">
-    <!-- Background image with overlay -->
-    <div class="absolute inset-0">
+  <section class="relative overflow-hidden bg-night-900">
+    <!-- Pexels hero photo — man riding electric bike, side view -->
+    <div class="absolute inset-0 pointer-events-none">
       <img
-        src="https://images.unsplash.com/photo-1571068316344-75bc76f77890?w=1600&q=80&auto=format&fit=crop"
+        src="https://images.pexels.com/photos/13344226/pexels-photo-13344226.jpeg?auto=compress&cs=tinysrgb&w=1600&dpr=1"
         alt=""
-        class="h-full w-full object-cover opacity-30"
+        class="h-full w-full object-cover opacity-25"
         loading="eager"
         fetchpriority="high"
       />
-      <div class="absolute inset-0 bg-gradient-to-br from-surface-950 via-surface-950/90 to-surface-900/70"></div>
+      <!-- Directional overlay: strong left, fades right -->
+      <div class="absolute inset-0 bg-gradient-to-r from-night-900 via-night-900/80 to-night-900/40"></div>
+      <div class="absolute inset-0 bg-gradient-to-t from-night-900/60 to-transparent"></div>
     </div>
 
-    <div class="relative mx-auto max-w-7xl page-x py-24 md:py-32">
+    <!-- Circuit grid texture -->
+    <div class="absolute inset-0 bg-circuit pointer-events-none"></div>
+
+    <!-- Volt glow top-right -->
+    <div class="absolute -top-32 right-8 h-96 w-96 rounded-full bg-brand-400/8 blur-3xl pointer-events-none"></div>
+    <div class="absolute bottom-0 left-1/3 h-64 w-64 rounded-full bg-electric-500/5 blur-3xl pointer-events-none"></div>
+
+    <div class="relative mx-auto max-w-7xl page-x py-24 md:py-32 lg:py-36">
       <div class="mx-auto max-w-3xl text-center">
-        <p class="mb-6 text-sm font-semibold tracking-wide text-brand-300">
-          The only directory with brand-level dealer data
-        </p>
 
-        <!-- Headline -->
-        <h1 class="font-display text-4xl font-extrabold tracking-tight text-white md:text-5xl lg:text-6xl xl:text-7xl">
-          Find the Best
-          <span class="relative">
-            <span class="text-gradient"> eBike Shop</span>
+        <!-- Eyebrow with volt accent -->
+        <div class="inline-flex items-center gap-2 rounded-full border border-brand-400/20 bg-brand-400/10 px-4 py-1.5 mb-7">
+          <div class="h-1.5 w-1.5 rounded-full bg-brand-400 volt-glow-sm"></div>
+          <span class="text-xs font-700 tracking-[0.1em] text-brand-400 uppercase">
+            The only directory with brand-level dealer data
           </span>
-          <br />Near You
-        </h1>
-
-        <p class="mx-auto mt-6 max-w-2xl text-lg text-surface-300 md:text-xl">
-          We aggregate dealer data from 15+ brands so you can find a local shop, see what they carry, and ride smarter — no more clicking through 20 brand websites.
-        </p>
-
-        <!-- Search -->
-        <div class="mx-auto mt-10 max-w-xl">
-          <form action="/api/search" method="get" class="flex gap-2">
-            <div class="relative flex-1">
-              <svg class="absolute left-3.5 top-1/2 h-4.5 w-4.5 -translate-y-1/2 text-surface-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
-              <input
-                type="text"
-                name="q"
-                placeholder="City, state, or zip code..."
-                class="w-full rounded-xl border-0 bg-white/10 pl-11 pr-4 py-3.5 text-sm text-white ring-1 ring-white/20 placeholder:text-surface-400 focus:bg-white/15 focus:ring-brand-400 focus:outline-none transition-all backdrop-blur-sm"
-              />
-            </div>
-            <button
-              type="submit"
-              class="shrink-0 rounded-xl bg-brand-600 px-6 py-3.5 text-sm font-semibold text-white shadow-lg hover:bg-brand-500 active:scale-95 transition-all"
-            >
-              Search
-            </button>
-          </form>
-
-          <p class="mt-3 text-xs text-surface-500">
-            Try: "Austin TX" · "Denver" · "98101"
-          </p>
         </div>
 
-        <!-- Quick links -->
-        <div class="mt-8 flex flex-wrap justify-center gap-x-6 gap-y-2">
+        <!-- Headline -->
+        <h1 class="font-display text-4xl font-700 tracking-tight text-white md:text-5xl lg:text-6xl xl:text-[4.25rem] leading-[1.05]">
+          Find the Best<br />
+          <span class="text-gradient-dark">eBike Shop</span><br />
+          Near You
+        </h1>
+
+        <p class="mx-auto mt-6 max-w-xl text-lg text-night-300 md:text-xl leading-relaxed">
+          We aggregate dealer data from 15+ brands so you can see exactly which shops near you carry Aventon, Trek, Specialized, and more.
+        </p>
+
+        <!-- Search bar -->
+        <div class="mx-auto mt-10 max-w-xl">
+          <form action="/api/search" method="get">
+            <div class="flex gap-2">
+              <div class="relative flex-1">
+                <svg class="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-night-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                </svg>
+                <input
+                  type="text"
+                  name="q"
+                  placeholder="City, state, or zip code..."
+                  class="w-full rounded-xl border-0 bg-white/8 pl-10 pr-4 py-3.5 text-sm text-white ring-1 ring-white/15 placeholder:text-night-500 focus:bg-white/12 focus:ring-brand-400/60 focus:outline-none transition-all"
+                />
+              </div>
+              <button
+                type="submit"
+                class="btn-volt shrink-0 rounded-xl px-6 py-3.5 text-sm"
+              >
+                Search
+              </button>
+            </div>
+            <p class="mt-2.5 text-[11px] text-night-600">
+              Try: "Austin TX" &nbsp;·&nbsp; "Denver, CO" &nbsp;·&nbsp; "98101"
+            </p>
+          </form>
+        </div>
+
+        <!-- Quick nav links -->
+        <div class="mt-8 flex flex-wrap justify-center gap-x-5 gap-y-2">
           {[
             { label: 'Browse by State', href: '/shops/' },
             { label: 'View All Brands', href: '/brands/' },
@@ -123,7 +136,7 @@ const jsonLd = {
           ].map(l => (
             <a
               href={l.href}
-              class="text-xs font-semibold uppercase tracking-wide text-surface-300 underline decoration-white/20 underline-offset-4 transition-colors hover:text-white hover:decoration-white/70"
+              class="text-[11px] font-600 uppercase tracking-[0.1em] text-night-400 hover:text-brand-400 transition-colors"
             >
               {l.label}
             </a>
@@ -134,19 +147,19 @@ const jsonLd = {
   </section>
 
   <!-- ═══════════════════════════════════════════════════════════
-       STATS BAR
+       STATS BAR — dark with volt numbers
   ══════════════════════════════════════════════════════════════ -->
-  <section class="border-b border-surface-100 bg-white">
+  <section class="bg-night-800 border-b border-white/[0.05]">
     <div class="mx-auto max-w-7xl page-x">
-      <div class="grid grid-cols-3 divide-x divide-surface-100">
+      <div class="grid grid-cols-3 divide-x divide-white/[0.05]">
         {[
-          { value: totalShops > 0 ? `${totalShops.toLocaleString()}+` : 'Thousands', label: 'eBike Shops' },
-          { value: String(totalBrands || 15), label: 'Brands Tracked' },
-          { value: totalCities > 0 ? `${totalCities}+` : 'Hundreds of', label: 'Cities' },
+          { value: totalShops > 0 ? `${totalShops.toLocaleString()}+` : '8,000+', label: 'eBike Shops', icon: '📍' },
+          { value: String(totalBrands || 15),                                      label: 'Brands Tracked', icon: '⚡' },
+          { value: totalCities > 0 ? `${totalCities}+` : '1,500+',               label: 'Cities Covered', icon: '🗺️' },
         ].map(stat => (
           <div class="py-6 text-center">
-            <p class="font-display text-2xl font-extrabold text-surface-900 md:text-3xl">{stat.value}</p>
-            <p class="text-xs font-medium text-surface-500 md:text-sm">{stat.label}</p>
+            <p class="stat-number text-2xl md:text-3xl text-brand-400">{stat.value}</p>
+            <p class="text-xs font-500 text-night-500 mt-0.5">{stat.label}</p>
           </div>
         ))}
       </div>
@@ -154,41 +167,45 @@ const jsonLd = {
   </section>
 
   <!-- ═══════════════════════════════════════════════════════════
-       THE UNIQUE VALUE PROP
+       VALUE PROP — white section
   ══════════════════════════════════════════════════════════════ -->
-  <section class="section-y bg-surface-50">
+  <section class="section-y bg-white">
     <div class="mx-auto max-w-7xl page-x">
       <div class="mx-auto max-w-2xl text-center">
-        <p class="text-xs font-semibold uppercase tracking-widest text-brand-600">Why eBikeLocal</p>
-        <h2 class="font-display mt-3 text-3xl font-extrabold text-surface-900 md:text-4xl">
-          No other directory tells you what's in stock
+        <p class="text-xs font-700 uppercase tracking-[0.14em] text-brand-600">Why eBikeLocal</p>
+        <h2 class="font-display mt-3 text-3xl font-700 tracking-tight text-surface-900 md:text-4xl leading-[1.1]">
+          No other directory tells you<br class="hidden sm:block" /> which brands a shop carries
         </h2>
-        <p class="mt-4 text-surface-600">
-          Every brand maintains its own siloed dealer locator. We aggregate all of them — so you can see which brands a shop carries before you drive there.
+        <p class="mt-4 text-surface-600 max-w-lg mx-auto leading-relaxed">
+          Every brand silos its own dealer locator. We aggregate all of them — so you can see what's in stock before you drive anywhere.
         </p>
       </div>
 
-      <div class="mt-14 grid gap-6 sm:grid-cols-3">
+      <div class="mt-12 grid gap-5 sm:grid-cols-3">
         {[
           {
-            icon: `<svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/></svg>`,
-            title: 'Brand-Level Data',
-            desc: 'See exactly which eBike brands each shop carries — Aventon, Trek, Specialized, and 12 more. No one else has this.',
+            iconPath: 'M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7',
+            title: 'Brand-Level Dealer Data',
+            desc: 'See exactly which eBike brands each shop carries — Aventon, Trek, Specialized, Giant, and 11 more. No one else has this.',
           },
           {
-            icon: `<svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>`,
-            title: 'City-Level Pages',
-            desc: 'Every city gets its own page with a map, shop list, local law summary, and brands available — fully indexed for search.',
+            iconPath: 'M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z M15 11a3 3 0 11-6 0 3 3 0 016 0z',
+            title: '1,500+ City Pages',
+            desc: 'Every major US city gets its own page — local shop map, brands available, eBike laws summary, and nearby cities.',
           },
           {
-            icon: `<svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>`,
+            iconPath: 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z',
             title: 'Verified & Enriched',
-            desc: 'Every listing is cross-referenced with Google Places, brand locators, and review data — not scraped duplicates.',
+            desc: 'Cross-referenced with Google Places data, brand locators, and review scores — not duplicate scraped junk.',
           },
         ].map(feature => (
-          <div class="rounded-2xl border border-surface-200 bg-white p-7 shadow-card">
-            <div class="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-brand-50 text-brand-600" set:html={feature.icon} />
-            <h3 class="mt-4 font-display text-lg font-bold text-surface-900">{feature.title}</h3>
+          <div class="group rounded-2xl border border-surface-200 bg-white p-7 shadow-card hover:border-brand-200 hover:shadow-card-hover transition-all duration-200">
+            <div class="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-brand-50 text-brand-600 group-hover:bg-brand-100 transition-colors">
+              <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d={feature.iconPath}/>
+              </svg>
+            </div>
+            <h3 class="mt-4 font-display text-lg font-700 text-surface-900">{feature.title}</h3>
             <p class="mt-2 text-sm leading-relaxed text-surface-600">{feature.desc}</p>
           </div>
         ))}
@@ -200,37 +217,37 @@ const jsonLd = {
        FEATURED CITIES
   ══════════════════════════════════════════════════════════════ -->
   {featuredCities.length > 0 && (
-    <section class="section-y bg-white">
+    <section class="section-y bg-surface-50 border-y border-surface-100">
       <div class="mx-auto max-w-7xl page-x">
-        <div class="flex items-end justify-between">
+        <div class="flex items-end justify-between mb-8">
           <div>
-            <p class="text-xs font-semibold uppercase tracking-widest text-brand-600">Shop Directory</p>
-            <h2 class="font-display mt-2 text-3xl font-extrabold text-surface-900">Popular Cities</h2>
+            <p class="text-xs font-700 uppercase tracking-[0.14em] text-brand-600">Shop Directory</p>
+            <h2 class="font-display mt-2 text-3xl font-700 tracking-tight text-surface-900">Popular Cities</h2>
           </div>
-          <a href="/shops/" class="hidden text-sm font-medium text-brand-600 hover:text-brand-700 sm:inline-flex items-center gap-1">
-            Browse all states →
+          <a href="/shops/" class="hidden sm:inline-flex items-center gap-1 text-sm font-600 text-brand-600 hover:text-brand-700 transition-colors">
+            All states →
           </a>
         </div>
 
-        <div class="mt-8 grid gap-3 grid-cols-2 sm:grid-cols-3 md:grid-cols-4">
+        <div class="grid gap-2.5 grid-cols-2 sm:grid-cols-3 md:grid-cols-4">
           {featuredCities.map((city) => (
             <a
               href={`/shops/${city.state_slug}/${city.slug}/`}
-              class="group card-hover flex items-center justify-between rounded-xl border border-surface-200 bg-white px-4 py-3.5 shadow-card"
+              class="group card-hover flex items-center justify-between rounded-xl border border-surface-200 bg-white px-4 py-3.5 shadow-card hover:border-brand-200"
             >
               <div class="min-w-0">
-                <p class="truncate font-semibold text-surface-900 group-hover:text-brand-600 transition-colors">{city.name}</p>
-                <p class="text-xs text-surface-500">{city.state_name}</p>
+                <p class="truncate font-600 text-surface-900 group-hover:text-brand-600 transition-colors text-sm">{city.name}</p>
+                <p class="text-[11px] text-surface-500">{city.state_code}</p>
               </div>
-              <span class="ml-2 shrink-0 rounded-full bg-brand-50 px-2 py-0.5 text-xs font-semibold text-brand-700">
+              <span class="ml-2 shrink-0 rounded-full bg-brand-50 px-2 py-0.5 text-[11px] font-700 text-brand-700">
                 {city.shop_count}
               </span>
             </a>
           ))}
         </div>
 
-        <div class="mt-6 text-center sm:hidden">
-          <a href="/shops/" class="text-sm font-medium text-brand-600">Browse all states →</a>
+        <div class="mt-5 text-center sm:hidden">
+          <a href="/shops/" class="text-sm font-600 text-brand-600">Browse all states →</a>
         </div>
       </div>
     </section>
@@ -294,34 +311,36 @@ const jsonLd = {
   )}
 
   <!-- ═══════════════════════════════════════════════════════════
-       SOCIAL PROOF / HOW IT WORKS
+       HOW IT WORKS
   ══════════════════════════════════════════════════════════════ -->
   <section class="section-y bg-white">
     <div class="mx-auto max-w-7xl page-x">
-      <div class="mx-auto max-w-2xl text-center">
-        <p class="text-xs font-semibold uppercase tracking-widest text-brand-600">Simple Process</p>
-        <h2 class="font-display mt-3 text-3xl font-extrabold text-surface-900 md:text-4xl">
-          Find your local dealer in 3 steps
+      <div class="mx-auto max-w-xl text-center mb-12">
+        <p class="text-xs font-700 uppercase tracking-[0.14em] text-brand-600">Simple Process</p>
+        <h2 class="font-display mt-3 text-3xl font-700 tracking-tight text-surface-900 md:text-4xl leading-[1.1]">
+          Find your local eBike dealer<br class="hidden sm:block" /> in 3 steps
         </h2>
       </div>
 
-      <div class="mt-14 grid gap-8 sm:grid-cols-3">
+      <div class="grid gap-8 sm:grid-cols-3">
         {[
-          { step: '01', title: 'Search your area', desc: 'Enter your city or zip code to instantly see all eBike shops nearby on an interactive map.' },
-          { step: '02', title: 'Filter by brand', desc: 'See which brands each shop stocks — Aventon, Trek, Specialized, Giant, and many more.' },
-          { step: '03', title: 'Visit or buy online', desc: 'Get directions, hours, and phone number — or click through to buy directly from the brand.' },
+          { step: '01', title: 'Search your area', desc: 'Enter your city or zip code to instantly see all eBike shops nearby on an interactive map.', color: 'brand' },
+          { step: '02', title: 'Filter by brand', desc: 'See exactly which brands each shop stocks — Aventon, Trek, Specialized, Giant, and more.', color: 'electric' },
+          { step: '03', title: 'Visit or shop online', desc: 'Get directions, hours, and phone — or click through to buy directly from the brand with our affiliate links.', color: 'accent' },
         ].map((item, i) => (
-          <div class="relative">
+          <div class="relative flex flex-col items-center text-center">
             {i < 2 && (
-              <div class="absolute top-6 left-full z-10 hidden h-px w-full bg-gradient-to-r from-surface-200 to-transparent sm:block" style="width: calc(50% + 2rem); left: calc(50% + 2rem)"></div>
+              <div class="absolute top-7 left-[calc(50%+2rem)] hidden sm:block h-px bg-gradient-to-r from-brand-200 to-transparent" style="width: calc(100% - 2rem)"></div>
             )}
-            <div class="flex flex-col items-center text-center">
-              <div class="flex h-14 w-14 items-center justify-center rounded-full border border-brand-200 bg-white text-sm font-bold text-brand-700">
-                {item.step}
-              </div>
-              <h3 class="mt-5 font-display text-lg font-bold text-surface-900">{item.title}</h3>
-              <p class="mt-2 text-sm leading-relaxed text-surface-600">{item.desc}</p>
+            <div class={`flex h-14 w-14 items-center justify-center rounded-2xl font-display text-lg font-700 shadow-sm ${
+              item.color === 'brand'    ? 'bg-brand-50 text-brand-600 ring-1 ring-brand-100' :
+              item.color === 'electric' ? 'bg-electric-50 text-electric-600 ring-1 ring-electric-100' :
+                                          'bg-accent-50 text-accent-600 ring-1 ring-accent-100'
+            }`}>
+              {item.step}
             </div>
+            <h3 class="mt-5 font-display text-lg font-700 text-surface-900">{item.title}</h3>
+            <p class="mt-2 text-sm leading-relaxed text-surface-600 max-w-xs">{item.desc}</p>
           </div>
         ))}
       </div>
@@ -329,50 +348,58 @@ const jsonLd = {
   </section>
 
   <!-- ═══════════════════════════════════════════════════════════
-       GUIDES / CONTENT
+       GUIDES / CONTENT — dark section
   ══════════════════════════════════════════════════════════════ -->
-  <section class="section-y bg-surface-950">
-    <div class="mx-auto max-w-7xl page-x">
-      <div class="flex items-end justify-between">
+  <section class="section-y bg-night-900 relative overflow-hidden">
+    <div class="absolute inset-0 bg-circuit pointer-events-none opacity-80"></div>
+    <div class="absolute top-0 right-1/4 h-80 w-80 rounded-full bg-brand-400/6 blur-3xl pointer-events-none"></div>
+
+    <div class="relative mx-auto max-w-7xl page-x">
+      <div class="flex items-end justify-between mb-8">
         <div>
-          <p class="text-xs font-semibold uppercase tracking-widest text-brand-400">Expert Content</p>
-          <h2 class="font-display mt-2 text-3xl font-extrabold text-white">eBike Guides & Resources</h2>
+          <p class="text-xs font-700 uppercase tracking-[0.14em] text-brand-400">Expert Content</p>
+          <h2 class="font-display mt-2 text-3xl font-700 tracking-tight text-white">eBike Guides & Resources</h2>
         </div>
-        <a href="/guides/" class="hidden text-sm font-medium text-brand-400 hover:text-brand-300 sm:inline-flex items-center gap-1">
+        <a href="/guides/" class="hidden sm:inline-flex items-center gap-1 text-sm font-600 text-brand-400 hover:text-brand-300 transition-colors">
           All guides →
         </a>
       </div>
 
-      <div class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {[
           {
             tag: 'Tax & Finance',
             title: 'eBike Tax Credit 2026',
-            desc: 'How to claim the federal electric bicycle tax credit and maximize your savings.',
+            desc: 'Federal credit status, state rebates, and how to stack incentives to save up to $2,500 on your purchase.',
             href: '/guides/ebike-tax-credit-2026/',
           },
           {
             tag: 'Laws & Regulations',
             title: 'eBike Laws by State',
-            desc: 'Class rules, helmet requirements, trail access, and rebate programs in all 50 states.',
+            desc: 'Class rules, helmet requirements, trail access, and rebate programs for all 50 states + DC.',
             href: '/guides/ebike-laws-by-state/',
           },
           {
             tag: 'Buying Advice',
             title: 'How to Choose an eBike',
-            desc: 'A step-by-step guide to finding the right electric bike for your riding style and budget.',
+            desc: 'Hub vs. mid-drive, torque vs. cadence sensor, Class 1/2/3 — a practical guide with no hype.',
             href: '/guides/how-to-choose-an-ebike/',
           },
         ].map(guide => (
           <a
             href={guide.href}
-            class="group card-hover flex flex-col rounded-2xl border border-white/10 bg-white/5 p-6 hover:border-brand-500/30 hover:bg-white/10"
+            class="group flex flex-col rounded-2xl border border-white/8 bg-white/[0.04] p-6 hover:border-brand-400/30 hover:bg-white/[0.07] transition-all duration-200"
           >
-            <p class="text-xs font-semibold uppercase tracking-wide text-brand-300">{guide.tag}</p>
-            <h3 class="mt-4 font-display text-lg font-bold text-white group-hover:text-brand-300 transition-colors">{guide.title}</h3>
-            <p class="mt-2 text-sm leading-relaxed text-surface-400">{guide.desc}</p>
-            <div class="mt-4 flex items-center gap-1 text-xs font-medium text-brand-400 group-hover:text-brand-300">
-              Read guide <svg class="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+            <span class="inline-block rounded-full border border-brand-400/20 bg-brand-400/10 px-2.5 py-0.5 text-[10px] font-700 uppercase tracking-widest text-brand-400 w-fit">
+              {guide.tag}
+            </span>
+            <h3 class="mt-4 font-display text-lg font-700 text-white group-hover:text-brand-300 transition-colors">{guide.title}</h3>
+            <p class="mt-2 text-sm leading-relaxed text-night-400 flex-1">{guide.desc}</p>
+            <div class="mt-5 flex items-center gap-1.5 text-xs font-700 text-brand-400 group-hover:text-brand-300 transition-colors">
+              Read guide
+              <svg class="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+              </svg>
             </div>
           </a>
         ))}
@@ -381,27 +408,41 @@ const jsonLd = {
   </section>
 
   <!-- ═══════════════════════════════════════════════════════════
-       BOTTOM CTA
+       BOTTOM CTA — photo background with volt overlay
   ══════════════════════════════════════════════════════════════ -->
-  <section class="relative overflow-hidden bg-brand-600 py-16">
+  <section class="relative overflow-hidden py-20">
+    <!-- Background photo -->
+    <div class="absolute inset-0 pointer-events-none">
+      <img
+        src="https://images.pexels.com/photos/15206179/pexels-photo-15206179.jpeg?auto=compress&cs=tinysrgb&w=1400&dpr=1"
+        alt=""
+        class="h-full w-full object-cover opacity-20"
+        loading="lazy"
+      />
+      <div class="absolute inset-0 bg-gradient-to-br from-night-900 via-night-900/90 to-brand-900/70"></div>
+    </div>
+
+    <!-- Volt glow -->
+    <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+      <div class="h-96 w-96 rounded-full bg-brand-400/8 blur-3xl"></div>
+    </div>
+
     <div class="relative mx-auto max-w-3xl page-x text-center">
-      <h2 class="font-display text-3xl font-extrabold text-white md:text-4xl">
-        Ready to find your local eBike dealer?
+      <!-- Volt bar accent -->
+      <div class="flex justify-center mb-5">
+        <div class="h-1 w-16 rounded-full bg-gradient-to-r from-brand-400 to-electric-400"></div>
+      </div>
+      <h2 class="font-display text-3xl font-700 tracking-tight text-white md:text-4xl leading-[1.1]">
+        Ready to find your local<br class="hidden sm:block" /> eBike dealer?
       </h2>
-      <p class="mx-auto mt-4 max-w-xl text-brand-200">
-        Search our directory of {totalShops > 0 ? `${totalShops.toLocaleString()}+` : 'thousands of'} shops across the US. Free, no account required.
+      <p class="mx-auto mt-4 max-w-md text-night-300">
+        {totalShops > 0 ? `${totalShops.toLocaleString()}+` : 'Thousands of'} shops across the US. Free, no account required.
       </p>
       <div class="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
-        <a
-          href="/shops/"
-          class="rounded-xl bg-white px-8 py-3.5 text-sm font-bold text-brand-700 shadow-lg hover:bg-brand-50 transition-colors"
-        >
+        <a href="/shops/" class="btn-volt rounded-xl px-8 py-3.5 text-sm">
           Browse the Directory
         </a>
-        <a
-          href="/brands/"
-          class="rounded-xl border border-brand-400 px-8 py-3.5 text-sm font-semibold text-white hover:bg-brand-500 transition-colors"
-        >
+        <a href="/brands/" class="btn-outline-volt rounded-xl px-8 py-3.5 text-sm">
           Compare Brands
         </a>
       </div>

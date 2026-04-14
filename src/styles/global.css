@@ -1,32 +1,56 @@
-/* ── Google Fonts (must precede all other statements) ──────────────────── */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@700;800&display=swap');
+/* ── Google Fonts ────────────────────────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap');
 
 @import "tailwindcss";
+@plugin "@tailwindcss/typography";
 
 /* ── Design Tokens ──────────────────────────────────────────────────────── */
 @theme {
-  /* Brand — electric indigo-blue */
-  --color-brand-50:  #eef2ff;
-  --color-brand-100: #e0e7ff;
-  --color-brand-200: #c7d2fe;
-  --color-brand-400: #818cf8;
-  --color-brand-500: #6366f1;
-  --color-brand-600: #4f46e5;
-  --color-brand-700: #4338ca;
-  --color-brand-800: #3730a3;
-  --color-brand-900: #312e81;
 
-  /* Accent — electric green */
-  --color-accent-400: #34d399;
-  --color-accent-500: #10b981;
-  --color-accent-600: #059669;
-  --color-accent-50:  #ecfdf5;
+  /* ── Brand: Volt (electric lime green) ──────────────────────────────── */
+  /* Replaces generic indigo. Volt green = "charged" — unmistakably electric. */
+  --color-brand-50:  #f5ffe6;
+  --color-brand-100: #e8ffc6;
+  --color-brand-200: #ccff80;
+  --color-brand-300: #a8f230;
+  --color-brand-400: #8fd600;   /* ← bright on dark backgrounds */
+  --color-brand-500: #72ac00;
+  --color-brand-600: #578300;   /* ← primary (light-bg text/buttons) */
+  --color-brand-700: #3e5e00;
+  --color-brand-800: #2a4000;
+  --color-brand-900: #182600;
 
-  /* Warning / highlight */
+  /* ── Electric (cyan — secondary interactive) ─────────────────────────── */
+  --color-electric-300: #67e8f9;
+  --color-electric-400: #22d3ee;
+  --color-electric-500: #06b6d4;
+  --color-electric-600: #0891b2;
+
+  /* ── Amber (ratings, warnings) ──────────────────────────────────────── */
+  --color-amber-300: #fcd34d;
   --color-amber-400: #fbbf24;
   --color-amber-500: #f59e0b;
 
-  /* Surface — cool slate */
+  /* ── Accent: Emerald (success, specialist badges) ────────────────────── */
+  --color-accent-50:  #ecfdf5;
+  --color-accent-400: #34d399;
+  --color-accent-500: #10b981;
+  --color-accent-600: #059669;
+
+  /* ── Night (dark surfaces — richer than plain black) ─────────────────── */
+  --color-night-950: #080b14;
+  --color-night-900: #0d1120;
+  --color-night-800: #141929;
+  --color-night-700: #1d2438;
+  --color-night-600: #2a3450;
+  --color-night-500: #3d4d6e;
+  --color-night-400: #5e7090;
+  --color-night-300: #8d9eb8;
+  --color-night-200: #bec8d8;
+  --color-night-100: #dfe4ed;
+  --color-night-50:  #f0f3f8;
+
+  /* ── Surface (neutral slate — for content/light areas) ───────────────── */
   --color-surface-50:  #f8fafc;
   --color-surface-100: #f1f5f9;
   --color-surface-200: #e2e8f0;
@@ -37,16 +61,17 @@
   --color-surface-700: #334155;
   --color-surface-800: #1e293b;
   --color-surface-900: #0f172a;
-  --color-surface-950: #020617;
+  --color-surface-950: #080b14;
 
-  /* Typography */
+  /* ── Typography ─────────────────────────────────────────────────────── */
   --font-sans:    'Inter', ui-sans-serif, system-ui, sans-serif;
-  --font-display: 'Plus Jakarta Sans', 'Inter', ui-sans-serif, sans-serif;
+  --font-display: 'Space Grotesk', 'Inter', ui-sans-serif, sans-serif;
 
-  /* Shadows */
-  --shadow-card: 0 1px 3px 0 rgb(0 0 0 / 0.07), 0 1px 2px -1px rgb(0 0 0 / 0.07);
-  --shadow-card-hover: 0 10px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.06);
-  --shadow-glow: 0 0 0 3px rgb(79 70 229 / 0.15);
+  /* ── Shadows ────────────────────────────────────────────────────────── */
+  --shadow-card:       0 1px 3px 0 rgb(0 0 0 / 0.07), 0 1px 2px -1px rgb(0 0 0 / 0.07);
+  --shadow-card-hover: 0 12px 28px -6px rgb(0 0 0 / 0.12), 0 8px 12px -6px rgb(0 0 0 / 0.06);
+  --shadow-volt:       0 0 0 3px rgb(143 214 0 / 0.20);
+  --shadow-volt-glow:  0 0 20px rgb(143 214 0 / 0.20), 0 0 40px rgb(143 214 0 / 0.08);
 }
 
 /* ── Base ───────────────────────────────────────────────────────────────── */
@@ -62,35 +87,46 @@ body {
   font-family: var(--font-sans);
   color: var(--color-surface-900);
   background: #ffffff;
-  line-height: 1.6;
+  line-height: 1.65;
 }
 
-/* ── Utilities ──────────────────────────────────────────────────────────── */
+/* ── Typography utilities ───────────────────────────────────────────────── */
 .font-display { font-family: var(--font-display); }
 
+/* Volt → electric diagonal gradient (hero headlines, CTAs) */
 .text-gradient {
-  background: linear-gradient(135deg, var(--color-brand-600) 0%, var(--color-brand-400) 100%);
+  background: linear-gradient(135deg, var(--color-brand-400) 0%, var(--color-electric-400) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
+/* Dark version for dark backgrounds */
+.text-gradient-dark {
+  background: linear-gradient(135deg, var(--color-brand-300) 0%, var(--color-electric-300) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── Shadow utilities ───────────────────────────────────────────────────── */
 .shadow-card        { box-shadow: var(--shadow-card); }
 .shadow-card-hover  { box-shadow: var(--shadow-card-hover); }
-.shadow-glow        { box-shadow: var(--shadow-glow); }
+.shadow-volt        { box-shadow: var(--shadow-volt); }
+.shadow-volt-glow   { box-shadow: var(--shadow-volt-glow); }
 
-/* ── Card hover transitions ─────────────────────────────────────────────── */
+/* ── Card transitions ───────────────────────────────────────────────────── */
 .card-hover {
-  transition: box-shadow 0.2s ease, transform 0.2s ease, border-color 0.2s ease;
+  transition: box-shadow 0.18s ease, transform 0.18s ease, border-color 0.18s ease;
 }
 .card-hover:hover {
   box-shadow: var(--shadow-card-hover);
   transform: translateY(-2px);
 }
 
-/* ── Focus ring ─────────────────────────────────────────────────────────── */
+/* ── Focus ──────────────────────────────────────────────────────────────── */
 :focus-visible {
-  outline: 2px solid var(--color-brand-500);
+  outline: 2px solid var(--color-brand-400);
   outline-offset: 2px;
 }
 
@@ -100,17 +136,113 @@ body {
 ::-webkit-scrollbar-thumb { background: var(--color-surface-300); border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--color-surface-400); }
 
-/* ── Page padding ───────────────────────────────────────────────────────── */
+/* ── Layout helpers ─────────────────────────────────────────────────────── */
 .page-x { padding-left: 1.25rem; padding-right: 1.25rem; }
 @media (min-width: 640px)  { .page-x { padding-left: 2rem; padding-right: 2rem; } }
 @media (min-width: 1024px) { .page-x { padding-left: 3rem; padding-right: 3rem; } }
 
-/* ── Section dividers ───────────────────────────────────────────────────── */
 .section-y { padding-top: 4rem; padding-bottom: 4rem; }
-@media (min-width: 768px) { .section-y { padding-top: 5rem; padding-bottom: 5rem; } }
+@media (min-width: 768px) { .section-y { padding-top: 5.5rem; padding-bottom: 5.5rem; } }
 
-/* ── Dot grid background ────────────────────────────────────────────────── */
-.bg-dot-grid {
-  background-image: radial-gradient(circle, var(--color-surface-200) 1px, transparent 1px);
-  background-size: 24px 24px;
+/* ── Background textures ────────────────────────────────────────────────── */
+
+/* Subtle circuit-grid — evokes maps + electric circuits (replaces dot grid) */
+.bg-circuit {
+  background-image:
+    linear-gradient(rgb(143 214 0 / 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(143 214 0 / 0.04) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+
+/* Diagonal hatching — for hero overlays */
+.bg-hatch {
+  background-image: repeating-linear-gradient(
+    -45deg,
+    transparent,
+    transparent 20px,
+    rgb(143 214 0 / 0.015) 20px,
+    rgb(143 214 0 / 0.015) 21px
+  );
+}
+
+/* ── Volt glow effects (use sparingly on dark backgrounds) ──────────────── */
+.volt-glow-sm  { box-shadow: 0 0 12px rgb(143 214 0 / 0.3); }
+.volt-glow-md  { box-shadow: 0 0 24px rgb(143 214 0 / 0.25), 0 0 48px rgb(143 214 0 / 0.1); }
+.volt-glow-lg  { box-shadow: 0 0 40px rgb(143 214 0 / 0.3), 0 0 80px rgb(143 214 0 / 0.12); }
+
+/* ── Volt accent line (top-border decoration for sections) ──────────────── */
+.volt-bar::before {
+  content: '';
+  display: block;
+  width: 3rem;
+  height: 3px;
+  background: linear-gradient(90deg, var(--color-brand-400), var(--color-electric-400));
+  border-radius: 2px;
+  margin-bottom: 1rem;
+}
+
+/* ── Stat number styling ────────────────────────────────────────────────── */
+.stat-number {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+
+/* ── Link underline animation ───────────────────────────────────────────── */
+.link-hover {
+  position: relative;
+  text-decoration: none;
+}
+.link-hover::after {
+  content: '';
+  position: absolute;
+  left: 0; bottom: -1px;
+  width: 0; height: 1px;
+  background: var(--color-brand-400);
+  transition: width 0.2s ease;
+}
+.link-hover:hover::after { width: 100%; }
+
+/* ── Pill / badge variants ──────────────────────────────────────────────── */
+.badge-volt {
+  background: rgb(143 214 0 / 0.12);
+  color: var(--color-brand-400);
+  border: 1px solid rgb(143 214 0 / 0.2);
+}
+.badge-volt-solid {
+  background: var(--color-brand-400);
+  color: var(--color-night-900);
+  font-weight: 700;
+}
+
+/* ── Button variants ────────────────────────────────────────────────────── */
+.btn-volt {
+  background: var(--color-brand-400);
+  color: var(--color-night-900);
+  font-weight: 700;
+  transition: background 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
+}
+.btn-volt:hover {
+  background: var(--color-brand-300);
+  box-shadow: var(--shadow-volt-glow);
+}
+.btn-volt:active { transform: scale(0.98); }
+
+.btn-outline-volt {
+  background: transparent;
+  color: var(--color-brand-400);
+  border: 1.5px solid rgb(143 214 0 / 0.4);
+  font-weight: 600;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+.btn-outline-volt:hover {
+  background: rgb(143 214 0 / 0.08);
+  border-color: var(--color-brand-400);
+}
+
+/* ── Selection ──────────────────────────────────────────────────────────── */
+::selection {
+  background: rgb(143 214 0 / 0.2);
+  color: inherit;
 }

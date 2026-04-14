@@ -1,37 +1,60 @@
 ---
 /**
- * Reusable page hero header used on directory hub pages.
+ * Reusable page hero header for directory hub pages.
+ * Dark background with volt green accents and circuit texture.
  */
 interface Props {
   eyebrow?: string;
   title: string;
   subtitle?: string;
   imageUrl?: string;
+  /** Show the volt accent bar above the eyebrow */
+  showBar?: boolean;
 }
 
-const { eyebrow, title, subtitle, imageUrl } = Astro.props;
+const { eyebrow, title, subtitle, imageUrl, showBar = true } = Astro.props;
 ---
 
-<section class="relative overflow-hidden bg-surface-950 py-12 md:py-16">
+<section class="relative overflow-hidden bg-night-900">
+
+  <!-- Background photo with darkening overlay -->
   {imageUrl && (
-    <div class="absolute inset-0">
-      <img src={imageUrl} alt="" class="h-full w-full object-cover opacity-20" loading="lazy" />
-      <div class="absolute inset-0 bg-gradient-to-r from-surface-950 via-surface-950/80 to-transparent"></div>
+    <div class="absolute inset-0 pointer-events-none">
+      <img src={imageUrl} alt="" class="h-full w-full object-cover opacity-15" loading="lazy" />
+      <div class="absolute inset-0 bg-gradient-to-r from-night-900 via-night-900/85 to-night-900/50"></div>
     </div>
   )}
-  <div class="absolute inset-0 bg-dot-grid opacity-10 pointer-events-none"></div>
-  <div class="absolute -top-20 right-0 h-64 w-64 rounded-full bg-brand-600/15 blur-3xl pointer-events-none"></div>
 
-  <div class="relative mx-auto max-w-7xl page-x">
-    {eyebrow && (
-      <p class="text-xs font-semibold uppercase tracking-widest text-brand-400">{eyebrow}</p>
+  <!-- Circuit grid texture -->
+  <div class="absolute inset-0 bg-circuit opacity-60 pointer-events-none"></div>
+
+  <!-- Volt glow orb (top right) -->
+  <div class="absolute -top-24 right-0 h-72 w-72 rounded-full bg-brand-400/10 blur-3xl pointer-events-none"></div>
+  <!-- Secondary teal orb (bottom left) -->
+  <div class="absolute bottom-0 -left-16 h-48 w-48 rounded-full bg-electric-500/8 blur-3xl pointer-events-none"></div>
+
+  <div class="relative mx-auto max-w-7xl page-x py-14 md:py-18">
+
+    {showBar && (
+      <div class="mb-4 w-10 h-[3px] rounded-full bg-gradient-to-r from-brand-400 to-electric-400"></div>
     )}
-    <h1 class="font-display mt-2 text-3xl font-extrabold text-white md:text-4xl lg:text-5xl">
+
+    {eyebrow && (
+      <p class="text-xs font-700 uppercase tracking-[0.14em] text-brand-400 mb-3">
+        {eyebrow}
+      </p>
+    )}
+
+    <h1 class="font-display text-3xl font-700 tracking-tight text-white md:text-4xl lg:text-5xl leading-[1.1]">
       {title}
     </h1>
+
     {subtitle && (
-      <p class="mt-3 max-w-2xl text-lg text-surface-400">{subtitle}</p>
+      <p class="mt-4 max-w-2xl text-lg text-night-300 leading-relaxed">
+        {subtitle}
+      </p>
     )}
+
     <slot />
   </div>
 </section>

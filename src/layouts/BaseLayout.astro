@@ -22,11 +22,11 @@ const fullOgImage = ogImage.startsWith('http') ? ogImage : `${siteUrl}${ogImage}
 
 const currentPath = Astro.url.pathname;
 const navLinks = [
-  { href: '/shops/', label: 'Find Shops' },
-  { href: '/brands/', label: 'Brands' },
-  { href: '/bikes/', label: 'Bikes' },
-  { href: '/best/', label: 'Best Picks' },
-  { href: '/guides/', label: 'Guides' },
+  { href: '/shops/',   label: 'Find Shops' },
+  { href: '/brands/',  label: 'Brands' },
+  { href: '/bikes/',   label: 'Bikes' },
+  { href: '/best/',    label: 'Best Picks' },
+  { href: '/guides/',  label: 'Guides' },
 ];
 ---
 
@@ -40,18 +40,18 @@ const navLinks = [
     <link rel="canonical" href={canonicalUrl} />
 
     <!-- Open Graph -->
-    <meta property="og:type" content="website" />
-    <meta property="og:title" content={title} />
+    <meta property="og:type"        content="website" />
+    <meta property="og:title"       content={title} />
     <meta property="og:description" content={description} />
-    <meta property="og:image" content={fullOgImage} />
-    <meta property="og:url" content={canonicalUrl} />
-    <meta property="og:site_name" content="eBikeLocal" />
+    <meta property="og:image"       content={fullOgImage} />
+    <meta property="og:url"         content={canonicalUrl} />
+    <meta property="og:site_name"   content="eBikeLocal" />
 
     <!-- Twitter Card -->
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content={title} />
+    <meta name="twitter:card"        content="summary_large_image" />
+    <meta name="twitter:title"       content={title} />
     <meta name="twitter:description" content={description} />
-    <meta name="twitter:image" content={fullOgImage} />
+    <meta name="twitter:image"       content={fullOgImage} />
 
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -64,42 +64,52 @@ const navLinks = [
 
   <body class="min-h-screen bg-white text-surface-900 font-sans antialiased">
 
-    <!-- ── Navigation ── -->
-    <header id="site-header" class="sticky top-0 z-50 transition-all duration-200">
-      <div class="border-b border-surface-200/80 bg-white/95 backdrop-blur-md">
-        <nav class="mx-auto flex max-w-7xl items-center justify-between page-x py-3">
+    <!-- ══════════════════════════════════════════════════════════
+         NAVIGATION — dark with volt green accents
+    ═══════════════════════════════════════════════════════════════ -->
+    <header id="site-header" class="sticky top-0 z-50">
+      <div class="bg-night-900/98 backdrop-blur-md border-b border-white/[0.06]">
+        <nav class="mx-auto flex max-w-7xl items-center justify-between page-x py-3.5">
 
           <!-- Logo -->
-          <a href="/" class="flex items-center gap-2.5 group" aria-label="eBikeLocal home">
-            <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-brand-600 shadow-sm group-hover:bg-brand-700 transition-colors">
-              <svg viewBox="0 0 32 32" fill="none" class="h-5 w-5">
-                <circle cx="8" cy="22" r="5" stroke="white" stroke-width="2" fill="none"/>
-                <circle cx="24" cy="22" r="5" stroke="white" stroke-width="2" fill="none"/>
-                <path d="M8 22 L16 12 L24 22" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M16 12 L18 22" stroke="white" stroke-width="2" stroke-linecap="round"/>
-                <path d="M20 12 L24 12 L24 15" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M13 12 L19 12" stroke="white" stroke-width="1.8" stroke-linecap="round"/>
-                <path d="M15 7 L13 11 L15.5 11 L13.5 16 L19 10 L16 10 L18 7 Z" fill="#fbbf24"/>
+          <a href="/" class="flex items-center gap-3 group" aria-label="eBikeLocal home">
+            <!-- Icon: bicycle silhouette with lightning bolt -->
+            <div class="relative flex h-9 w-9 items-center justify-center rounded-xl bg-night-800 border border-white/10 group-hover:border-brand-400/40 transition-colors">
+              <svg viewBox="0 0 32 32" fill="none" class="h-[22px] w-[22px]" aria-hidden="true">
+                <!-- Wheels -->
+                <circle cx="7"  cy="22" r="4.5" stroke="#8fd600" stroke-width="1.8" fill="none"/>
+                <circle cx="25" cy="22" r="4.5" stroke="#8fd600" stroke-width="1.8" fill="none"/>
+                <!-- Frame -->
+                <path d="M7 22 L15.5 12 L25 22" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" opacity="0.9"/>
+                <path d="M15.5 12 L17.5 22" stroke="white" stroke-width="1.6" stroke-linecap="round" opacity="0.9"/>
+                <!-- Handlebars -->
+                <path d="M21 12 L25 12 L25 15" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" opacity="0.7"/>
+                <!-- Stem -->
+                <path d="M13 12 L19 12" stroke="white" stroke-width="1.6" stroke-linecap="round" opacity="0.7"/>
+                <!-- Lightning bolt (volt green) -->
+                <path d="M15 7 L12.5 11.5 L15.5 11.5 L13 16.5 L19.5 10 L16 10 L18 7 Z" fill="#8fd600"/>
               </svg>
             </div>
             <div class="leading-tight">
-              <span class="font-display text-lg font-bold text-surface-900 group-hover:text-brand-600 transition-colors">
-                eBike<span class="text-brand-600">Local</span>
+              <span class="font-display text-[1.1rem] font-700 tracking-tight">
+                <span class="text-white">eBike</span><span class="text-brand-400">Local</span>
               </span>
-              <span class="hidden sm:block text-[10px] font-medium tracking-wide text-surface-400 uppercase -mt-0.5">Find. Compare. Ride.</span>
+              <span class="hidden sm:block text-[9px] font-600 tracking-[0.12em] text-night-400 uppercase -mt-0.5">
+                Find · Compare · Ride
+              </span>
             </div>
           </a>
 
-          <!-- Desktop nav -->
-          <ul class="hidden items-center gap-1 lg:flex">
+          <!-- Desktop nav links -->
+          <ul class="hidden items-center gap-0.5 lg:flex">
             {navLinks.map(link => (
               <li>
                 <a
                   href={link.href}
-                  class={`relative px-3 py-1.5 text-sm font-medium rounded-lg transition-colors ${
+                  class={`relative px-3.5 py-2 text-sm font-500 rounded-lg transition-colors duration-150 ${
                     currentPath.startsWith(link.href)
-                      ? 'text-brand-600 bg-brand-50'
-                      : 'text-surface-600 hover:text-surface-900 hover:bg-surface-50'
+                      ? 'text-brand-400 bg-brand-400/10'
+                      : 'text-night-300 hover:text-white hover:bg-white/[0.06]'
                   }`}
                 >
                   {link.label}
@@ -108,52 +118,47 @@ const navLinks = [
             ))}
           </ul>
 
-          <!-- Right side -->
-          <div class="flex items-center gap-2">
+          <!-- Right: CTA + Mobile toggle -->
+          <div class="flex items-center gap-2.5">
             <a
               href="/shops/"
-              class="hidden sm:inline-flex items-center gap-1.5 rounded-lg bg-brand-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-brand-700 transition-colors"
+              class="hidden sm:inline-flex items-center gap-1.5 btn-volt rounded-lg px-4 py-2 text-sm"
             >
-              <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+              <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
               Find a Shop
             </a>
 
-            <!-- Mobile menu button -->
             <button
               id="mobile-menu-btn"
-              class="lg:hidden flex h-9 w-9 items-center justify-center rounded-lg text-surface-600 hover:bg-surface-100 transition-colors"
+              class="lg:hidden flex h-9 w-9 items-center justify-center rounded-lg text-night-300 hover:bg-white/[0.07] hover:text-white transition-colors"
               aria-label="Open menu"
               aria-expanded="false"
             >
-              <svg id="menu-icon" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
-              <svg id="close-icon" class="h-5 w-5 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-              </svg>
+              <svg id="menu-icon"  class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
+              <svg id="close-icon" class="h-5 w-5 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
             </button>
           </div>
         </nav>
 
-        <!-- Mobile nav -->
-        <div id="mobile-menu" class="hidden border-t border-surface-100 lg:hidden">
+        <!-- Mobile menu -->
+        <div id="mobile-menu" class="hidden border-t border-white/[0.05] lg:hidden">
           <div class="mx-auto max-w-7xl page-x py-3 space-y-0.5">
             {navLinks.map(link => (
               <a
                 href={link.href}
-                class={`flex items-center py-2.5 px-3 rounded-lg text-sm font-medium transition-colors ${
+                class={`flex items-center py-2.5 px-3.5 rounded-lg text-sm font-500 transition-colors ${
                   currentPath.startsWith(link.href)
-                    ? 'text-brand-600 bg-brand-50'
-                    : 'text-surface-700 hover:text-surface-900 hover:bg-surface-50'
+                    ? 'text-brand-400 bg-brand-400/10'
+                    : 'text-night-200 hover:text-white hover:bg-white/[0.06]'
                 }`}
               >
                 {link.label}
               </a>
             ))}
             <div class="pt-2 pb-1">
-              <a href="/shops/" class="flex items-center justify-center gap-2 rounded-lg bg-brand-600 py-2.5 text-sm font-semibold text-white">
+              <a href="/shops/" class="btn-volt flex items-center justify-center gap-2 rounded-lg py-2.5 text-sm">
                 Find a Shop Near Me
               </a>
             </div>
@@ -162,77 +167,101 @@ const navLinks = [
       </div>
     </header>
 
-    <!-- ── Main content ── -->
+    <!-- Main content -->
     <main>
       <slot />
     </main>
 
-    <!-- ── Footer ── -->
-    <footer class="border-t border-surface-100 bg-surface-950 text-surface-400">
-      <div class="mx-auto max-w-7xl page-x py-14">
+    <!-- ══════════════════════════════════════════════════════════
+         FOOTER
+    ═══════════════════════════════════════════════════════════════ -->
+    <footer class="bg-night-950 text-night-400">
+
+      <!-- Volt accent line at top -->
+      <div class="h-px bg-gradient-to-r from-transparent via-brand-400/60 to-transparent"></div>
+
+      <div class="mx-auto max-w-7xl page-x pt-14 pb-10">
         <div class="grid gap-10 sm:grid-cols-2 lg:grid-cols-5">
-          <!-- Brand -->
+
+          <!-- Brand column -->
           <div class="lg:col-span-2">
-            <a href="/" class="flex items-center gap-2.5">
-              <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-brand-600">
-                <svg viewBox="0 0 32 32" fill="none" class="h-5 w-5">
-                  <circle cx="8" cy="22" r="5" stroke="white" stroke-width="2" fill="none"/>
-                  <circle cx="24" cy="22" r="5" stroke="white" stroke-width="2" fill="none"/>
-                  <path d="M8 22 L16 12 L24 22" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                  <path d="M16 12 L18 22" stroke="white" stroke-width="2" stroke-linecap="round"/>
-                  <path d="M15 7 L13 11 L15.5 11 L13.5 16 L19 10 L16 10 L18 7 Z" fill="#fbbf24"/>
+            <a href="/" class="inline-flex items-center gap-3 group">
+              <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-night-800 border border-white/10">
+                <svg viewBox="0 0 32 32" fill="none" class="h-[22px] w-[22px]" aria-hidden="true">
+                  <circle cx="7"  cy="22" r="4.5" stroke="#8fd600" stroke-width="1.8" fill="none"/>
+                  <circle cx="25" cy="22" r="4.5" stroke="#8fd600" stroke-width="1.8" fill="none"/>
+                  <path d="M7 22 L15.5 12 L25 22" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" opacity="0.9"/>
+                  <path d="M15.5 12 L17.5 22" stroke="white" stroke-width="1.6" stroke-linecap="round" opacity="0.9"/>
+                  <path d="M15 7 L12.5 11.5 L15.5 11.5 L13 16.5 L19.5 10 L16 10 L18 7 Z" fill="#8fd600"/>
                 </svg>
               </div>
-              <span class="font-display text-lg font-bold text-white">eBike<span class="text-brand-400">Local</span></span>
+              <span class="font-display text-lg font-700">
+                <span class="text-white">eBike</span><span class="text-brand-400">Local</span>
+              </span>
             </a>
-            <p class="mt-3 text-sm leading-relaxed">
+            <p class="mt-4 text-sm leading-relaxed max-w-xs">
               The only directory that tells you which eBike brands each shop carries. Find local dealers, compare models, and ride smarter.
             </p>
-            <p class="mt-4 text-xs text-surface-600">
-              We earn commissions from affiliate links. This doesn't affect our editorial independence.
+            <p class="mt-5 text-xs text-night-600">
+              We earn commissions from some links — this doesn't affect our editorial independence.
             </p>
           </div>
 
           <div>
-            <h4 class="text-xs font-semibold uppercase tracking-wider text-surface-500 mb-3">Directory</h4>
-            <ul class="space-y-2 text-sm">
-              <li><a href="/shops/" class="hover:text-white transition-colors">Shop Directory</a></li>
-              <li><a href="/brands/" class="hover:text-white transition-colors">eBike Brands</a></li>
-              <li><a href="/bikes/" class="hover:text-white transition-colors">Browse Bikes</a></li>
-              <li><a href="/categories/" class="hover:text-white transition-colors">Categories</a></li>
+            <h4 class="text-xs font-700 uppercase tracking-widest text-night-500 mb-4">Directory</h4>
+            <ul class="space-y-2.5 text-sm">
+              {[
+                { href: '/shops/',      label: 'Shop Directory' },
+                { href: '/brands/',     label: 'eBike Brands' },
+                { href: '/bikes/',      label: 'Browse Bikes' },
+                { href: '/categories/', label: 'Categories' },
+              ].map(l => (
+                <li><a href={l.href} class="link-hover hover:text-brand-400 transition-colors">{l.label}</a></li>
+              ))}
             </ul>
           </div>
 
           <div>
-            <h4 class="text-xs font-semibold uppercase tracking-wider text-surface-500 mb-3">Resources</h4>
-            <ul class="space-y-2 text-sm">
-              <li><a href="/best/" class="hover:text-white transition-colors">Best Picks</a></li>
-              <li><a href="/guides/" class="hover:text-white transition-colors">Guides</a></li>
-              <li><a href="/guides/ebike-laws-by-state/" class="hover:text-white transition-colors">eBike Laws</a></li>
+            <h4 class="text-xs font-700 uppercase tracking-widest text-night-500 mb-4">Resources</h4>
+            <ul class="space-y-2.5 text-sm">
+              {[
+                { href: '/best/',                      label: 'Best Picks 2026' },
+                { href: '/guides/',                    label: 'eBike Guides' },
+                { href: '/guides/ebike-laws-by-state/', label: 'eBike Laws' },
+                { href: '/guides/ebike-tax-credit-2026/', label: 'Tax Credit 2026' },
+              ].map(l => (
+                <li><a href={l.href} class="link-hover hover:text-brand-400 transition-colors">{l.label}</a></li>
+              ))}
             </ul>
           </div>
 
           <div>
-            <h4 class="text-xs font-semibold uppercase tracking-wider text-surface-500 mb-3">Company</h4>
-            <ul class="space-y-2 text-sm">
-              <li><a href="/disclosure/" class="hover:text-white transition-colors">Affiliate Disclosure</a></li>
-              <li><a href="/privacy/" class="hover:text-white transition-colors">Privacy Policy</a></li>
-              <li><a href="/terms/" class="hover:text-white transition-colors">Terms of Service</a></li>
+            <h4 class="text-xs font-700 uppercase tracking-widest text-night-500 mb-4">Company</h4>
+            <ul class="space-y-2.5 text-sm">
+              {[
+                { href: '/disclosure/', label: 'Affiliate Disclosure' },
+                { href: '/privacy/',    label: 'Privacy Policy' },
+                { href: '/terms/',      label: 'Terms of Service' },
+              ].map(l => (
+                <li><a href={l.href} class="link-hover hover:text-brand-400 transition-colors">{l.label}</a></li>
+              ))}
             </ul>
           </div>
         </div>
 
-        <div class="mt-12 flex flex-col items-center justify-between gap-4 border-t border-surface-800 pt-8 text-xs sm:flex-row">
-          <p>&copy; {new Date().getFullYear()} eBikeLocal. All rights reserved.</p>
-          <p class="text-surface-600">Built for eBike riders, by eBike riders.</p>
+        <!-- Bottom bar -->
+        <div class="mt-12 pt-6 border-t border-white/[0.05] flex flex-col items-center justify-between gap-3 text-xs sm:flex-row">
+          <p>&copy; {new Date().getFullYear()} eBikeLocal.com &mdash; All rights reserved.</p>
+          <p class="text-night-600">Made for eBike riders, by eBike riders.</p>
         </div>
       </div>
     </footer>
 
+    <!-- ── Scripts ───────────────────────────────────────────────── -->
     <script>
-      const btn = document.getElementById('mobile-menu-btn');
-      const menu = document.getElementById('mobile-menu');
-      const menuIcon = document.getElementById('menu-icon');
+      const btn       = document.getElementById('mobile-menu-btn');
+      const menu      = document.getElementById('mobile-menu');
+      const menuIcon  = document.getElementById('menu-icon');
       const closeIcon = document.getElementById('close-icon');
 
       btn?.addEventListener('click', () => {
@@ -243,13 +272,13 @@ const navLinks = [
         closeIcon?.classList.toggle('hidden');
       });
 
-      // Shadow nav on scroll
+      // Slightly tint nav bg on scroll
       const header = document.getElementById('site-header');
       window.addEventListener('scroll', () => {
-        if (window.scrollY > 10) {
-          header?.classList.add('shadow-sm');
+        if (window.scrollY > 8) {
+          header?.querySelector('div')?.classList.add('shadow-lg', 'shadow-black/30');
         } else {
-          header?.classList.remove('shadow-sm');
+          header?.querySelector('div')?.classList.remove('shadow-lg', 'shadow-black/30');
         }
       }, { passive: true });
     </script>

@@ -309,40 +309,45 @@
 
 ### Deduplication Engine
 
-- [ ] Build address normalization function (strip suite numbers, standardize abbreviations)
-- [ ] Build fuzzy name matching using `pg_trgm` similarity (threshold 0.6)
-- [ ] Build coordinate proximity check (<50m)
-- [ ] Match brand dealer data against Google Places data
-- [ ] Merge duplicates — prefer Google Places as canonical, enrich with brand data
-- [ ] Generate deduplication report with confidence scores
+- [x] Build address normalization function (strip suite numbers, standardize abbreviations)
+- [x] Build fuzzy name matching using `pg_trgm` similarity (threshold 0.5–0.7 adaptive)
+- [x] Build coordinate proximity check (<55m strong, <110m with name sim)
+- [x] Match brand dealer data against Google Places data
+- [x] Merge duplicates — prefer Google Places as canonical, enrich with brand data
+- [x] Generate deduplication report with confidence scores
+- Script: `scripts/phase6/deduplication.mjs`
 
 ### eBike Classification Pipeline
 
-- [ ] Implement text query signal scoring (base 0.3 for eBike-specific query results)
-- [ ] Implement Google review text analysis for eBike brand mentions (+0.2)
-- [ ] Implement shop website scraping for eBike keywords (+0.2)
-- [ ] Implement brand dealer cross-reference scoring (+0.3, auto-confirms)
-- [ ] Implement Google summary field analysis (+0.1)
-- [ ] Calculate `ebike_confidence_score` for all shops
-- [ ] Set `is_ebike_specialist = true` for score >= 0.8
-- [ ] Filter: include only shops with score >= 0.5
+- [x] Implement text query signal scoring (+0.30 for eBike-specific query results)
+- [ ] Implement Google review text analysis for eBike brand mentions (deferred — review texts not stored in enrichment pass)
+- [x] Implement shop website scraping for eBike keywords (+0.20, `--website-check` flag)
+- [x] Implement brand dealer cross-reference scoring (+0.30, auto-confirms)
+- [x] Implement Google summary field analysis (+0.10)
+- [x] Implement shop name keyword scoring (+0.15)
+- [x] Calculate `ebike_confidence_score` for all shops
+- [x] Set `is_ebike_specialist = true` for score >= 0.8
+- [x] Filter: `--apply-filter` marks shops < 0.5 as inactive
+- Script: `scripts/phase6/classify-ebike.mjs`
 
 ### Shop-Brand Junction Population
 
-- [ ] Cross-reference each brand's dealer list against unified shop records
-- [ ] Populate `shop_brands` table with source and verification data
-- [ ] Generate "brands carried" counts per shop
-- [ ] Generate "shops carrying [brand]" counts per brand
-- [ ] Identify shops carrying 3+ brands (likely eBike specialists)
+- [x] Cross-reference each brand's dealer list against unified shop records
+- [x] Populate `shop_brands` table with source and verification data
+- [x] Generate "brands carried" counts per shop
+- [x] Generate "shops carrying [brand]" counts per brand
+- [x] Identify shops carrying 3+ brands (likely eBike specialists)
+- Script: `scripts/phase6/populate-shop-brands.mjs`
 
 ### Geographic Data Population
 
 - [x] Populate `states` table (50 states + DC)
 - [x] Research and populate state eBike law fields for all states
-- [ ] Populate `cities` table from shop data (unique city/state combinations)
-- [ ] Calculate and store `shop_count` for each city and state
-- [ ] Set `has_dedicated_page = true` for cities with 2+ shops
-- [ ] Generate city slugs (lowercase, hyphenated)
+- [x] Populate `cities` table from shop data (unique city/state combinations)
+- [x] Calculate and store `shop_count` for each city and state
+- [x] Set `has_dedicated_page = true` for cities with 2+ shops
+- [x] Generate city slugs (lowercase, hyphenated)
+- Script: `scripts/phase6/populate-geography.mjs`
 
 ### Brand & Product Data Population
 
@@ -350,8 +355,9 @@
   - [x] Name, slug, logo, website, description
   - [x] Affiliate program details (platform, commission rate, cookie duration)
   - [x] Dealer locator URL, estimated US dealers
+  - [x] logo_url populated for all 15 brands (public/logos/brands/)
 - [x] Seed `categories` table with 10 primary eBike categories
-- [ ] Begin populating `bikes` table with top models per brand (MVP: 5–10 per brand)
+- [ ] Begin populating `bikes` table with top models per brand (MVP: 5–10 per brand) — deferred to Phase 7
   - [ ] Model name, slug, MSRP, category, class
   - [ ] Motor specs, battery specs, range, weight
   - [ ] Hero image, affiliate URL, buy URLs
@@ -360,16 +366,28 @@
 
 ## Phase 7: Content Creation (Week 6–7)
 
+### Data Foundation
+
+- [x] Seed `bikes` table with top models per brand (38 bikes across all 15 brands)
+  - Script: `scripts/seed-bikes.mjs`
+- [x] Set up Astro content collections (`src/content.config.ts`)
+  - Collections: `guides`, `bestOf`
+
 ### Editorial Guides
 
-- [ ] Write "eBike Tax Credit 2026" comprehensive guide
-- [ ] Write "eBike Laws by State" hub page intro
-- [ ] Write "eBike Classes Explained (Class 1 vs 2 vs 3)" guide
-- [ ] Write "How to Choose an eBike" buying guide
-- [ ] Write "What to Look for in an eBike Shop" guide
-- [ ] Populate state-specific law data for all 50 states (programmatic from `states` table)
-- [ ] Write 5 "Best eBikes Under $X" buying guides (under $1000, $1500, $2000, $2500, $3000)
-- [ ] Write brand overview descriptions for all 15 brands
+- [x] Write "eBike Tax Credit 2026" comprehensive guide
+- [x] Write "eBike Laws by State" hub page intro
+- [x] Write "eBike Classes Explained (Class 1 vs 2 vs 3)" guide
+- [x] Write "How to Choose an eBike" buying guide
+- [x] Write "What to Look for in an eBike Shop" guide
+- [x] Populate state-specific law data for all 50 states (programmatic from `states` table — already complete)
+- [x] Write "Best eBikes Under $1,000" buying guide
+- [x] Write "Best eBikes Under $1,500" buying guide
+- [x] Write "Best eBikes Under $2,000" buying guide
+- [x] Write "Best eBikes Under $2,500" buying guide
+- [x] Write "Best eBikes Under $3,000" buying guide
+- [x] Stock photo library sourced from Pexels (12 images, src/lib/images.ts)
+- [x] Brand descriptions present in seed data for all 15 brands
 
 ### Templated Content (Unique Per Page)
 
