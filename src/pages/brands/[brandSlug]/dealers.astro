@@ -3,7 +3,7 @@ export const prerender = false;
 
 import BaseLayout from '@layouts/BaseLayout.astro';
 import Breadcrumb from '@components/ui/Breadcrumb.astro';
-import ShopCard from '@components/ui/ShopCard.astro';
+import MultiPinMap from '@components/ui/MultiPinMap.astro';
 import sql from '@lib/neon';
 
 const { brandSlug } = Astro.params;
@@ -12,54 +12,210 @@ const [brand] = await sql`SELECT * FROM brands WHERE slug = ${brandSlug} LIMIT 1
 if (!brand) return Astro.redirect('/404');
 
 const shops = await sql`
-  SELECT s.*, st.slug as state_slug, c.slug as city_slug,
-         array_agg(DISTINCT b2.name) FILTER (WHERE b2.name IS NOT NULL) as brand_names
+  SELECT s.id, s.name, s.slug, s.address_line1, s.city, s.state_code, s.zip_code,
+         s.latitude, s.longitude, s.google_rating, s.google_review_count,
+         s.phone, s.website_url,
+         st.slug as state_slug, st.name as state_name,
+         c.slug as city_slug
   FROM shop_brands sb
   JOIN shops s ON s.id = sb.shop_id
   JOIN states st ON st.code = s.state_code
   JOIN cities c ON c.name = s.city AND c.state_code = s.state_code
-  LEFT JOIN shop_brands sb2 ON sb2.shop_id = s.id
-  LEFT JOIN brands b2 ON b2.id = sb2.brand_id
   WHERE sb.brand_id = ${brand.id}
     AND (s.google_business_status IS NULL OR s.google_business_status != 'CLOSED_PERMANENTLY')
-  GROUP BY s.id, st.slug, c.slug
-  ORDER BY s.state, s.city, s.name
+  ORDER BY s.state_code, s.city, s.name
 `;
+
+const mapPins = shops
+  .filter((s: any) => s.latitude && s.longitude)
+  .map((s: any) => ({
+    name: `${s.name} — ${s.city}, ${s.state_code}`,
+    href: `/shops/${s.state_slug}/${s.city_slug}/${s.slug}/`,
+    latitude: Number(s.latitude),
+    longitude: Number(s.longitude),
+  }));
+
+// Group dealers by state for the list
+const byState: Record<string, any[]> = {};
+for (const shop of shops as any[]) {
+  const key = `${shop.state_code}||${shop.state_name}`;
+  if (!byState[key]) byState[key] = [];
+  byState[key].push(shop);
+}
+const stateGroups = Object.entries(byState).sort(([a], [b]) => a.localeCompare(b));
 ---
 
 <BaseLayout
-  title={`${brand.name} Dealers — Find Authorized ${brand.name} Shops Near You`}
-  description={`Find ${shops.length} authorized ${brand.name} dealers across the US. Locate your nearest ${brand.name} eBike shop.`}
+  title={`${brand.name} Dealers — Find Authorized ${brand.name} eBike Shops Near You`}
+  description={`Find ${shops.length} authorized ${brand.name} dealers across the US. Search by city or state to locate your nearest ${brand.name} eBike shop.`}
 >
+  <!-- Hero -->
+  <section class="relative overflow-hidden bg-night-900">
+    <div class="absolute inset-0 bg-circuit pointer-events-none opacity-60"></div>
+    <div class="absolute -top-24 right-0 h-72 w-72 rounded-full bg-brand-400/8 blur-3xl pointer-events-none"></div>
+    <div class="relative mx-auto max-w-7xl px-(--spacing-page) py-10 md:py-14">
+      <Breadcrumb items={[
+        { label: 'Home', href: '/' },
+        { label: 'Brands', href: '/brands/' },
+        { label: brand.name, href: `/brands/${brand.slug}/` },
+        { label: 'Dealers' },
+      ]} />
+
+      <div class="mt-5 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <div class="mb-3 w-8 h-[3px] rounded-full bg-gradient-to-r from-brand-400 to-electric-400"></div>
+          {brand.logo_url && (
+            <img src={brand.logo_url} alt={`${brand.name} logo`} class="mb-3 h-8 w-auto object-contain brightness-0 invert" loading="eager" />
+          )}
+          <h1 class="font-display text-3xl font-700 tracking-tight text-white md:text-4xl">
+            {brand.name} Dealers
+          </h1>
+          <p class="mt-2 text-night-300">
+            {shops.length} authorized dealers across {stateGroups.length} states
+          </p>
+        </div>
+
+        <a href={`/brands/${brand.slug}/`} class="btn-outline-volt inline-flex shrink-0 rounded-xl px-5 py-2.5 text-sm">
+          ← Back to {brand.name}
+        </a>
+      </div>
+    </div>
+  </section>
+
   <div class="mx-auto max-w-7xl px-(--spacing-page) py-8">
-    <Breadcrumb items={[
-      { label: 'Home', href: '/' },
-      { label: 'Brands', href: '/brands/' },
-      { label: brand.name, href: `/brands/${brand.slug}/` },
-      { label: 'Dealers' },
-    ]} />
 
-    <h1 class="mt-6 text-3xl font-extrabold text-surface-900">{brand.name} Dealers</h1>
-    <p class="mt-2 text-lg text-surface-700">{shops.length} authorized dealers across the US.</p>
+    <!-- Map -->
+    {mapPins.length > 0 && (
+      <div class="mb-8">
+        <MultiPinMap pins={mapPins} zoom={5} height="420px" />
+      </div>
+    )}
 
-    <div class="mt-8 space-y-3">
-      {shops.map((shop) => (
-        <ShopCard
-          name={shop.name}
-          slug={shop.slug}
-          stateSlug={shop.state_slug}
-          citySlug={shop.city_slug}
-          address={shop.address_line1 || ''}
-          city={shop.city}
-          stateCode={shop.state_code}
-          rating={shop.google_rating ? Number(shop.google_rating) : null}
-          reviewCount={shop.google_review_count}
-          brands={shop.brand_names || []}
-          services={shop.services || []}
-          featuredImageUrl={shop.featured_image_url}
-          isEbikeSpecialist={shop.is_ebike_specialist}
+    <!-- Search / filter -->
+    <div class="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+      <h2 class="text-xl font-700 text-surface-900">All {brand.name} Dealers</h2>
+      <div class="relative sm:w-72">
+        <svg class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-surface-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z"/>
+        </svg>
+        <input
+          id="dealer-search"
+          type="search"
+          placeholder="Filter by city or state…"
+          class="w-full rounded-xl border border-surface-200 bg-white py-2.5 pl-9 pr-4 text-sm text-surface-900 placeholder-surface-400 shadow-sm focus:border-brand-400 focus:outline-none focus:ring-2 focus:ring-brand-400/20"
         />
-      ))}
+      </div>
+    </div>
+
+    <!-- Dealer list grouped by state -->
+    <div id="dealer-list" class="space-y-8">
+      {stateGroups.map(([stateKey, stateshops]) => {
+        const [stateCode, stateName] = stateKey.split('||');
+        return (
+          <div class="state-group" data-state={`${stateName} ${stateCode}`.toLowerCase()}>
+            <h3 class="mb-3 flex items-center gap-2 text-sm font-700 uppercase tracking-widest text-surface-500">
+              <span class="inline-flex h-6 w-6 items-center justify-center rounded bg-surface-100 text-xs font-700 text-surface-600">{stateCode}</span>
+              {stateName}
+              <span class="text-surface-400 normal-case tracking-normal font-500">({stateshops.length})</span>
+            </h3>
+            <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              {stateshops.map((shop: any) => (
+                <a
+                  href={`/shops/${shop.state_slug}/${shop.city_slug}/${shop.slug}/`}
+                  class="dealer-card group flex flex-col rounded-xl border border-surface-200 bg-white p-4 shadow-sm transition-all hover:border-brand-300 hover:shadow-md"
+                  data-search={`${shop.name} ${shop.city} ${shop.state_code} ${shop.state_name}`.toLowerCase()}
+                >
+                  <span class="font-600 text-surface-900 group-hover:text-brand-600 transition-colors leading-snug">
+                    {shop.name}
+                  </span>
+                  <span class="mt-1 text-sm text-surface-500">
+                    {shop.city}, {shop.state_code}
+                    {shop.zip_code ? ` ${shop.zip_code}` : ''}
+                  </span>
+                  {shop.address_line1 && (
+                    <span class="mt-0.5 text-xs text-surface-400 truncate">{shop.address_line1}</span>
+                  )}
+                  {shop.google_rating && (
+                    <span class="mt-2 inline-flex items-center gap-1 text-xs text-surface-600">
+                      <svg class="h-3.5 w-3.5 text-amber-400 fill-amber-400" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>
+                      {Number(shop.google_rating).toFixed(1)}
+                      {shop.google_review_count ? <span class="text-surface-400">({shop.google_review_count})</span> : null}
+                    </span>
+                  )}
+                </a>
+              ))}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+
+    <!-- Empty state -->
+    <div id="no-results" class="hidden py-12 text-center">
+      <p class="text-surface-500">No dealers match your search.</p>
+      <button id="clear-search" class="mt-3 text-sm text-brand-600 hover:underline">Clear filter</button>
+    </div>
+
+    <!-- CTA -->
+    <div class="mt-12 rounded-2xl bg-night-900 p-7 relative overflow-hidden">
+      <div class="absolute inset-0 bg-circuit opacity-60 pointer-events-none"></div>
+      <div class="relative">
+        <div class="mb-3 w-8 h-[3px] rounded-full bg-gradient-to-r from-brand-400 to-electric-400"></div>
+        <h3 class="font-display text-lg font-700 text-white">Don't see a shop near you?</h3>
+        <p class="mt-1.5 text-sm text-night-400 max-w-md">
+          Browse all {brand.name} bikes online, or explore other brands available at your local eBike shop.
+        </p>
+        <div class="mt-4 flex flex-wrap gap-3">
+          {brand.website_url && (
+            <a href={brand.website_url} target="_blank" rel="noopener noreferrer" class="btn-volt inline-flex rounded-xl px-5 py-2.5 text-sm">
+              Shop {brand.name} Online →
+            </a>
+          )}
+          <a href="/shops/" class="btn-outline-volt inline-flex rounded-xl px-5 py-2.5 text-sm">
+            Find Local Shops
+          </a>
+        </div>
+      </div>
     </div>
   </div>
 </BaseLayout>
+
+<script>
+  const searchInput = document.getElementById('dealer-search') as HTMLInputElement | null;
+  const dealerList = document.getElementById('dealer-list');
+  const noResults = document.getElementById('no-results');
+  const clearBtn = document.getElementById('clear-search');
+
+  function filterDealers(query: string) {
+    const q = query.toLowerCase().trim();
+    const stateGroups = document.querySelectorAll<HTMLElement>('.state-group');
+    let totalVisible = 0;
+
+    stateGroups.forEach((group) => {
+      const cards = group.querySelectorAll<HTMLElement>('.dealer-card');
+      let groupVisible = 0;
+
+      cards.forEach((card) => {
+        const text = card.dataset.search || '';
+        const match = !q || text.includes(q);
+        card.style.display = match ? '' : 'none';
+        if (match) groupVisible++;
+      });
+
+      group.style.display = groupVisible > 0 ? '' : 'none';
+      totalVisible += groupVisible;
+    });
+
+    if (dealerList) dealerList.style.display = totalVisible > 0 ? '' : 'none';
+    if (noResults) noResults.classList.toggle('hidden', totalVisible > 0);
+  }
+
+  searchInput?.addEventListener('input', (e) => {
+    filterDealers((e.target as HTMLInputElement).value);
+  });
+
+  clearBtn?.addEventListener('click', () => {
+    if (searchInput) searchInput.value = '';
+    filterDealers('');
+  });
+</script>

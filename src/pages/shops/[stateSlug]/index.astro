@@ -1,11 +1,12 @@
 ---
 import BaseLayout from '@layouts/BaseLayout.astro';
 import Breadcrumb from '@components/ui/Breadcrumb.astro';
+import MultiPinMap from '@components/ui/MultiPinMap.astro';
 import sql from '@lib/neon';
 
 export async function getStaticPaths() {
   const states = await sql`SELECT code, name, slug, ebike_law_summary, ebike_classes_allowed, rebate_programs, shop_count FROM states`;
-  const cities = await sql`SELECT name, slug, state_code, shop_count FROM cities WHERE has_dedicated_page = true ORDER BY shop_count DESC`;
+  const cities = await sql`SELECT name, slug, state_code, shop_count, latitude, longitude FROM cities WHERE has_dedicated_page = true ORDER BY shop_count DESC`;
 
   return states.map((state) => ({
     params: { stateSlug: state.slug },
@@ -55,6 +56,23 @@ const jsonLd = {
     <p class="mt-2 text-lg text-surface-700">
       {state.shop_count || 0} electric bike shops across {cities.length} cities.
     </p>
+
+    <!-- State map with city markers -->
+    {(() => {
+      const cityPins = cities
+        .filter((c: any) => c.latitude && c.longitude)
+        .map((c: any) => ({
+          name: `${c.name} (${c.shop_count} shops)`,
+          href: `/shops/${state.slug}/${c.slug}/`,
+          latitude: Number(c.latitude),
+          longitude: Number(c.longitude),
+        }));
+      return cityPins.length > 0 ? (
+        <div class="mt-6">
+          <MultiPinMap pins={cityPins} zoom={7} height="380px" />
+        </div>
+      ) : null;
+    })()}
 
     <!-- Cities grid -->
     <section class="mt-10">

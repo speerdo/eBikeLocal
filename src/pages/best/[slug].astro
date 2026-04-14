@@ -19,6 +19,21 @@ const { title, description, publishedAt, updatedAt, heroImage, priceMax } = entr
 const dateStr = (updatedAt ?? publishedAt).toLocaleDateString('en-US', {
   year: 'numeric', month: 'long', day: 'numeric',
 });
+
+// Related guides: all bestOf entries except current
+const allBestOf = await getCollection('bestOf');
+const relatedGuides = allBestOf
+  .filter((e) => e.id !== entry.id)
+  .sort((a, b) => {
+    // Price guides first, then category guides
+    const aPrice = a.data.priceMax ?? 0;
+    const bPrice = b.data.priceMax ?? 0;
+    if (aPrice && bPrice) return aPrice - bPrice;
+    if (aPrice) return -1;
+    if (bPrice) return 1;
+    return a.data.title.localeCompare(b.data.title);
+  })
+  .slice(0, 5);
 ---
 
 <BaseLayout
@@ -132,24 +147,18 @@ const dateStr = (updatedAt ?? publishedAt).toLocaleDateString('en-US', {
       </div>
     </div>
 
-    <!-- Related price guides -->
-    <div class="mt-10">
-      <h3 class="text-sm font-700 uppercase tracking-widest text-surface-500 mb-4">More Buying Guides</h3>
-      <div class="flex flex-wrap gap-3">
-        {[
-          { title: 'Best Under $1,000', href: '/best/best-ebikes-under-1000/' },
-          { title: 'Best Under $1,500', href: '/best/best-ebikes-under-1500/' },
-          { title: 'Best Under $2,000', href: '/best/best-ebikes-under-2000/' },
-          { title: 'Best Under $2,500', href: '/best/best-ebikes-under-2500/' },
-          { title: 'Best Under $3,000', href: '/best/best-ebikes-under-3000/' },
-        ]
-        .filter(g => g.href !== Astro.url.pathname && g.href !== Astro.url.pathname + '/')
-        .map(g => (
-          <a href={g.href} class="rounded-xl border border-surface-200 bg-white px-4 py-2.5 text-sm font-500 text-surface-700 hover:border-brand-200 hover:text-brand-700 transition-colors shadow-card">
-            {g.title}
-          </a>
-        ))}
+    <!-- Related buying guides -->
+    {relatedGuides.length > 0 && (
+      <div class="mt-10">
+        <h3 class="text-sm font-700 uppercase tracking-widest text-surface-500 mb-4">More Buying Guides</h3>
+        <div class="flex flex-wrap gap-3">
+          {relatedGuides.map((g) => (
+            <a href={`/best/${g.id}/`} class="rounded-xl border border-surface-200 bg-white px-4 py-2.5 text-sm font-500 text-surface-700 hover:border-brand-200 hover:text-brand-700 transition-colors shadow-card">
+              {g.data.title}
+            </a>
+          ))}
+        </div>
       </div>
-    </div>
+    )}
   </div>
 </BaseLayout>
