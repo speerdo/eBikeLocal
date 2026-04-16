@@ -4,38 +4,64 @@ interface Props {
   latitude: number;
   longitude: number;
   zoom?: number;
+  height?: string;
+  /** Google Maps place URL from Places API; if missing, uses lat/lng search */
+  googleMapsUrl?: string | null;
 }
 
-const { name, latitude, longitude, zoom = 15 } = Astro.props;
+const { name, latitude, longitude, zoom = 15, height = '280px', googleMapsUrl } = Astro.props;
 
-const apiKey = import.meta.env.GOOGLE_MAPS_EMBED_KEY;
-const query = encodeURIComponent(name);
-const src = apiKey
-  ? `https://www.google.com/maps/embed/v1/place?key=${apiKey}&q=${query}&center=${latitude},${longitude}&zoom=${zoom}`
-  : null;
+const googleHref =
+  googleMapsUrl?.trim() ||
+  `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${latitude},${longitude}`)}`;
+
+const osmHref = `https://www.openstreetmap.org/?mlat=${latitude}&mlon=${longitude}#map=${zoom}/${latitude}/${longitude}`;
+
+const mapId = `map-embed-${Math.random().toString(36).slice(2, 10)}`;
+
+function escapeHtml(text: string): string {
+  return text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+const safeName = escapeHtml(name);
 ---
 
-{src ? (
-  <iframe
-    src={src}
-    width="100%"
-    height="300"
-    style="border:0;"
-    allowfullscreen
-    loading="lazy"
-    referrerpolicy="no-referrer-when-downgrade"
-    title={`Map showing ${name}`}
-    class="rounded-lg"
-  />
-) : (
-  <div class="flex h-[300px] items-center justify-center rounded-lg bg-surface-100 text-sm text-surface-700">
-    <a
-      href={`https://www.google.com/maps/search/?api=1&query=${latitude},${longitude}`}
-      target="_blank"
-      rel="noopener"
-      class="text-brand-600 hover:underline"
-    >
-      View on Google Maps →
-    </a>
-  </div>
-)}
+<div class="space-y-3">
+  <h3 class="font-bold text-surface-900">Location</h3>
+  <div id={mapId} style={`height: ${height}; width: 100%;`} class="z-0 overflow-hidden rounded-lg bg-surface-100"></div>
+  <p class="text-xs leading-relaxed text-surface-600">
+    <a href={googleHref} target="_blank" rel="noopener" class="text-brand-600 hover:underline">Open in Google Maps</a>
+    <span aria-hidden="true"> · </span>
+    <a href={osmHref} target="_blank" rel="noopener" class="text-brand-600 hover:underline">Open in OpenStreetMap</a>
+  </p>
+</div>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+<script define:vars={{ mapId, latitude, longitude, zoom, safeName }}>
+  async function initMap() {
+    const el = document.getElementById(mapId);
+    if (!el) return;
+
+    const L = await import('https://unpkg.com/leaflet@1.9.4/dist/leaflet-src.esm.js');
+    const map = L.map(mapId).setView([latitude, longitude], zoom);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+      maxZoom: 18,
+    }).addTo(map);
+
+    const marker = L.marker([latitude, longitude]).addTo(map);
+    marker.bindPopup(`<strong>${safeName}</strong>`);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initMap);
+  } else {
+    initMap();
+  }
+</script>

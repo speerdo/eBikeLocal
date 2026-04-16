@@ -5,6 +5,12 @@ import SpecRow from '@components/ui/SpecRow.astro';
 import CTAButton from '@components/ui/CTAButton.astro';
 import ProductSchema from '@components/seo/ProductSchema.astro';
 import sql from '@lib/neon';
+import {
+  bikeBrandHeroFallbackUrl,
+  bikeStockHeroUrl,
+  normalizeGalleryImageUrls,
+  pickBikeHeroImageUrl,
+} from '@lib/bikeImageUrl';
 
 export async function getStaticPaths() {
   const bikes = await sql`
@@ -29,6 +35,22 @@ const [bike] = await sql`
 `;
 
 if (!bike) return Astro.redirect('/404');
+
+const bikeHeroDisplayUrl = pickBikeHeroImageUrl({
+  slug: bike.slug,
+  brandSlug: bike.brand_slug,
+  heroImageUrl: bike.hero_image_url,
+  galleryImages: bike.gallery_images,
+  affiliateUrl: bike.affiliate_url,
+});
+const bikeHeroBrandFallback = bikeBrandHeroFallbackUrl(bike.brand_slug);
+const bikeHeroStockFallback = bikeStockHeroUrl(bike.slug, bike.brand_slug);
+const bikeImgBrandFallback =
+  bikeHeroBrandFallback && bikeHeroBrandFallback !== bikeHeroDisplayUrl ? bikeHeroBrandFallback : '';
+const bikeGalleryDisplayUrls = normalizeGalleryImageUrls(bike.gallery_images, bike.affiliate_url);
+const bikeGalleryThumbs = bikeHeroDisplayUrl
+  ? bikeGalleryDisplayUrls.filter((u) => u !== bikeHeroDisplayUrl).slice(0, 4)
+  : bikeGalleryDisplayUrls.slice(0, 4);
 
 const relatedBikes = await sql`
   SELECT bk.*, br.name as brand_name, br.slug as brand_slug
@@ -61,7 +83,7 @@ const buyUrls = bike.buy_urls || {};
     name={`${bike.brand_name} ${bike.model_name}`}
     brandName={bike.brand_name}
     description={bike.best_for || `${bike.category} eBike by ${bike.brand_name}`}
-    imageUrl={bike.hero_image_url}
+    imageUrl={bikeHeroDisplayUrl}
     msrp={bike.msrp}
     salePrice={bike.sale_price}
     rating={bike.expert_rating ? Number(bike.expert_rating) : null}
@@ -80,11 +102,15 @@ const buyUrls = bike.buy_urls || {};
     <div class="mt-6 grid gap-8 lg:grid-cols-2">
       <!-- Image -->
       <div>
-        {bike.hero_image_url ? (
+        {bikeHeroDisplayUrl ? (
           <img
-            src={bike.hero_image_url}
+            src={bikeHeroDisplayUrl}
             alt={`${bike.brand_name} ${bike.model_name}`}
             class="w-full rounded-lg bg-surface-50 object-contain p-8"
+            referrerpolicy="no-referrer"
+            data-brand-fallback={bikeImgBrandFallback}
+            data-stock-fallback={bikeHeroStockFallback}
+            onerror="(function(el){var b=el.dataset.brandFallback,s=el.dataset.stockFallback;el.onerror=function(){el.onerror=null;if(s&&el.src!==s)el.src=s;};if(b&&el.src!==b)el.src=b;else if(s&&el.src!==s)el.src=s;else el.onerror=null;})(this)"
           />
         ) : (
           <div class="flex h-96 items-center justify-center rounded-lg bg-surface-50">
@@ -92,9 +118,9 @@ const buyUrls = bike.buy_urls || {};
           </div>
         )}
 
-        {bike.gallery_images?.length > 0 && (
+        {bikeGalleryThumbs.length > 0 && (
           <div class="mt-3 grid grid-cols-4 gap-2">
-            {bike.gallery_images.slice(0, 4).map((img: string) => (
+            {bikeGalleryThumbs.map((img: string) => (
               <img src={img} alt="" class="rounded bg-surface-50 object-contain p-2 aspect-square" loading="lazy" />
             ))}
           </div>

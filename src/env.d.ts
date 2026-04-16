@@ -3,7 +3,6 @@
 interface ImportMetaEnv {
   readonly DATABASE_URL: string;
   readonly GOOGLE_PLACES_API_KEY: string;
-  readonly GOOGLE_MAPS_EMBED_KEY: string;
   readonly AVANTLINK_API_KEY: string;
   readonly SHAREASALE_API_TOKEN: string;
   readonly SHAREASALE_API_SECRET: string;

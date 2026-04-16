@@ -1,0 +1,117 @@
+/**
+ * Helpers for shop listing pages: Google Places opening hours shape + fallback copy.
+ */
+
+export type OpeningHoursRow = { day: string; hours: string };
+
+const GOOGLE_HOURS_METADATA_KEYS = new Set([
+  'openNow',
+  'periods',
+  'nextCloseTime',
+  'weekdayDescriptions',
+]);
+
+/**
+ * Maps `regularOpeningHours` from Places API (stored in shops.opening_hours) to table rows.
+ */
+export function getOpeningHoursRows(openingHours: unknown): OpeningHoursRow[] | null {
+  if (openingHours == null || typeof openingHours !== 'object' || Array.isArray(openingHours)) {
+    return null;
+  }
+
+  const o = openingHours as Record<string, unknown>;
+  const wd = o.weekdayDescriptions;
+
+  if (Array.isArray(wd) && wd.length > 0) {
+    const rows: OpeningHoursRow[] = [];
+    for (const line of wd) {
+      if (typeof line !== 'string') continue;
+      const trimmed = line.trim();
+      if (!trimmed) continue;
+      const idx = trimmed.indexOf(': ');
+      if (idx === -1) {
+        rows.push({ day: trimmed, hours: '' });
+      } else {
+        rows.push({
+          day: trimmed.slice(0, idx).trim(),
+          hours: trimmed.slice(idx + 2).trim(),
+        });
+      }
+    }
+    return rows.length > 0 ? rows : null;
+  }
+
+  // Legacy flat map { Monday: "9–5", ... }
+  const legacy: OpeningHoursRow[] = [];
+  for (const [k, v] of Object.entries(o)) {
+    if (GOOGLE_HOURS_METADATA_KEYS.has(k)) continue;
+    if (typeof v === 'string' && v.trim()) {
+      legacy.push({ day: k, hours: v.trim() });
+    }
+  }
+  return legacy.length > 0 ? legacy : null;
+}
+
+function formatBrandList(names: string[]): string {
+  if (names.length === 0) return '';
+  if (names.length === 1) return names[0];
+  if (names.length === 2) return `${names[0]} and ${names[1]}`;
+  return `${names.slice(0, -1).join(', ')}, and ${names[names.length - 1]}`;
+}
+
+/**
+ * Prefer Google editorial summary; otherwise compose a useful blurb from directory fields.
+ */
+export function buildShopAboutText(input: {
+  name: string;
+  city: string;
+  stateCode: string;
+  editorialDescription: string | null | undefined;
+  isEbikeSpecialist: boolean;
+  services: string[] | null | undefined;
+  brandNames: string[];
+}): string {
+  const editorial = input.editorialDescription?.trim();
+  if (editorial) return editorial;
+
+  const parts: string[] = [];
+
+  parts.push(
+    `${input.name} serves cyclists in ${input.city}, ${input.stateCode}, with bikes, accessories, and in-store support.`
+  );
+
+  if (input.isEbikeSpecialist) {
+    parts.push('The shop focuses on electric bikes and related expertise.');
+  }
+
+  if (input.brandNames.length > 0) {
+    if (input.brandNames.length <= 4) {
+      parts.push(`Carried brands include ${formatBrandList(input.brandNames)}.`);
+    } else {
+      parts.push(
+        `Carried brands include ${input.brandNames.slice(0, 4).join(', ')}, and others.`
+      );
+    }
+  }
+
+  if (input.services && input.services.length > 0) {
+    const shown = input.services.slice(0, 8);
+    const more = input.services.length > 8;
+    parts.push(
+      `Services include ${shown.join(', ')}${more ? ', and more' : ''}.`
+    );
+  }
+
+  parts.push('Contact the store for current inventory, pricing, and service availability.');
+
+  return parts.join(' ');
+}
+
+export function truncateForMetaDescription(text: string, max = 158): string {
+  const t = text.replace(/\s+/g, ' ').trim();
+  if (t.length <= max) return t;
+  const cut = t.slice(0, max);
+  const lastSpace = cut.lastIndexOf(' ');
+  const base = (lastSpace > 40 ? cut.slice(0, lastSpace) : cut).trimEnd();
+  return `${base}…`;
+}

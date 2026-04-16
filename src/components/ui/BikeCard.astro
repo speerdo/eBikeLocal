@@ -1,4 +1,6 @@
 ---
+import { bikeBrandHeroFallbackUrl, pickBikeHeroImageUrl } from '@lib/bikeImageUrl';
+
 interface Props {
   modelName: string;
   brandName: string;
@@ -7,6 +9,8 @@ interface Props {
   msrp?: number | null;
   salePrice?: number | null;
   heroImageUrl?: string | null;
+  /** Fallback when hero is missing or only stored as a relative URL */
+  galleryImages?: string[] | null;
   motorWatts?: number | null;
   batteryWh?: number | null;
   rangeMilesHigh?: number | null;
@@ -25,15 +29,27 @@ const {
   msrp,
   salePrice,
   heroImageUrl,
+  galleryImages,
+  affiliateUrl,
   motorWatts,
   batteryWh,
   rangeMilesHigh,
   bestFor,
   expertRating,
-  affiliateUrl,
   hasTorqueSensor,
   ebikeClass,
 } = Astro.props;
+
+const displayHeroUrl = pickBikeHeroImageUrl({
+  slug,
+  brandSlug,
+  heroImageUrl,
+  galleryImages,
+  affiliateUrl,
+});
+const brandHeroFallbackUrl = bikeBrandHeroFallbackUrl(brandSlug);
+const imgBrandFallback =
+  brandHeroFallbackUrl && brandHeroFallbackUrl !== displayHeroUrl ? brandHeroFallbackUrl : '';
 
 const displayPrice = salePrice || msrp;
 const hasDiscount  = salePrice && msrp && salePrice < msrp;
@@ -68,12 +84,15 @@ const ratingBg = expertRating
 
   <!-- Image area -->
   <a href={href} class="block overflow-hidden" tabindex="-1" aria-hidden="true">
-    {heroImageUrl ? (
+    {displayHeroUrl ? (
       <img
-        src={heroImageUrl}
+        src={displayHeroUrl}
         alt={`${brandName} ${modelName}`}
         class="h-52 w-full bg-surface-50 object-contain p-4 transition-transform duration-300 group-hover:scale-105"
         loading="lazy"
+        referrerpolicy="no-referrer"
+        data-brand-fallback={imgBrandFallback}
+        onerror="(function(el){var b=el.dataset.brandFallback;if(b&&el.src!==b){el.src=b;}else{el.onerror=null;el.style.visibility='hidden';}})(this)"
       />
     ) : (
       <div class="flex h-52 w-full items-center justify-center bg-gradient-to-br from-surface-50 to-surface-100">

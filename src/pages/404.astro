@@ -1,0 +1,75 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+
+const suggestions = [
+  { label: 'Find a Shop Near You', href: '/shops/', icon: '📍' },
+  { label: 'Browse eBike Brands',  href: '/brands/', icon: '🏷️' },
+  { label: 'Compare Bikes',        href: '/bikes/', icon: '🚲' },
+  { label: 'Buying Guides',        href: '/best/', icon: '⭐' },
+];
+---
+
+<BaseLayout
+  title="Page Not Found | eBikeLocal"
+  description="The page you're looking for doesn't exist. Find eBike shops, brands, and bikes at eBikeLocal."
+>
+  <section class="relative overflow-hidden bg-night-900 min-h-[calc(100vh-4rem)] flex items-center">
+    <!-- Background texture -->
+    <div class="absolute inset-0 bg-circuit pointer-events-none opacity-50"></div>
+    <div class="absolute -top-32 left-1/4 h-96 w-96 rounded-full bg-brand-400/6 blur-3xl pointer-events-none"></div>
+    <div class="absolute bottom-0 right-1/4 h-64 w-64 rounded-full bg-electric-400/6 blur-3xl pointer-events-none"></div>
+
+    <div class="relative mx-auto max-w-2xl px-(--spacing-page) py-20 text-center">
+
+      <!-- 404 number -->
+      <div class="font-display text-[8rem] font-700 leading-none tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-brand-400 to-electric-400 select-none md:text-[10rem]">
+        404
+      </div>
+
+      <!-- Headline -->
+      <div class="mt-2 w-12 h-[3px] rounded-full bg-gradient-to-r from-brand-400 to-electric-400 mx-auto"></div>
+      <h1 class="mt-6 font-display text-2xl font-700 text-white md:text-3xl">
+        This page took a wrong turn
+      </h1>
+      <p class="mt-3 text-night-300 leading-relaxed max-w-md mx-auto">
+        The page you're looking for doesn't exist or may have moved.
+        Try one of these instead:
+      </p>
+
+      <!-- Quick links -->
+      <div class="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-4">
+        {suggestions.map((s) => (
+          <a
+            href={s.href}
+            class="group flex flex-col items-center gap-2 rounded-xl border border-night-700 bg-night-800/60 px-3 py-4 transition-all hover:border-brand-400/40 hover:bg-night-700/60"
+          >
+            <span class="text-2xl">{s.icon}</span>
+            <span class="text-xs font-600 text-night-300 group-hover:text-white transition-colors text-center leading-snug">
+              {s.label}
+            </span>
+          </a>
+        ))}
+      </div>
+
+      <!-- Search CTA -->
+      <div class="mt-10">
+        <p class="text-sm text-night-500 mb-3">Or search for an eBike shop near you:</p>
+        <a
+          href="/shops/"
+          class="btn-volt inline-flex items-center gap-2 rounded-xl px-7 py-3 text-sm font-600"
+        >
+          <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z"/>
+          </svg>
+          Find a Local eBike Shop
+        </a>
+      </div>
+
+      <!-- Back link -->
+      <p class="mt-8 text-xs text-night-600">
+        <a href="/" class="hover:text-night-400 transition-colors">← Back to homepage</a>
+      </p>
+
+    </div>
+  </section>
+</BaseLayout>
