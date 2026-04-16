@@ -6,8 +6,6 @@ interface Props {
   imageUrl?: string | null;
   msrp?: number | null;
   salePrice?: number | null;
-  rating?: number | null;
-  reviewCount?: number | null;
   url: string;
 }
 
@@ -18,8 +16,6 @@ const {
   imageUrl,
   msrp,
   salePrice,
-  rating,
-  reviewCount,
   url,
 } = Astro.props;
 
@@ -44,16 +40,6 @@ if (price) {
     ...(msrp && salePrice && salePrice < msrp
       ? { priceValidUntil: new Date(Date.now() + 30 * 86400000).toISOString().split('T')[0] }
       : {}),
-  };
-}
-
-if (rating && reviewCount) {
-  schema.aggregateRating = {
-    '@type': 'AggregateRating',
-    ratingValue: rating,
-    reviewCount,
-    bestRating: 10,
-    worstRating: 1,
   };
 }
 ---

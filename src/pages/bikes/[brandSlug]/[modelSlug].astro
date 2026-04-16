@@ -57,7 +57,7 @@ const relatedBikes = await sql`
   FROM bikes bk
   JOIN brands br ON br.id = bk.brand_id
   WHERE bk.category = ${bike.category} AND bk.id != ${bike.id} AND bk.is_active = true
-  ORDER BY bk.expert_rating DESC NULLS LAST
+  ORDER BY bk.msrp ASC NULLS LAST, bk.model_name ASC
   LIMIT 4
 `;
 
@@ -86,8 +86,6 @@ const buyUrls = bike.buy_urls || {};
     imageUrl={bikeHeroDisplayUrl}
     msrp={bike.msrp}
     salePrice={bike.sale_price}
-    rating={bike.expert_rating ? Number(bike.expert_rating) : null}
-    reviewCount={null}
     url={`${import.meta.env.SITE_URL}/bikes/${brandSlug}/${modelSlug}/`}
   />
 
@@ -160,18 +158,6 @@ const buyUrls = bike.buy_urls || {};
             <CTAButton href={url as string} brandName={retailer} variant="secondary" />
           ))}
         </div>
-
-        <!-- Expert rating -->
-        {bike.expert_rating && (
-          <div class="mt-6 rounded-lg bg-surface-50 p-4">
-            <div class="flex items-center gap-3">
-              <span class="rounded-lg bg-brand-600 px-3 py-1.5 text-xl font-bold text-white">
-                {Number(bike.expert_rating).toFixed(1)}
-              </span>
-              <span class="text-sm text-surface-700">/10 Expert Rating</span>
-            </div>
-          </div>
-        )}
 
         <!-- Pros/Cons -->
         {(bike.pros?.length > 0 || bike.cons?.length > 0) && (

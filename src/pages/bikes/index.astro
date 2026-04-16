@@ -5,11 +5,11 @@ import BikeCard from '@components/ui/BikeCard.astro';
 import sql from '@lib/neon';
 
 const bikes = await sql`
-  SELECT bk.*, br.name as brand_name, br.slug as brand_slug
+  SELECT bk.*, br.name as brand_name, br.slug as brand_slug, br.logo_url as brand_logo_url, br.website as brand_website
   FROM bikes bk
   JOIN brands br ON br.id = bk.brand_id
   WHERE bk.is_active = true
-  ORDER BY bk.expert_rating DESC NULLS LAST, bk.msrp ASC
+  ORDER BY bk.msrp ASC NULLS LAST, bk.model_name ASC
 `;
 
 const categories = await sql`SELECT * FROM categories ORDER BY sort_order, name`;
@@ -17,7 +17,7 @@ const categories = await sql`SELECT * FROM categories ORDER BY sort_order, name`
 
 <BaseLayout
   title="eBike Catalog — Compare Electric Bikes by Brand, Price & Category"
-  description="Browse and compare electric bikes from top brands. Filter by category, price, and specs to find your perfect eBike."
+  description="Browse popular electric bikes from top brands in our catalog (not exhaustive). Filter by category, price, and specs."
 >
   <div class="mx-auto max-w-7xl px-(--spacing-page) py-8">
     <Breadcrumb items={[
@@ -26,7 +26,7 @@ const categories = await sql`SELECT * FROM categories ORDER BY sort_order, name`
     ]} />
 
     <h1 class="mt-6 text-3xl font-extrabold text-surface-900 md:text-4xl">eBike Catalog</h1>
-    <p class="mt-2 text-lg text-surface-700">Compare {bikes.length} electric bikes from top brands.</p>
+    <p class="mt-2 text-lg text-surface-700">Compare {bikes.length} popular models from top brands — a sample catalog, not every bike sold.</p>
 
     <!-- Category filter chips -->
     {categories.length > 0 && (
@@ -48,6 +48,8 @@ const categories = await sql`SELECT * FROM categories ORDER BY sort_order, name`
           modelName={bike.model_name}
           brandName={bike.brand_name}
           brandSlug={bike.brand_slug}
+          brandLogoUrl={bike.brand_logo_url}
+          brandWebsite={bike.brand_website}
           slug={bike.slug}
           msrp={bike.msrp}
           salePrice={bike.sale_price}
@@ -58,8 +60,6 @@ const categories = await sql`SELECT * FROM categories ORDER BY sort_order, name`
           batteryWh={bike.battery_wh}
           rangeMilesHigh={bike.range_miles_high}
           bestFor={bike.best_for}
-          expertRating={bike.expert_rating ? Number(bike.expert_rating) : null}
-          affiliateUrl={bike.affiliate_url}
         />
       ))}
     </div>

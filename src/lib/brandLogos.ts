@@ -48,3 +48,15 @@ export function getBrandLogoUrl(brand: BrandLogoInput): string | null {
 
   return `${CLEARBIT_LOGO_BASE}/${domain}?size=256`;
 }
+
+/**
+ * BikeCard brand row: one fixed “slot” so every logo scales consistently
+ * (object-contain inside h-11 × max-w; wide marks hit width first, tall marks hit height first).
+ * Max width 12rem so marks don’t dominate the card next to the rating.
+ */
+export const BRAND_LOGO_CARD_SLOT_CLASS =
+  'flex h-11 max-w-[min(100%,12rem)] items-center';
+
+/** Use on the <img> inside {@link BRAND_LOGO_CARD_SLOT_CLASS} — same width cap as the slot */
+export const BRAND_LOGO_CARD_IMG_CLASS =
+  'max-h-full max-w-[min(100%,12rem)] w-auto object-contain object-left';

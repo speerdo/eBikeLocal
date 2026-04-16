@@ -24,7 +24,12 @@
     "seed:states": "node scripts/seed-states.mjs",
     "seed:categories": "node scripts/seed-categories.mjs",
     "seed:brands": "node scripts/seed-brands.mjs",
-    "seed": "npm run seed:states && npm run seed:categories && npm run seed:brands"
+    "seed:bikes": "node scripts/seed-bikes.mjs",
+    "replace:trek-bikes": "node scripts/replace-trek-bikes.mjs",
+    "seed": "npm run seed:states && npm run seed:categories && npm run seed:brands",
+    "enrich:bikes": "node scripts/enrich-bikes-from-brands.mjs",
+    "enrich:bikes:dry": "node scripts/enrich-bikes-from-brands.mjs --dry-run",
+    "enrich:bikes:test": "node scripts/enrich-bikes-from-brands.mjs --test"
   },
   "dependencies": {
     "@astrojs/vercel": "^10.0.4",

@@ -1,10 +1,19 @@
 ---
 import { bikeBrandHeroFallbackUrl, pickBikeHeroImageUrl } from '@lib/bikeImageUrl';
+import {
+  BRAND_LOGO_CARD_IMG_CLASS,
+  BRAND_LOGO_CARD_SLOT_CLASS,
+  getBrandLogoUrl,
+} from '@lib/brandLogos';
 
 interface Props {
   modelName: string;
   brandName: string;
   brandSlug: string;
+  /** Raw `brands.logo_url` — resolved with curated `/logos/brands/` files via `getBrandLogoUrl` */
+  brandLogoUrl?: string | null;
+  /** Used for Clearbit fallback when no local logo and no `logo_url` */
+  brandWebsite?: string | null;
   slug: string;
   msrp?: number | null;
   salePrice?: number | null;
@@ -15,7 +24,6 @@ interface Props {
   batteryWh?: number | null;
   rangeMilesHigh?: number | null;
   bestFor?: string | null;
-  expertRating?: number | null;
   affiliateUrl?: string | null;
   hasTorqueSensor?: boolean | null;
   ebikeClass?: number | null;
@@ -25,6 +33,8 @@ const {
   modelName,
   brandName,
   brandSlug,
+  brandLogoUrl,
+  brandWebsite,
   slug,
   msrp,
   salePrice,
@@ -35,7 +45,6 @@ const {
   batteryWh,
   rangeMilesHigh,
   bestFor,
-  expertRating,
   hasTorqueSensor,
   ebikeClass,
 } = Astro.props;
@@ -55,47 +64,29 @@ const displayPrice = salePrice || msrp;
 const hasDiscount  = salePrice && msrp && salePrice < msrp;
 const href = `/bikes/${brandSlug}/${slug}/`;
 
-const ratingBg = expertRating
-  ? expertRating >= 9.0 ? 'bg-brand-400 text-night-900'
-  : expertRating >= 8.0 ? 'bg-brand-600 text-white'
-  : 'bg-surface-600 text-white'
-  : '';
+const resolvedBrandLogoUrl = getBrandLogoUrl({
+  slug: brandSlug,
+  logo_url: brandLogoUrl,
+  website: brandWebsite ?? null,
+});
 ---
 
-<div class="group card-hover relative flex flex-col overflow-hidden rounded-2xl border border-surface-200 bg-white shadow-card hover:border-brand-400/30">
-
-  <!-- "Best for" badge -->
-  {bestFor && (
-    <div class="absolute top-3 left-3 z-10 max-w-[60%]">
-      <span class="inline-block rounded-lg bg-brand-600 px-2.5 py-1 text-[11px] font-700 text-white shadow-sm leading-snug">
-        {bestFor.length > 28 ? bestFor.slice(0, 28) + '…' : bestFor}
-      </span>
-    </div>
-  )}
-
-  <!-- Expert rating badge -->
-  {expertRating && (
-    <div class="absolute top-3 right-3 z-10">
-      <span class={`flex h-9 w-9 items-center justify-center rounded-xl text-xs font-800 shadow-sm ${ratingBg}`}>
-        {expertRating.toFixed(1)}
-      </span>
-    </div>
-  )}
+<div class="group card-hover flex flex-col overflow-hidden rounded-2xl border border-surface-200 bg-white shadow-card hover:border-brand-400/30">
 
   <!-- Image area -->
-  <a href={href} class="block overflow-hidden" tabindex="-1" aria-hidden="true">
+  <a href={href} class="block overflow-hidden bg-[#ffffff]" tabindex="-1" aria-hidden="true">
     {displayHeroUrl ? (
       <img
         src={displayHeroUrl}
         alt={`${brandName} ${modelName}`}
-        class="h-52 w-full bg-surface-50 object-contain p-4 transition-transform duration-300 group-hover:scale-105"
+        class="h-52 w-full bg-[#ffffff] object-contain p-4 transition-transform duration-300 group-hover:scale-105"
         loading="lazy"
         referrerpolicy="no-referrer"
         data-brand-fallback={imgBrandFallback}
         onerror="(function(el){var b=el.dataset.brandFallback;if(b&&el.src!==b){el.src=b;}else{el.onerror=null;el.style.visibility='hidden';}})(this)"
       />
     ) : (
-      <div class="flex h-52 w-full items-center justify-center bg-gradient-to-br from-surface-50 to-surface-100">
+      <div class="flex h-52 w-full items-center justify-center bg-[#ffffff]">
         <!-- Bike silhouette placeholder -->
         <svg class="h-20 w-20 text-surface-200" viewBox="0 0 80 60" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <circle cx="16" cy="44" r="12"/>
@@ -115,10 +106,29 @@ const ratingBg = expertRating
   <div class="flex flex-1 flex-col p-4">
 
     <a href={href} class="block">
-      <p class="text-[11px] font-700 uppercase tracking-widest text-brand-600">{brandName}</p>
-      <h3 class="mt-0.5 font-display font-700 text-surface-900 group-hover:text-brand-600 transition-colors leading-snug">
+      <div class="min-w-0">
+        {resolvedBrandLogoUrl ? (
+          <div class={BRAND_LOGO_CARD_SLOT_CLASS}>
+            <img
+              src={resolvedBrandLogoUrl}
+              alt={brandName}
+              class={BRAND_LOGO_CARD_IMG_CLASS}
+              loading="lazy"
+              referrerpolicy="no-referrer"
+            />
+          </div>
+        ) : (
+          <p class="text-[11px] font-700 uppercase tracking-widest text-brand-600">{brandName}</p>
+        )}
+      </div>
+      <h3 class="mt-2 font-display font-700 leading-snug text-surface-900 transition-colors group-hover:text-brand-600">
         {modelName}
       </h3>
+      {bestFor && (
+        <p class="mt-2 text-sm italic leading-snug text-surface-600">
+          {bestFor}
+        </p>
+      )}
     </a>
 
     <!-- Price -->
@@ -131,7 +141,7 @@ const ratingBg = expertRating
           <span class="text-sm text-surface-400 line-through">${msrp!.toLocaleString()}</span>
         )}
         {ebikeClass && (
-          <span class="ml-auto text-[11px] font-600 text-surface-400 shrink-0">Class {ebikeClass}</span>
+          <span class="ml-auto shrink-0 text-[11px] font-600 text-surface-400">Class {ebikeClass}</span>
         )}
       </div>
     )}
@@ -184,7 +194,7 @@ const ratingBg = expertRating
         </svg>
       </a>
     ) : (
-      <a href={href} class="mt-4 flex items-center justify-center gap-1 rounded-xl border border-surface-200 py-2.5 text-sm font-600 text-surface-700 hover:border-brand-400/50 hover:text-brand-700 transition-colors">
+      <a href={href} class="mt-4 flex items-center justify-center gap-1 rounded-xl border border-surface-200 py-2.5 text-sm font-600 text-surface-700 transition-colors hover:border-brand-400/50 hover:text-brand-700">
         View Details →
       </a>
     )}

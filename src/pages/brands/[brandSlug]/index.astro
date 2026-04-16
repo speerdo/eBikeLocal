@@ -18,7 +18,7 @@ if (!brand) return Astro.redirect('/404');
 const bikes = await sql`
   SELECT * FROM bikes
   WHERE brand_id = ${brand.id} AND is_active = true
-  ORDER BY expert_rating DESC NULLS LAST, msrp ASC
+  ORDER BY msrp ASC NULLS LAST, model_name ASC
 `;
 
 const dealerCount = await sql`SELECT COUNT(*) as count FROM shop_brands WHERE brand_id = ${brand.id}`;
@@ -40,8 +40,8 @@ const dealerCities = await sql`
 ---
 
 <BaseLayout
-  title={`${brand.name} eBikes — Models, Prices & Local Dealers`}
-  description={`Browse all ${brand.name} electric bikes. Compare models, prices from $${brand.price_range_low?.toLocaleString() || '?'} to $${brand.price_range_high?.toLocaleString() || '?'}, and find ${brand.name} dealers near you.`}
+  title={`Popular ${brand.name} eBikes — Models, Prices & Local Dealers`}
+  description={`Popular ${brand.name} electric bikes we track (not an exhaustive catalog). Compare models, prices from $${brand.price_range_low?.toLocaleString() || '?'} to $${brand.price_range_high?.toLocaleString() || '?'}, and find ${brand.name} dealers near you.`}
 >
   <div class="mx-auto max-w-7xl px-(--spacing-page) py-8">
     <Breadcrumb items={[
@@ -65,7 +65,7 @@ const dealerCities = await sql`
     <div class="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
       <div class="rounded-lg bg-surface-50 p-3 text-center">
         <p class="text-2xl font-bold text-surface-900">{bikes.length}</p>
-        <p class="text-xs text-surface-700">Models</p>
+        <p class="text-xs text-surface-700">Models in our catalog</p>
       </div>
       <div class="rounded-lg bg-surface-50 p-3 text-center">
         <p class="text-2xl font-bold text-surface-900">
@@ -88,13 +88,15 @@ const dealerCities = await sql`
     <!-- Top picks -->
     {topPicks.length > 0 && (
       <section class="mt-10">
-        <h2 class="text-xl font-bold text-surface-900">Best {brand.name} eBikes</h2>
+        <h2 class="text-xl font-bold text-surface-900">Popular {brand.name} eBikes</h2>
         <div class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {topPicks.map((bike) => (
             <BikeCard
               modelName={bike.model_name}
               brandName={brand.name}
               brandSlug={brand.slug}
+              brandLogoUrl={brand.logo_url}
+              brandWebsite={brand.website}
               slug={bike.slug}
               msrp={bike.msrp}
               salePrice={bike.sale_price}
@@ -104,7 +106,6 @@ const dealerCities = await sql`
               batteryWh={bike.battery_wh}
               rangeMilesHigh={bike.range_miles_high}
               bestFor={bike.best_for}
-              expertRating={bike.expert_rating ? Number(bike.expert_rating) : null}
               affiliateUrl={bike.affiliate_url}
             />
           ))}
@@ -112,15 +113,17 @@ const dealerCities = await sql`
       </section>
     )}
 
-    <!-- All models -->
+    <!-- Full grid for this brand (sample — not an exhaustive OEM catalog) -->
     <section class="mt-12">
-      <h2 class="text-xl font-bold text-surface-900">All {brand.name} Models</h2>
+      <h2 class="text-xl font-bold text-surface-900">{brand.name} models in our catalog</h2>
       <div class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {bikes.map((bike) => (
           <BikeCard
             modelName={bike.model_name}
             brandName={brand.name}
             brandSlug={brand.slug}
+            brandLogoUrl={brand.logo_url}
+            brandWebsite={brand.website}
             slug={bike.slug}
             msrp={bike.msrp}
             salePrice={bike.sale_price}
@@ -130,7 +133,6 @@ const dealerCities = await sql`
             batteryWh={bike.battery_wh}
             rangeMilesHigh={bike.range_miles_high}
             bestFor={bike.best_for}
-            expertRating={bike.expert_rating ? Number(bike.expert_rating) : null}
             affiliateUrl={bike.affiliate_url}
           />
         ))}

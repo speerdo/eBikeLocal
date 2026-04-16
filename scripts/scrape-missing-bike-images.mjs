@@ -23,18 +23,18 @@ const OUT_DIR = join(__dirname, '..', 'public', 'images', 'bikes');
 
 const TARGETS = [
   {
-    slug: 'trek-verve-2',
-    url: 'https://www.trekbikes.com/us/en_US/bikes/electric-bikes/electric-fitness-bikes/verve/verve-2-equipped-lowstep/p/37100/',
+    slug: 'trek-domane-alr-5',
+    url: 'https://www.trekbikes.com/us/en_US/bikes/electric-bikes/electric-road-bikes/f/F221-6/domane%252b-alr-5/56175/5335411',
     waitFor: '.product-detail__image img, [data-testid="product-image"] img, .hero-image img',
   },
   {
-    slug: 'trek-allant-7',
-    url: 'https://www.trekbikes.com/us/en_US/bikes/electric-bikes/electric-hybrid-bikes/allant/allant-7/p/37086/',
+    slug: 'trek-powerfly-fs-4-gen-4',
+    url: 'https://www.trekbikes.com/us/en_US/bikes/mountain-bikes/electric-mountain-bikes/powerfly/powerfly-full-suspension/f/F338/powerfly-fs%252b-4-gen-4/48615/5329722',
     waitFor: '.product-detail__image img, [data-testid="product-image"] img',
   },
   {
-    slug: 'trek-powerfly-5',
-    url: 'https://www.trekbikes.com/us/en_US/bikes/electric-bikes/electric-mountain-bikes/powerfly/powerfly-5/p/37126/',
+    slug: 'trek-fx-1-midstep',
+    url: 'https://www.trekbikes.com/us/en_US/bikes/hybrid-bikes/electric-hybrid-bikes/fx/f/F465T/fx%252b-1-midstep/56162/?colorCode=greendark',
     waitFor: '.product-detail__image img, [data-testid="product-image"] img',
   },
   {

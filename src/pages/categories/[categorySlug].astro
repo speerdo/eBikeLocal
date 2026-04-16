@@ -14,20 +14,20 @@ const [category] = await sql`SELECT * FROM categories WHERE slug = ${categorySlu
 if (!category) return Astro.redirect('/404');
 
 const bikes = await sql`
-  SELECT bk.*, br.name as brand_name, br.slug as brand_slug
+  SELECT bk.*, br.name as brand_name, br.slug as brand_slug, br.logo_url as brand_logo_url, br.website as brand_website
   FROM bikes bk
   JOIN brands br ON br.id = bk.brand_id
   JOIN bike_categories bc ON bc.bike_id = bk.id
   WHERE bc.category_id = ${category.id} AND bk.is_active = true
-  ORDER BY bk.expert_rating DESC NULLS LAST, bk.msrp ASC
+  ORDER BY bk.msrp ASC NULLS LAST, bk.model_name ASC
 `;
 
 const topPicks = bikes.filter((b) => b.best_for).slice(0, 3);
 ---
 
 <BaseLayout
-  title={`Best ${category.name} eBikes — Compare Top ${category.name} Electric Bikes`}
-  description={`Compare the best ${category.name.toLowerCase()} electric bikes. ${category.description || ''}`}
+  title={`Popular ${category.name} eBikes — Compare Models We Track`}
+  description={`Popular ${category.name.toLowerCase()} electric bikes in our catalog (not exhaustive). ${category.description || ''}`}
 >
   <div class="mx-auto max-w-7xl px-(--spacing-page) py-8">
     <Breadcrumb items={[
@@ -36,18 +36,20 @@ const topPicks = bikes.filter((b) => b.best_for).slice(0, 3);
       { label: category.name },
     ]} />
 
-    <h1 class="mt-6 text-3xl font-extrabold text-surface-900 md:text-4xl">{category.name} eBikes</h1>
+    <h1 class="mt-6 text-3xl font-extrabold text-surface-900 md:text-4xl">Popular {category.name} eBikes</h1>
     {category.description && <p class="mt-2 text-lg text-surface-700">{category.description}</p>}
 
     {topPicks.length > 0 && (
       <section class="mt-10">
-        <h2 class="text-xl font-bold text-surface-900">Top Picks</h2>
+        <h2 class="text-xl font-bold text-surface-900">Popular picks</h2>
         <div class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {topPicks.map((bike) => (
             <BikeCard
               modelName={bike.model_name}
               brandName={bike.brand_name}
               brandSlug={bike.brand_slug}
+              brandLogoUrl={bike.brand_logo_url}
+              brandWebsite={bike.brand_website}
               slug={bike.slug}
               msrp={bike.msrp}
               salePrice={bike.sale_price}
@@ -57,7 +59,6 @@ const topPicks = bikes.filter((b) => b.best_for).slice(0, 3);
               batteryWh={bike.battery_wh}
               rangeMilesHigh={bike.range_miles_high}
               bestFor={bike.best_for}
-              expertRating={bike.expert_rating ? Number(bike.expert_rating) : null}
               affiliateUrl={bike.affiliate_url}
             />
           ))}
@@ -79,7 +80,6 @@ const topPicks = bikes.filter((b) => b.best_for).slice(0, 3);
                 <th class="px-4 py-3 text-right font-700 text-surface-700 whitespace-nowrap">Battery</th>
                 <th class="px-4 py-3 text-right font-700 text-surface-700 whitespace-nowrap">Range</th>
                 <th class="px-4 py-3 text-right font-700 text-surface-700 whitespace-nowrap">Class</th>
-                <th class="px-4 py-3 text-right font-700 text-surface-700 whitespace-nowrap">Rating</th>
                 <th class="px-4 py-3 text-left font-700 text-surface-700 whitespace-nowrap">Best For</th>
               </tr>
             </thead>
@@ -112,11 +112,6 @@ const topPicks = bikes.filter((b) => b.best_for).slice(0, 3);
                       ? <span class="rounded-full bg-surface-100 px-2 py-0.5 text-xs font-600 text-surface-600">{bike.class_type}</span>
                       : <span class="text-surface-400">—</span>}
                   </td>
-                  <td class="px-4 py-3 text-right whitespace-nowrap">
-                    {bike.expert_rating
-                      ? <span class="inline-flex items-center gap-1 rounded bg-brand-600 px-2 py-0.5 text-xs font-700 text-white">{Number(bike.expert_rating).toFixed(1)}</span>
-                      : <span class="text-surface-400">—</span>}
-                  </td>
                   <td class="px-4 py-3 text-surface-600 max-w-[180px]">
                     {bike.best_for || '—'}
                   </td>
@@ -129,13 +124,15 @@ const topPicks = bikes.filter((b) => b.best_for).slice(0, 3);
     )}
 
     <section class="mt-12">
-      <h2 class="text-xl font-bold text-surface-900">All {category.name} eBikes</h2>
+      <h2 class="text-xl font-bold text-surface-900">Popular {category.name} eBikes</h2>
       <div class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {bikes.map((bike) => (
           <BikeCard
             modelName={bike.model_name}
             brandName={bike.brand_name}
             brandSlug={bike.brand_slug}
+            brandLogoUrl={bike.brand_logo_url}
+            brandWebsite={bike.brand_website}
             slug={bike.slug}
             msrp={bike.msrp}
             salePrice={bike.sale_price}
@@ -145,7 +142,6 @@ const topPicks = bikes.filter((b) => b.best_for).slice(0, 3);
             batteryWh={bike.battery_wh}
             rangeMilesHigh={bike.range_miles_high}
             bestFor={bike.best_for}
-            expertRating={bike.expert_rating ? Number(bike.expert_rating) : null}
             affiliateUrl={bike.affiliate_url}
           />
         ))}
