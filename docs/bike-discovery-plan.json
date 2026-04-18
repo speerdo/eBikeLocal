@@ -1,0 +1,983 @@
+[
+  {
+    "brand": "Aventon",
+    "brand_slug": "aventon",
+    "category": "cruiser",
+    "candidates": [
+      {
+        "source": "shopify",
+        "brand_slug": "aventon",
+        "brand_name": "Aventon",
+        "category": "cruiser",
+        "model_name": "Soltera 2.5 Ebike",
+        "slug": "aventon-soltera-2-5-ebike",
+        "handle": "soltera-2-5-ebike",
+        "affiliate_url": "https://www.aventon.com/products/soltera-2-5-ebike",
+        "msrp": 1199,
+        "hero_image_url": "https://cdn.shopify.com/s/files/1/1520/2468/files/Baja-Soltera-2.5-6.jpg?v=1756958410",
+        "gallery_images": [
+          "https://cdn.shopify.com/s/files/1/1520/2468/files/Baja-Soltera-2.5-6.jpg?v=1756958410",
+          "https://cdn.shopify.com/s/files/1/1520/2468/files/01_Soltera.2.jpg?v=1756958410",
+          "https://cdn.shopify.com/s/files/1/1520/2468/files/Soltera-2.5-Midnight-02.jpg?v=1756958410",
+          "https://cdn.shopify.com/s/files/1/1520/2468/files/Soltera-2.5-Midnight-03.jpg?v=1756958410",
+          "https://cdn.shopify.com/s/files/1/1520/2468/files/Soltera-2.5-Baja-02.jpg?v=1756958411",
+          "https://cdn.shopify.com/s/files/1/1520/2468/files/Soltera-2.5-Baja-03.jpg?v=1756958411"
+        ],
+        "year": 2024
+      }
+    ]
+  },
+  {
+    "brand": "Aventon",
+    "brand_slug": "aventon",
+    "category": "road-gravel",
+    "candidates": [
+      {
+        "source": "shopify",
+        "brand_slug": "aventon",
+        "brand_name": "Aventon",
+        "category": "road-gravel",
+        "model_name": "Soltera 2 Ebike",
+        "slug": "aventon-soltera-2-ebike",
+        "handle": "soltera-2-ebike",
+        "affiliate_url": "https://www.aventon.com/products/soltera-2-ebike",
+        "msrp": 999,
+        "hero_image_url": "https://cdn.shopify.com/s/files/1/1520/2468/files/01_Soltera_6b230412-9bfa-433e-b1a0-0c99625b5a4a.jpg?v=1755057565",
+        "gallery_images": [
+          "https://cdn.shopify.com/s/files/1/1520/2468/files/01_Soltera_6b230412-9bfa-433e-b1a0-0c99625b5a4a.jpg?v=1755057565",
+          "https://cdn.shopify.com/s/files/1/1520/2468/files/soltera-2-black-01.jpg?v=1755057565",
+          "https://cdn.shopify.com/s/files/1/1520/2468/files/02_Soltera_dd3242ce-f0b8-476c-9a03-8096fd3ae68b.jpg?v=1755057565",
+          "https://cdn.shopify.com/s/files/1/1520/2468/files/03_Soltera_6eea33c5-93e6-4d53-9150-e386d7a45ec4.jpg?v=1755057565",
+          "https://cdn.shopify.com/s/files/1/1520/2468/files/04_Soltera_349aa33d-c555-4649-9a4b-2e216fb1e22e.jpg?v=1755057565",
+          "https://cdn.shopify.com/s/files/1/1520/2468/files/soltera-2-black-02_1.jpg?v=1755057565"
+        ],
+        "year": 2023,
+        "range_miles_high": 46
+      },
+      {
+        "source": "shopify",
+        "brand_slug": "aventon",
+        "brand_name": "Aventon",
+        "category": "road-gravel",
+        "model_name": "Sinch 2 Ebike",
+        "slug": "aventon-sinch2-ebike",
+        "handle": "sinch2-ebike",
+        "affiliate_url": "https://www.aventon.com/products/sinch2-ebike",
+        "msrp": 1699,
+        "hero_image_url": "https://cdn.shopify.com/s/files/1/1520/2468/files/sinch-2-step-through-quicksilver-1.jpg?v=1755057567",
+        "gallery_images": [
+          "https://cdn.shopify.com/s/files/1/1520/2468/files/sinch-2-step-through-quicksilver-1.jpg?v=1755057567",
+          "https://cdn.shopify.com/s/files/1/1520/2468/files/sinch-2-step-through-saphire-1.jpg?v=1755057567",
+          "https://cdn.shopify.com/s/files/1/1520/2468/files/sinch2-quicksilver-02_1.jpg?v=1755057567",
+          "https://cdn.shopify.com/s/files/1/1520/2468/files/sinch2-quicksilver-03_1.jpg?v=1755057568",
+          "https://cdn.shopify.com/s/files/1/1520/2468/files/sinch2-quicksilver-04_1.jpg?v=1755057568",
+          "https://cdn.shopify.com/s/files/1/1520/2468/files/sinch2-quicksilver-06.jpg?v=1755057568"
+        ],
+        "year": 2023
+      }
+    ]
+  },
+  {
+    "brand": "Cannondale",
+    "brand_slug": "cannondale",
+    "category": "mountain",
+    "candidates": [
+      {
+        "source": "manual",
+        "brand_slug": "cannondale",
+        "brand_name": "Cannondale",
+        "category": "mountain",
+        "model_name": "Moterra Neo Carbon LT 2",
+        "slug": "cannondale-moterra-neo-carbon-lt-2",
+        "handle": "moterra-neo-carbon-lt-2",
+        "affiliate_url": "https://www.cannondale.com/en-us/bikes/electric/emtb/moterra-neo-carbon",
+        "msrp": 7500,
+        "hero_image_url": null,
+        "gallery_images": [],
+        "motor_watts": null,
+        "battery_wh": null,
+        "range_miles_high": null,
+        "best_for": null
+      }
+    ]
+  },
+  {
+    "brand": "EVELO",
+    "brand_slug": "evelo",
+    "category": "commuter",
+    "candidates": [
+      {
+        "source": "shopify",
+        "brand_slug": "evelo",
+        "brand_name": "EVELO",
+        "category": "commuter",
+        "model_name": "EVELO Compass Electric Trike",
+        "slug": "evelo-compass",
+        "handle": "compass",
+        "affiliate_url": "https://www.evelo.com/products/compass",
+        "msrp": 3499,
+        "hero_image_url": "https://cdn.shopify.com/s/files/1/0107/9022/products/evelo-compass-electric-trike-5593937.jpg?v=1775067616",
+        "gallery_images": [
+          "https://cdn.shopify.com/s/files/1/0107/9022/products/evelo-compass-electric-trike-5593937.jpg?v=1775067616",
+          "https://cdn.shopify.com/s/files/1/0107/9022/products/evelo-compass-electric-trike-7873414.jpg?v=1775067617",
+          "https://cdn.shopify.com/s/files/1/0107/9022/files/evelo-compass-electric-trike-1095229.jpg?v=1775067617",
+          "https://cdn.shopify.com/s/files/1/0107/9022/files/evelo-compass-electric-trike-1348057.jpg?v=1775067617",
+          "https://cdn.shopify.com/s/files/1/0107/9022/files/evelo-compass-electric-trike-2598401.jpg?v=1775067617",
+          "https://cdn.shopify.com/s/files/1/0107/9022/files/evelo-compass-electric-trike-9621943.jpg?v=1775067617"
+        ],
+        "year": 2020
+      },
+      {
+        "source": "shopify",
+        "brand_slug": "evelo",
+        "brand_name": "EVELO",
+        "category": "commuter",
+        "model_name": "EVELO Omega Electric Bike",
+        "slug": "evelo-omega",
+        "handle": "omega",
+        "affiliate_url": "https://www.evelo.com/products/omega",
+        "msrp": 3799,
+        "hero_image_url": "https://cdn.shopify.com/s/files/1/0107/9022/files/evelo-omega-electric-bike-1931584.jpg?v=1775067498",
+        "gallery_images": [
+          "https://cdn.shopify.com/s/files/1/0107/9022/files/evelo-omega-electric-bike-1931584.jpg?v=1775067498",
+          "https://cdn.shopify.com/s/files/1/0107/9022/files/evelo-omega-electric-bike-2013402.png?v=1775067500",
+          "https://cdn.shopify.com/s/files/1/0107/9022/files/evelo-omega-electric-bike-8704037.jpg?v=1775067499",
+          "https://cdn.shopify.com/s/files/1/0107/9022/files/evelo-omega-electric-bike-9786257.jpg?v=1775067500",
+          "https://cdn.shopify.com/s/files/1/0107/9022/files/evelo-omega-electric-bike-2552466.jpg?v=1775067500",
+          "https://cdn.shopify.com/s/files/1/0107/9022/files/evelo-omega-electric-bike-7659703.jpg?v=1775067500"
+        ],
+        "year": 2021
+      }
+    ]
+  },
+  {
+    "brand": "EVELO",
+    "brand_slug": "evelo",
+    "category": "cargo",
+    "candidates": [
+      {
+        "source": "shopify",
+        "brand_slug": "evelo",
+        "brand_name": "EVELO",
+        "category": "cargo",
+        "model_name": "EVELO Atlas Electric Bike",
+        "slug": "evelo-atlas",
+        "handle": "atlas",
+        "affiliate_url": "https://www.evelo.com/products/atlas",
+        "msrp": 3799,
+        "hero_image_url": "https://cdn.shopify.com/s/files/1/0107/9022/files/evelo-atlas-electric-bike-7430587.jpg?v=1775067555",
+        "gallery_images": [
+          "https://cdn.shopify.com/s/files/1/0107/9022/files/evelo-atlas-electric-bike-7430587.jpg?v=1775067555",
+          "https://cdn.shopify.com/s/files/1/0107/9022/files/evelo-atlas-electric-bike-3000974.jpg?v=1775067556",
+          "https://cdn.shopify.com/s/files/1/0107/9022/files/evelo-atlas-electric-bike-1940420.jpg?v=1775067556",
+          "https://cdn.shopify.com/s/files/1/0107/9022/files/evelo-atlas-electric-bike-8091755.jpg?v=1775067556",
+          "https://cdn.shopify.com/s/files/1/0107/9022/files/evelo-atlas-electric-bike-4122257.jpg?v=1775067557",
+          "https://cdn.shopify.com/s/files/1/0107/9022/products/evelo-atlas-electric-bike-4440546.jpg?v=1775067557"
+        ],
+        "year": 2021
+      }
+    ]
+  },
+  {
+    "brand": "EVELO",
+    "brand_slug": "evelo",
+    "category": "step-through",
+    "candidates": [
+      {
+        "source": "shopify",
+        "brand_slug": "evelo",
+        "brand_name": "EVELO",
+        "category": "step-through",
+        "model_name": "EVELO Galaxy Lux Electric Bike",
+        "slug": "evelo-galaxy-lux",
+        "handle": "galaxy-lux",
+        "affiliate_url": "https://www.evelo.com/products/galaxy-lux",
+        "msrp": 3299,
+        "hero_image_url": "https://cdn.shopify.com/s/files/1/0107/9022/files/evelo-galaxy-lux-electric-bike-5784204.jpg?v=1775067497",
+        "gallery_images": [
+          "https://cdn.shopify.com/s/files/1/0107/9022/files/evelo-galaxy-lux-electric-bike-5784204.jpg?v=1775067497",
+          "https://cdn.shopify.com/s/files/1/0107/9022/files/evelo-galaxy-lux-electric-bike-9803949.jpg?v=1775067498",
+          "https://cdn.shopify.com/s/files/1/0107/9022/files/evelo-galaxy-lux-electric-bike-1936222.jpg?v=1775067498",
+          "https://cdn.shopify.com/s/files/1/0107/9022/files/evelo-galaxy-lux-electric-bike-4767546.jpg?v=1775067498",
+          "https://cdn.shopify.com/s/files/1/0107/9022/files/evelo-galaxy-lux-electric-bike-2369952.jpg?v=1775067498",
+          "https://cdn.shopify.com/s/files/1/0107/9022/files/evelo-galaxy-lux-electric-bike-8395095.jpg?v=1775067499"
+        ],
+        "year": 2022
+      }
+    ]
+  },
+  {
+    "brand": "Gazelle",
+    "brand_slug": "gazelle",
+    "category": "step-through",
+    "candidates": [
+      {
+        "source": "manual",
+        "brand_slug": "gazelle",
+        "brand_name": "Gazelle",
+        "category": "step-through",
+        "model_name": "Arroyo C8 HMB",
+        "slug": "gazelle-arroyo-c8-hmb",
+        "handle": "arroyo-c8-hmb",
+        "affiliate_url": "https://www.gazellebikes.com/en-us/bikes/arroyo-c8-hmb",
+        "msrp": 3299,
+        "hero_image_url": null,
+        "gallery_images": [],
+        "motor_watts": null,
+        "battery_wh": null,
+        "range_miles_high": null,
+        "best_for": null
+      }
+    ]
+  },
+  {
+    "brand": "Giant",
+    "brand_slug": "giant",
+    "category": "cargo",
+    "candidates": [
+      {
+        "source": "manual",
+        "brand_slug": "giant",
+        "brand_name": "Giant",
+        "category": "cargo",
+        "model_name": "Momentum PakYak E+",
+        "slug": "giant-momentum-pakyak-e",
+        "handle": "momentum-pakyak-e",
+        "affiliate_url": "https://www.momentum-biking.com/us/pakyak-e-plus",
+        "msrp": 4500,
+        "hero_image_url": null,
+        "gallery_images": [],
+        "motor_watts": null,
+        "battery_wh": null,
+        "range_miles_high": null,
+        "best_for": null
+      }
+    ]
+  },
+  {
+    "brand": "Himiway",
+    "brand_slug": "himiway",
+    "category": "cargo",
+    "candidates": [
+      {
+        "source": "shopify",
+        "brand_slug": "himiway",
+        "brand_name": "Himiway",
+        "category": "cargo",
+        "model_name": "C3 / Cargo Ebike",
+        "slug": "himiway-c3cargo-ebike",
+        "handle": "c3cargo-ebike",
+        "affiliate_url": "https://www.himiwaybike.com/products/c3cargo-ebike",
+        "msrp": 1499,
+        "hero_image_url": "https://cdn.shopify.com/s/files/1/0255/9528/1483/files/C3-blue-_1.jpg?v=1743146789",
+        "gallery_images": [
+          "https://cdn.shopify.com/s/files/1/0255/9528/1483/files/C3-blue-_1.jpg?v=1743146789",
+          "https://cdn.shopify.com/s/files/1/0255/9528/1483/files/C3-orange-_1.jpg?v=1740549650",
+          "https://cdn.shopify.com/s/files/1/0255/9528/1483/files/C3blue_5.jpg?v=1740549652",
+          "https://cdn.shopify.com/s/files/1/0255/9528/1483/files/C3-orange-_2.jpg?v=1740549653",
+          "https://cdn.shopify.com/s/files/1/0255/9528/1483/files/C3-orange-_3.jpg?v=1740549654",
+          "https://cdn.shopify.com/s/files/1/0255/9528/1483/files/C3-orange-_4.jpg?v=1740549656"
+        ],
+        "year": 2024
+      },
+      {
+        "source": "shopify",
+        "brand_slug": "himiway",
+        "brand_name": "Himiway",
+        "category": "cargo",
+        "model_name": "D5 Pro / All-terrain Electric Fat Bike",
+        "slug": "himiway-all-terrain-electric-bike-d5pro",
+        "handle": "all-terrain-electric-bike-d5pro",
+        "affiliate_url": "https://www.himiwaybike.com/products/all-terrain-electric-bike-d5pro",
+        "msrp": 1799,
+        "hero_image_url": "https://cdn.shopify.com/s/files/1/0255/9528/1483/files/D5-PRO-1.png?v=1751880467",
+        "gallery_images": [
+          "https://cdn.shopify.com/s/files/1/0255/9528/1483/files/D5-PRO-1.png?v=1751880467",
+          "https://cdn.shopify.com/s/files/1/0255/9528/1483/files/D5PROgreen1.jpg?v=1751880467",
+          "https://cdn.shopify.com/s/files/1/0255/9528/1483/files/D5PROwhite1.jpg?v=1751880467",
+          "https://cdn.shopify.com/s/files/1/0255/9528/1483/files/D5Pro_7.jpg?v=1751880467",
+          "https://cdn.shopify.com/s/files/1/0255/9528/1483/files/D5Pro_2.jpg?v=1751880467",
+          "https://cdn.shopify.com/s/files/1/0255/9528/1483/files/D5Pro_1.jpg?v=1751880467"
+        ],
+        "year": 2024,
+        "motor_watts": 750,
+        "battery_wh": 960,
+        "weight_lbs": 400
+      }
+    ]
+  },
+  {
+    "brand": "Himiway",
+    "brand_slug": "himiway",
+    "category": "folding",
+    "candidates": [
+      {
+        "source": "shopify",
+        "brand_slug": "himiway",
+        "brand_name": "Himiway",
+        "category": "folding",
+        "model_name": "B3 / Foldable Electric Commuter Bike",
+        "slug": "himiway-folding-electric-bike-b3",
+        "handle": "folding-electric-bike-b3",
+        "affiliate_url": "https://www.himiwaybike.com/products/folding-electric-bike-b3",
+        "msrp": 999,
+        "hero_image_url": "https://cdn.shopify.com/s/files/1/0255/9528/1483/files/B3-1-3_3de2e88b-1797-483f-b2b3-87e6643dea9d.jpg?v=1751860346",
+        "gallery_images": [
+          "https://cdn.shopify.com/s/files/1/0255/9528/1483/files/B3-1-3_3de2e88b-1797-483f-b2b3-87e6643dea9d.jpg?v=1751860346",
+          "https://cdn.shopify.com/s/files/1/0255/9528/1483/files/B3-1-2_cb9778b1-405d-44bb-a4e6-d45455a434e3.jpg?v=1751860346",
+          "https://cdn.shopify.com/s/files/1/0255/9528/1483/files/Himiway_B3_Foldable_Electric_Bike.jpg?v=1751860346",
+          "https://cdn.shopify.com/s/files/1/0255/9528/1483/files/B3-3.jpg?v=1751860346",
+          "https://cdn.shopify.com/s/files/1/0255/9528/1483/files/B3-4.jpg?v=1751860346",
+          "https://cdn.shopify.com/s/files/1/0255/9528/1483/files/lady_riding_himiway_foldable_ebike_B3.jpg?v=1751860346"
+        ],
+        "year": 2024
+      }
+    ]
+  },
+  {
+    "brand": "Himiway",
+    "brand_slug": "himiway",
+    "category": "moped-style",
+    "candidates": [
+      {
+        "source": "shopify",
+        "brand_slug": "himiway",
+        "brand_name": "Himiway",
+        "category": "moped-style",
+        "model_name": "Himiway C5 Electric Motorbike",
+        "slug": "himiway-c5-electric-motorbike",
+        "handle": "c5-electric-motorbike",
+        "affiliate_url": "https://www.himiwaybike.com/products/c5-electric-motorbike",
+        "msrp": 1899,
+        "hero_image_url": "https://cdn.shopify.com/s/files/1/0255/9528/1483/files/C5-8.jpg?v=1740549620",
+        "gallery_images": [
+          "https://cdn.shopify.com/s/files/1/0255/9528/1483/files/C5-8.jpg?v=1740549620",
+          "https://cdn.shopify.com/s/files/1/0255/9528/1483/files/C5-gray-1.jpg?v=1764898986",
+          "https://cdn.shopify.com/s/files/1/0255/9528/1483/files/1_9f0db83f-d0c5-4b40-a1ae-34c5c15b0236.jpg?v=1764898986",
+          "https://cdn.shopify.com/s/files/1/0255/9528/1483/files/C5_3.jpg?v=1745807758",
+          "https://cdn.shopify.com/s/files/1/0255/9528/1483/files/C5_8.jpg?v=1745807758",
+          "https://cdn.shopify.com/s/files/1/0255/9528/1483/files/C5_9.jpg?v=1745807758"
+        ],
+        "year": 2024,
+        "motor_watts": 750
+      }
+    ]
+  },
+  {
+    "brand": "Himiway",
+    "brand_slug": "himiway",
+    "category": "step-through",
+    "candidates": [
+      {
+        "source": "shopify",
+        "brand_slug": "himiway",
+        "brand_name": "Himiway",
+        "category": "step-through",
+        "model_name": "D3 ST(Cruiser ST) / All Terrain Electric Bike",
+        "slug": "himiway-all-terrain-step-thru-electric-bike",
+        "handle": "all-terrain-step-thru-electric-bike",
+        "affiliate_url": "https://www.himiwaybike.com/products/all-terrain-step-thru-electric-bike",
+        "msrp": 1099,
+        "hero_image_url": "https://cdn.shopify.com/s/files/1/0255/9528/1483/files/cruiser-st.png?v=1740549147",
+        "gallery_images": [
+          "https://cdn.shopify.com/s/files/1/0255/9528/1483/files/cruiser-st.png?v=1740549147",
+          "https://cdn.shopify.com/s/files/1/0255/9528/1483/files/d3-st-compatibility.jpg?v=1751854019",
+          "https://cdn.shopify.com/s/files/1/0255/9528/1483/files/cruiser-11.jpg?v=1751854019",
+          "https://cdn.shopify.com/s/files/1/0255/9528/1483/files/c5-_1.jpg?v=1751854019",
+          "https://cdn.shopify.com/s/files/1/0255/9528/1483/files/cruiserst-10.jpg?v=1751854019",
+          "https://cdn.shopify.com/s/files/1/0255/9528/1483/files/cstsnow.png?v=1751854019"
+        ],
+        "year": 2020,
+        "motor_watts": 750,
+        "weight_lbs": 350
+      },
+      {
+        "source": "shopify",
+        "brand_slug": "himiway",
+        "brand_name": "Himiway",
+        "category": "step-through",
+        "model_name": "Escape Pro / Long Range Moped-Style E-Bike ST",
+        "slug": "himiway-escape-pro-moped-style-ebike",
+        "handle": "escape-pro-moped-style-ebike",
+        "affiliate_url": "https://www.himiwaybike.com/products/escape-pro-moped-style-ebike",
+        "msrp": 1499,
+        "hero_image_url": "https://cdn.shopify.com/s/files/1/0255/9528/1483/files/es1.png?v=1740549203",
+        "gallery_images": [
+          "https://cdn.shopify.com/s/files/1/0255/9528/1483/files/es1.png?v=1740549203",
+          "https://cdn.shopify.com/s/files/1/0255/9528/1483/files/escapesnow.png?v=1740549205",
+          "https://cdn.shopify.com/s/files/1/0255/9528/1483/files/e2.jpg?v=1740549206",
+          "https://cdn.shopify.com/s/files/1/0255/9528/1483/files/e3.jpg?v=1740549207",
+          "https://cdn.shopify.com/s/files/1/0255/9528/1483/files/es-_1.jpg?v=1740549208",
+          "https://cdn.shopify.com/s/files/1/0255/9528/1483/files/e4.jpg?v=1740549209"
+        ],
+        "year": 2022,
+        "motor_watts": 750
+      }
+    ]
+  },
+  {
+    "brand": "Lectric eBikes",
+    "brand_slug": "lectric",
+    "category": "cargo",
+    "candidates": [
+      {
+        "source": "shopify",
+        "brand_slug": "lectric",
+        "brand_name": "Lectric eBikes",
+        "category": "cargo",
+        "model_name": "XPedition2 Raindrop Blue eBike",
+        "slug": "lectric-xpedition-single-battery-blue",
+        "handle": "xpedition-single-battery-blue",
+        "affiliate_url": "https://www.lectricebikes.com/products/xpedition-single-battery-blue",
+        "msrp": 1399,
+        "hero_image_url": "https://cdn.shopify.com/s/files/1/0229/0735/5214/files/XPED-B-SINGLE-BFB.png?v=1761976814",
+        "gallery_images": [
+          "https://cdn.shopify.com/s/files/1/0229/0735/5214/files/XPED-B-SINGLE-BFB.png?v=1761976814",
+          "https://cdn.shopify.com/s/files/1/0229/0735/5214/files/XPedition2-RAINDROP_BLUE-BF-STUDIO_CAROUSEL.jpg?v=1772437750",
+          "https://cdn.shopify.com/s/files/1/0229/0735/5214/files/XPed-Blue-4_bda1dd59-a348-4982-a428-5d340dacab9a.jpg?v=1761976814",
+          "https://cdn.shopify.com/s/files/1/0229/0735/5214/files/XPed-Blue-3_a24782c6-961a-4432-8066-90eb00db7d63.jpg?v=1761976814",
+          "https://cdn.shopify.com/s/files/1/0229/0735/5214/files/XPed-Blue-6_23fa300a-acda-4683-a2ed-0729d08c6a85.jpg?v=1761976814",
+          "https://cdn.shopify.com/s/files/1/0229/0735/5214/files/XPed-Blue.jpg?v=1761976814"
+        ],
+        "year": 2024,
+        "motor_watts": 310,
+        "weight_lbs": 450
+      },
+      {
+        "source": "shopify",
+        "brand_slug": "lectric",
+        "brand_name": "Lectric eBikes",
+        "category": "cargo",
+        "model_name": "XPedition2 Stratus White eBike",
+        "slug": "lectric-xpedition-single-battery",
+        "handle": "xpedition-single-battery",
+        "affiliate_url": "https://www.lectricebikes.com/products/xpedition-single-battery",
+        "msrp": 1399,
+        "hero_image_url": "https://cdn.shopify.com/s/files/1/0229/0735/5214/files/XPED-W-SINGLE.png?v=1763952921",
+        "gallery_images": [
+          "https://cdn.shopify.com/s/files/1/0229/0735/5214/files/XPED-W-SINGLE.png?v=1763952921",
+          "https://cdn.shopify.com/s/files/1/0229/0735/5214/files/XPedition2-STRATUS_WHITE-BF-STUDIO_CAROUSEL.jpg?v=1770981358",
+          "https://cdn.shopify.com/s/files/1/0229/0735/5214/files/XPed-White-1.jpg?v=1763952921",
+          "https://cdn.shopify.com/s/files/1/0229/0735/5214/files/XPed-White-3.jpg?v=1763952921",
+          "https://cdn.shopify.com/s/files/1/0229/0735/5214/files/XPed-White-6.jpg?v=1763952921",
+          "https://cdn.shopify.com/s/files/1/0229/0735/5214/files/XPed-White-2.jpg?v=1763952921"
+        ],
+        "year": 2024,
+        "motor_watts": 310,
+        "weight_lbs": 450
+      }
+    ]
+  },
+  {
+    "brand": "Lectric eBikes",
+    "brand_slug": "lectric",
+    "category": "folding",
+    "candidates": [
+      {
+        "source": "shopify",
+        "brand_slug": "lectric",
+        "brand_name": "Lectric eBikes",
+        "category": "folding",
+        "model_name": "XP Lite2 Sandstorm eBike",
+        "slug": "lectric-xp-lite-sandstorm",
+        "handle": "xp-lite-sandstorm",
+        "affiliate_url": "https://www.lectricebikes.com/products/xp-lite-sandstorm",
+        "msrp": 799,
+        "hero_image_url": "https://cdn.shopify.com/s/files/1/0229/0735/5214/files/lite-tan-soldout.png?v=1759270914",
+        "gallery_images": [
+          "https://cdn.shopify.com/s/files/1/0229/0735/5214/files/lite-tan-soldout.png?v=1759270914",
+          "https://cdn.shopify.com/s/files/1/0229/0735/5214/files/lite-tan.png?v=1759270914",
+          "https://cdn.shopify.com/s/files/1/0229/0735/5214/files/XPL-Tan-award_07096050-abf6-4b0f-8b46-41a3db6b2492.jpg?v=1759270914",
+          "https://cdn.shopify.com/s/files/1/0229/0735/5214/files/XPL-Tan-4.jpg?v=1759270914",
+          "https://cdn.shopify.com/s/files/1/0229/0735/5214/files/XPL-tan-review.jpg?v=1759270914",
+          "https://cdn.shopify.com/s/files/1/0229/0735/5214/files/XPL-Tan-5.jpg?v=1759270914"
+        ],
+        "year": 2024
+      },
+      {
+        "source": "shopify",
+        "brand_slug": "lectric",
+        "brand_name": "Lectric eBikes",
+        "category": "folding",
+        "model_name": "XP Lite2 Arctic White eBike",
+        "slug": "lectric-xp-lite-arctic-white",
+        "handle": "xp-lite-arctic-white",
+        "affiliate_url": "https://www.lectricebikes.com/products/xp-lite-arctic-white",
+        "msrp": 799,
+        "hero_image_url": "https://cdn.shopify.com/s/files/1/0229/0735/5214/files/lite-white_a6ef01c7-4607-4639-b0c4-09846a407fc9.png?v=1768990516",
+        "gallery_images": [
+          "https://cdn.shopify.com/s/files/1/0229/0735/5214/files/lite-white_a6ef01c7-4607-4639-b0c4-09846a407fc9.png?v=1768990516",
+          "https://cdn.shopify.com/s/files/1/0229/0735/5214/files/XPL-White-award_ddd9cd4f-2d13-40c0-94e3-2b42c74eda84.jpg?v=1768990516",
+          "https://cdn.shopify.com/s/files/1/0229/0735/5214/files/XPL-White-2_1d1ebba3-dbd0-40a5-9fb2-fec42d1b9cd8.jpg?v=1768990516",
+          "https://cdn.shopify.com/s/files/1/0229/0735/5214/files/XPL-White_f9e208a7-9b91-4c18-941b-d377f251cb05.jpg?v=1768990516",
+          "https://cdn.shopify.com/s/files/1/0229/0735/5214/files/XPL-White-3.jpg?v=1774458049",
+          "https://cdn.shopify.com/s/files/1/0229/0735/5214/files/XPL-White-4.jpg?v=1774458049"
+        ],
+        "year": 2024
+      }
+    ]
+  },
+  {
+    "brand": "Lectric eBikes",
+    "brand_slug": "lectric",
+    "category": "mountain",
+    "candidates": [
+      {
+        "source": "shopify",
+        "brand_slug": "lectric",
+        "brand_name": "Lectric eBikes",
+        "category": "mountain",
+        "model_name": "XPeak2 High-Step eBike",
+        "slug": "lectric-xpeak-high-step-ebike",
+        "handle": "xpeak-high-step-ebike",
+        "affiliate_url": "https://www.lectricebikes.com/products/xpeak-high-step-ebike",
+        "msrp": 1299,
+        "hero_image_url": "https://cdn.shopify.com/s/files/1/0229/0735/5214/files/XPeak-T-Black-Acc.png?v=1770981709",
+        "gallery_images": [
+          "https://cdn.shopify.com/s/files/1/0229/0735/5214/files/XPeak-T-Black-Acc.png?v=1770981709",
+          "https://cdn.shopify.com/s/files/1/0229/0735/5214/files/XPeak2-TEMPEST_GREY-BF-STUDIO_CAROUSEL.jpg?v=1770981709",
+          "https://cdn.shopify.com/s/files/1/0229/0735/5214/files/XPeak-Black_0d477f38-e938-4369-a00c-fce88ea36f46.jpg?v=1770981709",
+          "https://cdn.shopify.com/s/files/1/0229/0735/5214/files/XPeak-Black-fork_f36d7382-ef74-42cf-8349-b738f5bc754d.jpg?v=1770981709",
+          "https://cdn.shopify.com/s/files/1/0229/0735/5214/files/XPeak-Black-1_b189f8b4-b5f3-4d5c-b1b9-af9574bc43ed.jpg?v=1770981709",
+          "https://cdn.shopify.com/s/files/1/0229/0735/5214/files/XPeakST-people_412c73fc-bac9-43ac-95c3-292f9059b242.jpg?v=1770981709"
+        ],
+        "year": 2024,
+        "ebike_class": 1
+      },
+      {
+        "source": "shopify",
+        "brand_slug": "lectric",
+        "brand_name": "Lectric eBikes",
+        "category": "mountain",
+        "model_name": "XPeak2 High-Step Long-Range eBike",
+        "slug": "lectric-xpeak-high-step-long-range-ebike",
+        "handle": "xpeak-high-step-long-range-ebike",
+        "affiliate_url": "https://www.lectricebikes.com/products/xpeak-high-step-long-range-ebike",
+        "msrp": 1499,
+        "hero_image_url": "https://cdn.shopify.com/s/files/1/0229/0735/5214/files/XPeak-T-Black-Acc.png?v=1770981709",
+        "gallery_images": [
+          "https://cdn.shopify.com/s/files/1/0229/0735/5214/files/XPeak-T-Black-Acc.png?v=1770981709",
+          "https://cdn.shopify.com/s/files/1/0229/0735/5214/files/XPeak2-TEMPEST_GREY-BF-STUDIO_CAROUSEL.jpg?v=1770981709",
+          "https://cdn.shopify.com/s/files/1/0229/0735/5214/files/XPeak-Black_de742df4-cb61-45ab-a42a-68d7640d5e7c.jpg?v=1768040742",
+          "https://cdn.shopify.com/s/files/1/0229/0735/5214/files/XPeak-Black-1.jpg?v=1768040742",
+          "https://cdn.shopify.com/s/files/1/0229/0735/5214/files/XPeak-black-battery.jpg?v=1768040742",
+          "https://cdn.shopify.com/s/files/1/0229/0735/5214/files/XPeak-tires.jpg?v=1768040742"
+        ],
+        "year": 2024,
+        "ebike_class": 1
+      }
+    ]
+  },
+  {
+    "brand": "Lectric eBikes",
+    "brand_slug": "lectric",
+    "category": "step-through",
+    "candidates": [
+      {
+        "source": "shopify",
+        "brand_slug": "lectric",
+        "brand_name": "Lectric eBikes",
+        "category": "step-through",
+        "model_name": "XP4 Step-Thru Stratus White eBike",
+        "slug": "lectric-xp-step-thru-white",
+        "handle": "xp-step-thru-white",
+        "affiliate_url": "https://www.lectricebikes.com/products/xp-step-thru-white",
+        "msrp": 999,
+        "hero_image_url": "https://cdn.shopify.com/s/files/1/0229/0735/5214/files/XP4-T-WST.png?v=1774303137",
+        "gallery_images": [
+          "https://cdn.shopify.com/s/files/1/0229/0735/5214/files/XP4-T-WST.png?v=1774303137",
+          "https://cdn.shopify.com/s/files/1/0229/0735/5214/files/XP4-STRATUS_WHITE_STEP_THRU-BF-STUDIO_CAROUSEL.jpg?v=1774303137",
+          "https://cdn.shopify.com/s/files/1/0229/0735/5214/files/WST-award_3aba31c2-9eeb-4994-a197-04f12ed43c38.jpg?v=1768039077",
+          "https://cdn.shopify.com/s/files/1/0229/0735/5214/files/WST-people_56533fd1-b5de-48a1-aa5b-6c804a5248f3.jpg?v=1775105066",
+          "https://cdn.shopify.com/s/files/1/0229/0735/5214/files/WST-msc-1.jpg?v=1775105066",
+          "https://cdn.shopify.com/s/files/1/0229/0735/5214/files/WST-plain_51dee4da-9030-49a1-a8e0-a2e70c2b8a0d.jpg?v=1775105066"
+        ],
+        "year": 2025,
+        "range_miles_high": 85
+      },
+      {
+        "source": "shopify",
+        "brand_slug": "lectric",
+        "brand_name": "Lectric eBikes",
+        "category": "step-through",
+        "model_name": "XPress Step-Thru eBike",
+        "slug": "lectric-xpress-step-thru-ebike",
+        "handle": "xpress-step-thru-ebike",
+        "affiliate_url": "https://www.lectricebikes.com/products/xpress-step-thru-ebike",
+        "msrp": 999,
+        "hero_image_url": "https://cdn.shopify.com/s/files/1/0229/0735/5214/files/XPress-White-T-sold-out.png?v=1776276642",
+        "gallery_images": [
+          "https://cdn.shopify.com/s/files/1/0229/0735/5214/files/XPress-White-T-sold-out.png?v=1776276642",
+          "https://cdn.shopify.com/s/files/1/0229/0735/5214/files/XPress-White-T.png?v=1776276642",
+          "https://cdn.shopify.com/s/files/1/0229/0735/5214/files/XPress-white_f314d147-a513-4f76-8ff8-a903664d810f.jpg?v=1776276642",
+          "https://cdn.shopify.com/s/files/1/0229/0735/5214/files/XPress-white-6.jpg?v=1776276642",
+          "https://cdn.shopify.com/s/files/1/0229/0735/5214/files/XPress-white-1.jpg?v=1776276642",
+          "https://cdn.shopify.com/s/files/1/0229/0735/5214/files/XPress-white-5.jpg?v=1776276642"
+        ],
+        "year": 2024,
+        "motor_watts": 500
+      }
+    ]
+  },
+  {
+    "brand": "Pedego",
+    "brand_slug": "pedego",
+    "category": "step-through",
+    "candidates": [
+      {
+        "source": "shopify",
+        "brand_slug": "pedego",
+        "brand_name": "Pedego",
+        "category": "step-through",
+        "model_name": "Boomerang - 2025",
+        "slug": "pedego-boomerang-plus",
+        "handle": "boomerang-plus",
+        "affiliate_url": "https://www.pedegoelectricbikes.com/products/boomerang-plus",
+        "msrp": 1746,
+        "hero_image_url": "https://cdn.shopify.com/s/files/1/0654/4159/5587/files/boomerang-plus-1_7b7846b1-4d93-4b96-b5f5-5fad926adcc3.jpg?v=1722423133",
+        "gallery_images": [
+          "https://cdn.shopify.com/s/files/1/0654/4159/5587/files/boomerang-plus-1_7b7846b1-4d93-4b96-b5f5-5fad926adcc3.jpg?v=1722423133",
+          "https://cdn.shopify.com/s/files/1/0654/4159/5587/files/24-Boomerang-Red_98a98990-5ec4-4302-9c93-1be3ab485f75.jpg?v=1722423133",
+          "https://cdn.shopify.com/s/files/1/0654/4159/5587/files/Boomerang-26-White-Black_9923268f-73af-4f78-8507-8fdef3fcbbfc.jpg?v=1722423133",
+          "https://cdn.shopify.com/s/files/1/0654/4159/5587/files/Boomerang-26-White-MAG_edfc248c-f654-420d-b83c-fc95834ca26f.jpg?v=1722423133",
+          "https://cdn.shopify.com/s/files/1/0654/4159/5587/files/boomerang-1_aadc78d2-06b6-4473-a2a5-4590716ad714.jpg?v=1722423133",
+          "https://cdn.shopify.com/s/files/1/0654/4159/5587/files/pedego-boomerang-15_945ac327-88f5-4f0e-965a-307e8c5d12a7.jpg?v=1722423133"
+        ],
+        "year": 2024
+      },
+      {
+        "source": "shopify",
+        "brand_slug": "pedego",
+        "brand_name": "Pedego",
+        "category": "step-through",
+        "model_name": "Boomerang: Platinum Edition - 2025",
+        "slug": "pedego-boomerang-platinum-edition",
+        "handle": "boomerang-platinum-edition",
+        "affiliate_url": "https://www.pedegoelectricbikes.com/products/boomerang-platinum-edition",
+        "msrp": 2300,
+        "hero_image_url": "https://cdn.shopify.com/s/files/1/0654/4159/5587/files/Boomerang-Platinum-24_21a80534-394d-4fbd-9ffb-4f1f5c61717c.jpg?v=1722423181",
+        "gallery_images": [
+          "https://cdn.shopify.com/s/files/1/0654/4159/5587/files/Boomerang-Platinum-24_21a80534-394d-4fbd-9ffb-4f1f5c61717c.jpg?v=1722423181",
+          "https://cdn.shopify.com/s/files/1/0654/4159/5587/files/26-Boomerang-Platinum-Interceptor-scaled_573fbfe5-c5a9-435d-bd66-0074b2ffa7cf.jpg?v=1722423181"
+        ],
+        "year": 2024
+      }
+    ]
+  },
+  {
+    "brand": "QuietKat",
+    "brand_slug": "quietkat",
+    "category": "cargo",
+    "candidates": [
+      {
+        "source": "shopify",
+        "brand_slug": "quietkat",
+        "brand_name": "QuietKat",
+        "category": "cargo",
+        "model_name": "Apex HD",
+        "slug": "quietkat-apex-hd",
+        "handle": "apex-hd",
+        "affiliate_url": "https://www.quietkat.com/products/apex-hd",
+        "msrp": 2799,
+        "hero_image_url": "https://cdn.shopify.com/s/files/1/0476/5250/3705/files/Pro-CaptureOne0127.jpg?v=1739856350",
+        "gallery_images": [
+          "https://cdn.shopify.com/s/files/1/0476/5250/3705/files/Pro-CaptureOne0127.jpg?v=1739856350",
+          "https://cdn.shopify.com/s/files/1/0476/5250/3705/files/Pro-CaptureOne0132.jpg?v=1739856350",
+          "https://cdn.shopify.com/s/files/1/0476/5250/3705/files/Pro-CaptureOne0157.jpg?v=1739856350",
+          "https://cdn.shopify.com/s/files/1/0476/5250/3705/files/5O7A3717.jpg?v=1739856350",
+          "https://cdn.shopify.com/s/files/1/0476/5250/3705/files/5O7A3698.jpg?v=1739856350",
+          "https://cdn.shopify.com/s/files/1/0476/5250/3705/files/5O7A3692.jpg?v=1739856350"
+        ],
+        "year": 2024,
+        "motor_watts": 0,
+        "range_miles_high": 90,
+        "weight_lbs": 325,
+        "ebike_class": 1
+      },
+      {
+        "source": "shopify",
+        "brand_slug": "quietkat",
+        "brand_name": "QuietKat",
+        "category": "cargo",
+        "model_name": "Apex Pro",
+        "slug": "quietkat-apex-pro-electric-hunting-bike",
+        "handle": "apex-pro-electric-hunting-bike",
+        "affiliate_url": "https://www.quietkat.com/products/apex-pro-electric-hunting-bike",
+        "msrp": 3499,
+        "hero_image_url": "https://cdn.shopify.com/s/files/1/0476/5250/3705/files/ApexProGunmetal2-min.jpg?v=1736557100",
+        "gallery_images": [
+          "https://cdn.shopify.com/s/files/1/0476/5250/3705/files/ApexProGunmetal2-min.jpg?v=1736557100",
+          "https://cdn.shopify.com/s/files/1/0476/5250/3705/products/ApexProGunmetal1-min.png?v=1736557100",
+          "https://cdn.shopify.com/s/files/1/0476/5250/3705/products/4D5A41122.jpg?v=1736557100",
+          "https://cdn.shopify.com/s/files/1/0476/5250/3705/products/4D5A3676.jpg?v=1736557100",
+          "https://cdn.shopify.com/s/files/1/0476/5250/3705/products/4D5A3081_1.jpg?v=1736557100",
+          "https://cdn.shopify.com/s/files/1/0476/5250/3705/files/QuietKat_ApexPro_OMGimg__10.jpg?v=1736557100"
+        ],
+        "year": 2023,
+        "motor_watts": 1000,
+        "weight_lbs": 70
+      }
+    ]
+  },
+  {
+    "brand": "Rad Power Bikes",
+    "brand_slug": "rad-power-bikes",
+    "category": "road-gravel",
+    "candidates": [
+      {
+        "source": "shopify",
+        "brand_slug": "rad-power-bikes",
+        "brand_name": "Rad Power Bikes",
+        "category": "road-gravel",
+        "model_name": "Radster™ Road Electric Commuter Bike",
+        "slug": "rad-power-bikes-radster-road-electric-commuter-bike",
+        "handle": "radster-road-electric-commuter-bike",
+        "affiliate_url": "https://www.radpowerbikes.com/products/radster-road-electric-commuter-bike",
+        "msrp": 1999,
+        "hero_image_url": "https://cdn.shopify.com/s/files/1/0799/9645/files/Radster_Road_Regular_Bay_Blue_Right_Side.png?v=1710546666",
+        "gallery_images": [
+          "https://cdn.shopify.com/s/files/1/0799/9645/files/Radster_Road_Regular_Bay_Blue_Right_Side.png?v=1710546666",
+          "https://cdn.shopify.com/s/files/1/0799/9645/files/Radster_Road_Regular_Bay_Blue_Right_Angle_22ce112c-0111-4636-8cca-6cb4da2ece5c.png?v=1745767564",
+          "https://cdn.shopify.com/s/files/1/0799/9645/files/3-min.png?v=1745767564",
+          "https://cdn.shopify.com/s/files/1/0799/9645/files/Radster_Road_Large_Bay_Blue_Right_Angle_784a548b-6cc6-4ce0-afee-fa9397b7d5de.png?v=1745767564",
+          "https://cdn.shopify.com/s/files/1/0799/9645/files/1-min_1.png?v=1745767564",
+          "https://cdn.shopify.com/s/files/1/0799/9645/files/Radster_Road_Regular_Lunar_White_Right_Angle_46e0673d-d9b2-45bc-ac63-09cf57ba6174.png?v=1745767564"
+        ],
+        "year": 2024,
+        "motor_watts": 750,
+        "range_miles_high": 65,
+        "weight_lbs": 320,
+        "top_speed_mph": 28,
+        "ebike_class": 1
+      }
+    ]
+  },
+  {
+    "brand": "Rad Power Bikes",
+    "brand_slug": "rad-power-bikes",
+    "category": "hunting",
+    "candidates": [
+      {
+        "source": "shopify",
+        "brand_slug": "rad-power-bikes",
+        "brand_name": "Rad Power Bikes",
+        "category": "hunting",
+        "model_name": "Radster™ Trail Electric Off-Road Bike",
+        "slug": "rad-power-bikes-radster-trail-electric-off-road-bike",
+        "handle": "radster-trail-electric-off-road-bike",
+        "affiliate_url": "https://www.radpowerbikes.com/products/radster-trail-electric-off-road-bike",
+        "msrp": 1999,
+        "hero_image_url": "https://cdn.shopify.com/s/files/1/0799/9645/files/Radster_Trail_Regular_Copper_Red_Right_Side.png?v=1709660016",
+        "gallery_images": [
+          "https://cdn.shopify.com/s/files/1/0799/9645/files/Radster_Trail_Regular_Copper_Red_Right_Side.png?v=1709660016",
+          "https://cdn.shopify.com/s/files/1/0799/9645/files/Radster_Trail_Regular_Copper_Red_Right_Angle.png?v=1745384677",
+          "https://cdn.shopify.com/s/files/1/0799/9645/files/Radster_Trail_Regular_Fir_Green_Right_Side.png?v=1745384677",
+          "https://cdn.shopify.com/s/files/1/0799/9645/files/Radster_Trail_Regular_Fir_Green_Right_Angle.png?v=1745384677",
+          "https://cdn.shopify.com/s/files/1/0799/9645/files/Radster_Trail_Large_Copper_Red_Right_Side.png?v=1745384677",
+          "https://cdn.shopify.com/s/files/1/0799/9645/files/Radster_Trail_Large_Copper_Red_Right_Angle.png?v=1745384677"
+        ],
+        "year": 2024,
+        "motor_watts": 750,
+        "range_miles_high": 65,
+        "weight_lbs": 370,
+        "ebike_class": 3
+      }
+    ]
+  },
+  {
+    "brand": "Ride1UP",
+    "brand_slug": "ride1up",
+    "category": "cargo",
+    "candidates": [
+      {
+        "source": "manual",
+        "brand_slug": "ride1up",
+        "brand_name": "Ride1UP",
+        "category": "cargo",
+        "model_name": "Portola",
+        "slug": "ride1up-portola",
+        "handle": "portola",
+        "affiliate_url": "https://ride1up.com/product/portola/",
+        "msrp": 1295,
+        "hero_image_url": null,
+        "gallery_images": [],
+        "motor_watts": null,
+        "battery_wh": null,
+        "range_miles_high": null,
+        "best_for": null
+      }
+    ]
+  },
+  {
+    "brand": "Ride1UP",
+    "brand_slug": "ride1up",
+    "category": "mountain",
+    "candidates": [
+      {
+        "source": "manual",
+        "brand_slug": "ride1up",
+        "brand_name": "Ride1UP",
+        "category": "mountain",
+        "model_name": "Rift",
+        "slug": "ride1up-rift",
+        "handle": "rift",
+        "affiliate_url": "https://ride1up.com/product/rift/",
+        "msrp": 2395,
+        "hero_image_url": null,
+        "gallery_images": [],
+        "motor_watts": null,
+        "battery_wh": null,
+        "range_miles_high": null,
+        "best_for": null
+      }
+    ]
+  },
+  {
+    "brand": "Specialized",
+    "brand_slug": "specialized",
+    "category": "cruiser",
+    "candidates": [
+      {
+        "source": "manual",
+        "brand_slug": "specialized",
+        "brand_name": "Specialized",
+        "category": "cruiser",
+        "model_name": "Turbo Como SL 4.0",
+        "slug": "specialized-turbo-como-sl-4",
+        "handle": "turbo-como-sl-4",
+        "affiliate_url": "https://www.specialized.com/us/en/turbo-como-sl-4-0/p/217538",
+        "msrp": 4500,
+        "hero_image_url": null,
+        "gallery_images": [],
+        "motor_watts": null,
+        "battery_wh": null,
+        "range_miles_high": null,
+        "best_for": null
+      }
+    ]
+  },
+  {
+    "brand": "Specialized",
+    "brand_slug": "specialized",
+    "category": "cargo",
+    "candidates": [
+      {
+        "source": "manual",
+        "brand_slug": "specialized",
+        "brand_name": "Specialized",
+        "category": "cargo",
+        "model_name": "Turbo Porto",
+        "slug": "specialized-turbo-porto",
+        "handle": "turbo-porto",
+        "affiliate_url": "https://www.specialized.com/us/en/turbo-porto/p/215301",
+        "msrp": 4000,
+        "hero_image_url": null,
+        "gallery_images": [],
+        "motor_watts": null,
+        "battery_wh": null,
+        "range_miles_high": null,
+        "best_for": null
+      }
+    ]
+  },
+  {
+    "brand": "Tern",
+    "brand_slug": "tern",
+    "category": "commuter",
+    "candidates": [
+      {
+        "source": "manual",
+        "brand_slug": "tern",
+        "brand_name": "Tern",
+        "category": "commuter",
+        "model_name": "Quick Haul D8",
+        "slug": "tern-quick-haul-d8",
+        "handle": "quick-haul-d8",
+        "affiliate_url": "https://www.ternbicycles.com/us/bikes/472/quick-haul-d8",
+        "msrp": 2499,
+        "hero_image_url": null,
+        "gallery_images": [],
+        "motor_watts": null,
+        "battery_wh": null,
+        "range_miles_high": null,
+        "best_for": null
+      }
+    ]
+  },
+  {
+    "brand": "Trek",
+    "brand_slug": "trek",
+    "category": "cargo",
+    "candidates": [
+      {
+        "source": "manual",
+        "brand_slug": "trek",
+        "brand_name": "Trek",
+        "category": "cargo",
+        "model_name": "Fetch+ 2",
+        "slug": "trek-fetch-plus-2",
+        "handle": "fetch-plus-2",
+        "affiliate_url": "https://www.trekbikes.com/us/en_US/bikes/electric-bikes/electric-cargo-bikes/fetch/fetch-plus-2/p/37048/",
+        "msrp": 5499,
+        "hero_image_url": null,
+        "gallery_images": [],
+        "motor_watts": null,
+        "battery_wh": null,
+        "range_miles_high": null,
+        "best_for": null
+      }
+    ]
+  },
+  {
+    "brand": "Trek",
+    "brand_slug": "trek",
+    "category": "step-through",
+    "candidates": [
+      {
+        "source": "manual",
+        "brand_slug": "trek",
+        "brand_name": "Trek",
+        "category": "step-through",
+        "model_name": "Verve+ 2 Lowstep",
+        "slug": "trek-verve-plus-2-lowstep",
+        "handle": "verve-plus-2-lowstep",
+        "affiliate_url": "https://www.trekbikes.com/us/en_US/bikes/hybrid-bikes/electric-hybrid-bikes/verve/verve-plus-2-lowstep/p/40081/",
+        "msrp": 2749,
+        "hero_image_url": null,
+        "gallery_images": [],
+        "motor_watts": null,
+        "battery_wh": null,
+        "range_miles_high": null,
+        "best_for": null
+      }
+    ]
+  },
+  {
+    "brand": "Velotric",
+    "brand_slug": "velotric",
+    "category": "cruiser",
+    "candidates": [
+      {
+        "source": "shopify",
+        "brand_slug": "velotric",
+        "brand_name": "Velotric",
+        "category": "cruiser",
+        "model_name": "Velotric Breeze 1 Cruiser Ebike",
+        "slug": "velotric-breeze-1",
+        "handle": "velotric-breeze-1",
+        "affiliate_url": "https://www.velotricbike.com/products/velotric-breeze-1",
+        "msrp": 1699,
+        "hero_image_url": "https://cdn.shopify.com/s/files/1/0599/2094/1239/files/B1_VioletHaze_81fbd82b-ab52-4ba1-9916-88e3bc4717af.png?v=1770028846",
+        "gallery_images": [
+          "https://cdn.shopify.com/s/files/1/0599/2094/1239/files/B1_VioletHaze_81fbd82b-ab52-4ba1-9916-88e3bc4717af.png?v=1770028846",
+          "https://cdn.shopify.com/s/files/1/0599/2094/1239/files/B1_Violet_Haze_with_rear_rack_fender_1.png?v=1775017680",
+          "https://cdn.shopify.com/s/files/1/0599/2094/1239/files/B1_Violet_Haze_front_33dbac8a-43ff-476f-934d-2b723281dd18.png?v=1775017680",
+          "https://cdn.shopify.com/s/files/1/0599/2094/1239/files/B1_Violet_Haze_rear_2f485b88-e5ac-4f69-b9b1-8d5ebc7ce814.png?v=1775017680",
+          "https://cdn.shopify.com/s/files/1/0599/2094/1239/files/B1_SlateGray_d3eecc92-2950-43a7-95ba-9c665711a969.png?v=1775017680",
+          "https://cdn.shopify.com/s/files/1/0599/2094/1239/files/B1_Slate_Gray_with_rear_rack_fender_1.png?v=1775017680"
+        ],
+        "year": 2025
+      }
+    ]
+  }
+]

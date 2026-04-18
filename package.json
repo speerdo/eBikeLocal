@@ -29,7 +29,13 @@
     "seed": "npm run seed:states && npm run seed:categories && npm run seed:brands",
     "enrich:bikes": "node scripts/enrich-bikes-from-brands.mjs",
     "enrich:bikes:dry": "node scripts/enrich-bikes-from-brands.mjs --dry-run",
-    "enrich:bikes:test": "node scripts/enrich-bikes-from-brands.mjs --test"
+    "enrich:bikes:test": "node scripts/enrich-bikes-from-brands.mjs --test",
+    "audit:bikes": "node scripts/audit-bikes.mjs",
+    "audit:bikes:fast": "node scripts/audit-bikes.mjs --skip-urls --skip-live",
+    "discover:bikes": "node scripts/discover-bikes.mjs",
+    "discover:bikes:apply": "node scripts/discover-bikes.mjs --apply",
+    "fix:bikes": "node scripts/apply-audit-fixes.mjs",
+    "fix:bikes:apply": "node scripts/apply-audit-fixes.mjs --apply"
   },
   "dependencies": {
     "@astrojs/vercel": "^10.0.4",
