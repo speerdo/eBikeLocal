@@ -21,9 +21,9 @@ export async function getStaticPaths() {
 }
 
 const { city } = Astro.props;
-const cityLat = Number(city.latitude);
-const cityLng = Number(city.longitude);
-const hasCityCoords = Number.isFinite(cityLat) && Number.isFinite(cityLng);
+const cityLat = city.latitude != null ? Number(city.latitude) : NaN;
+const cityLng = city.longitude != null ? Number(city.longitude) : NaN;
+const hasCityCoords = Number.isFinite(cityLat) && Number.isFinite(cityLng) && (cityLat !== 0 || cityLng !== 0);
 
 const shops = await sql`
   WITH scoped_shops AS (
@@ -34,10 +34,22 @@ const shops = await sql`
         LOWER(TRIM(REGEXP_REPLACE(
           REGEXP_REPLACE(
             REGEXP_REPLACE(
-              REGEXP_REPLACE(COALESCE(s.address_line1, ''), '\\m(street)\\M', 'st', 'gi'),
-              '\\m(avenue)\\M', 'ave', 'gi'
+              REGEXP_REPLACE(
+                REGEXP_REPLACE(
+                  REGEXP_REPLACE(
+                    REGEXP_REPLACE(
+                      REGEXP_REPLACE(COALESCE(s.address_line1, ''), '\\m(street)\\M', 'st', 'gi'),
+                      '\\m(avenue)\\M', 'ave', 'gi'
+                    ),
+                    '\\m(road)\\M', 'rd', 'gi'
+                  ),
+                  ',?\\s*#\\s*[a-z0-9]+', '', 'gi'
+                ),
+                ',?\\s*\\m(ste|suite|unit|apt|apartment)\\M\\.?\\s*#?\\s*[a-z0-9]*', '', 'gi'
+              ),
+              '\\s+[a-z]\\s*$', '', 'g'
             ),
-            '\\m(road)\\M', 'rd', 'gi'
+            ',', ' '
           ),
           '\\s+', ' ', 'g'
         )))
@@ -93,8 +105,8 @@ const nearbyCities = await sql`
   WHERE c.state_code = ${city.state_code}
     AND c.slug != ${city.slug}
     AND c.has_dedicated_page = true
-  ORDER BY c.shop_count DESC, c.name
-  LIMIT 8
+  ORDER BY c.name
+  LIMIT 60
 `;
 
 const mapPins = shops
@@ -111,6 +123,13 @@ const topBrandNames = brandCounts
   .filter(Boolean)
   .slice(0, 3);
 
+const extraBrandCount = brandCounts.length - 3;
+const brandListText = topBrandNames.length === 0
+  ? ''
+  : extraBrandCount > 0
+    ? `${topBrandNames.join(', ')}, and ${extraBrandCount} more ${extraBrandCount === 1 ? 'brand' : 'brands'}`
+    : topBrandNames.join(', ');
+
 function haversineMiles(lat1: number, lon1: number, lat2: number, lon2: number) {
   const toRad = (d: number) => (d * Math.PI) / 180;
   const R = 3958.8;
@@ -125,9 +144,9 @@ function haversineMiles(lat1: number, lon1: number, lat2: number, lon2: number) 
 
 const nearbyCitiesSorted = nearbyCities
   .map((nc: any) => {
-    const lat = Number(nc.latitude);
-    const lng = Number(nc.longitude);
-    const hasCoords = hasCityCoords && Number.isFinite(lat) && Number.isFinite(lng);
+    const lat = nc.latitude != null ? Number(nc.latitude) : NaN;
+    const lng = nc.longitude != null ? Number(nc.longitude) : NaN;
+    const hasCoords = hasCityCoords && Number.isFinite(lat) && Number.isFinite(lng) && (lat !== 0 || lng !== 0);
     return {
       ...nc,
       distance_miles: hasCoords ? haversineMiles(cityLat, cityLng, lat, lng) : null,
@@ -138,7 +157,8 @@ const nearbyCitiesSorted = nearbyCities
     if (a.distance_miles != null) return -1;
     if (b.distance_miles != null) return 1;
     return Number(b.shop_count || 0) - Number(a.shop_count || 0);
-  });
+  })
+  .slice(0, 8);
 
 const itemListSchema = {
   '@context': 'https://schema.org',
@@ -175,10 +195,7 @@ const itemListSchema = {
 
     {brandCounts.length > 0 && (
       <p class="mt-2 max-w-2xl text-surface-600 leading-relaxed">
-        {city.name} dealers carry{' '}
-        {topBrandNames.join(', ')}
-        {brandCounts.length > 3 ? `, and ${brandCounts.length - 3} more brands` : ''}.
-        {' '}Browse the full list below or filter by brand to find a shop near you.
+        {city.name} dealers carry {brandListText}. Browse the full list below or filter by brand to find a shop near you.
       </p>
     )}
 

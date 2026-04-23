@@ -161,6 +161,8 @@ export function normalizeStreetAddressBase(addr) {
 export function toSlug(str) {
   return str
     .toLowerCase()
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '')
     .replace(/[^a-z0-9\s-]/g, '')
     .replace(/\s+/g, '-')
     .replace(/-+/g, '-')
