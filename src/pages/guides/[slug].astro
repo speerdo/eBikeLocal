@@ -2,7 +2,6 @@
 import { getCollection, render } from 'astro:content';
 import BaseLayout from '@layouts/BaseLayout.astro';
 import Breadcrumb from '@components/ui/Breadcrumb.astro';
-import FAQSchema from '@components/seo/FAQSchema.astro';
 
 export async function getStaticPaths() {
   const entries = await getCollection('guides');
@@ -56,7 +55,6 @@ const articleSchema = {
   ogImage={heroImage}
   jsonLd={articleSchema}
 >
-  <FAQSchema slot="head" items={[]} />
 
   <!-- Hero header -->
   <section class="relative overflow-hidden bg-night-900">

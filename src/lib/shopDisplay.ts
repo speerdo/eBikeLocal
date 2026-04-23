@@ -91,13 +91,19 @@ export function buildShopAboutText(input: {
 
   if (compactBrands.length > 0) {
     const brandList = formatBrandList(compactBrands);
-    if (variantSeed % 2 === 0) {
+    if (variantSeed === 0) {
       parts.push(`${input.name} is an authorized ${brandList} dealer in ${input.city}, ${input.stateCode}.`);
-    } else {
+    } else if (variantSeed === 1) {
       parts.push(`In ${input.city}, ${input.stateCode}, ${input.name} carries ${brandList} and supports riders with in-store help.`);
+    } else if (variantSeed === 2) {
+      parts.push(`${input.name} serves cyclists in ${input.city}, ${input.stateCode} as an authorized ${brandList} dealer.`);
+    } else {
+      parts.push(`Riders in ${input.city}, ${input.stateCode} can find ${brandList} bikes and service at ${input.name}.`);
     }
-  } else {
+  } else if (variantSeed % 2 === 0) {
     parts.push(`${input.name} is a local bike shop in ${input.city}, ${input.stateCode} offering sales, service, and accessories.`);
+  } else {
+    parts.push(`${input.name} offers bike sales, repairs, and accessories in ${input.city}, ${input.stateCode}.`);
   }
 
   if (hasHighRating) {
