@@ -79,18 +79,16 @@ const jsonLd = {
     <div class="relative mx-auto max-w-7xl page-x py-24 md:py-32 lg:py-36">
       <div class="mx-auto max-w-3xl text-center">
 
-        <!-- Eyebrow with volt accent -->
-        <div class="inline-flex items-center gap-2 rounded-full border border-brand-400/20 bg-brand-400/10 px-4 py-1.5 mb-7">
-          <div class="h-1.5 w-1.5 rounded-full bg-brand-400 volt-glow-sm"></div>
-          <span class="text-xs font-700 tracking-[0.1em] text-brand-400 uppercase">
-            The only directory with brand-level dealer data
-          </span>
-        </div>
+        <p class="mb-7 text-sm italic text-brand-400 md:text-base">
+          The only directory with brand-level dealer data
+        </p>
 
         <!-- Headline -->
         <h1 class="font-display text-4xl font-700 tracking-tight text-white md:text-5xl lg:text-6xl xl:text-[4.25rem] leading-[1.05]">
           Find the Best<br />
-          <span class="text-gradient-dark">eBike Shop</span><br />
+          <span class="text-brand-400">eBike</span>{' '}
+          <span class="text-electric-300">Local</span>
+          <br />
           Near You
         </h1>
 
@@ -159,7 +157,7 @@ const jsonLd = {
         ].map(stat => (
           <div class="py-6 text-center">
             <p class="stat-number text-2xl md:text-3xl text-brand-400">{stat.value}</p>
-            <p class="text-xs font-500 text-night-500 mt-0.5">{stat.label}</p>
+            <p class="text-xs font-500 text-night-300 mt-0.5">{stat.label}</p>
           </div>
         ))}
       </div>
@@ -390,7 +388,7 @@ const jsonLd = {
             href={guide.href}
             class="group flex flex-col rounded-2xl border border-white/8 bg-white/[0.04] p-6 hover:border-brand-400/30 hover:bg-white/[0.07] transition-all duration-200"
           >
-            <span class="inline-block rounded-full border border-brand-400/20 bg-brand-400/10 px-2.5 py-0.5 text-[10px] font-700 uppercase tracking-widest text-brand-400 w-fit">
+            <span class="inline-block text-[10px] font-700 uppercase tracking-widest text-brand-400 w-fit">
               {guide.tag}
             </span>
             <h3 class="mt-4 font-display text-lg font-700 text-white group-hover:text-brand-300 transition-colors">{guide.title}</h3>
