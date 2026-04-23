@@ -29,6 +29,7 @@ const shops = await sql`
   LEFT JOIN brands b ON b.id = sb.brand_id
   WHERE s.city = ${city.name} AND s.state_code = ${city.state_code}
     AND (s.google_business_status IS NULL OR s.google_business_status != 'CLOSED_PERMANENTLY')
+    AND COALESCE(s.listing_status, 'active') = 'active'
   GROUP BY s.id
   ORDER BY s.google_rating DESC NULLS LAST, s.name
 `;
@@ -39,6 +40,7 @@ const brandCounts = await sql`
   JOIN brands b ON b.id = sb.brand_id
   JOIN shops s ON s.id = sb.shop_id
   WHERE s.city = ${city.name} AND s.state_code = ${city.state_code}
+    AND COALESCE(s.listing_status, 'active') = 'active'
   GROUP BY b.id, b.name, b.slug
   ORDER BY count DESC
 `;
@@ -62,11 +64,24 @@ const mapPins = shops
     latitude: Number(s.latitude),
     longitude: Number(s.longitude),
   }));
+
+const itemListSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  name: `eBike shops in ${city.name}, ${city.state_code}`,
+  itemListElement: shops.slice(0, 100).map((shop, index) => ({
+    '@type': 'ListItem',
+    position: index + 1,
+    url: `${import.meta.env.SITE_URL || 'https://ebikelocal.com'}/shops/${city.state_slug}/${city.slug}/${shop.slug}/`,
+    name: shop.name,
+  })),
+};
 ---
 
 <BaseLayout
   title={`eBike Shops in ${city.name}, ${city.state_code} — ${shops.length} Local Dealers`}
   description={`Find ${shops.length} electric bike shops in ${city.name}, ${city.state_code}. Compare brands carried, services, ratings, and more.`}
+  jsonLd={itemListSchema}
 >
   <div class="mx-auto max-w-7xl px-(--spacing-page) py-8">
     <Breadcrumb items={[
@@ -98,14 +113,23 @@ const mapPins = shops
     {brandCounts.length > 0 && (
       <section class="mt-8">
         <h2 class="text-lg font-bold text-surface-900">Brands Available in {city.name}</h2>
-        <div class="mt-3 flex flex-wrap gap-2">
+        <p class="mt-1 text-sm text-surface-600">Use these chips to filter shops by brand.</p>
+        <div class="mt-3 flex flex-wrap gap-2" id="brand-filter-chips">
+          <button
+            type="button"
+            class="brand-filter-chip rounded-full border border-brand-300 bg-brand-50 px-3 py-1 text-sm font-medium text-brand-700"
+            data-brand=""
+          >
+            All shops ({shops.length})
+          </button>
           {brandCounts.map((b) => (
-            <a
-              href={`/brands/${b.slug}/`}
-              class="rounded-full border border-surface-200 px-3 py-1 text-sm font-medium text-surface-900 transition-colors hover:border-brand-600 hover:text-brand-600"
+            <button
+              type="button"
+              class="brand-filter-chip rounded-full border border-surface-200 px-3 py-1 text-sm font-medium text-surface-900 transition-colors hover:border-brand-600 hover:text-brand-600"
+              data-brand={b.name}
             >
               {b.name} ({b.count})
-            </a>
+            </button>
           ))}
         </div>
       </section>
@@ -114,25 +138,30 @@ const mapPins = shops
     <!-- Shop list -->
     <section class="mt-8">
       <h2 class="text-lg font-bold text-surface-900">All Shops</h2>
-      <div class="mt-4 space-y-3">
+      <div class="mt-4 space-y-3" id="city-shop-list">
         {shops.map((shop) => (
-          <ShopCard
-            name={shop.name}
-            slug={shop.slug}
-            stateSlug={Astro.params.stateSlug}
-            citySlug={city.slug}
-            address={shop.address_line1 || ''}
-            city={shop.city}
-            stateCode={shop.state_code}
-            rating={shop.google_rating ? Number(shop.google_rating) : null}
-            reviewCount={shop.google_review_count}
-            brands={shop.brand_names || []}
-            services={shop.services || []}
-            featuredImageUrl={shop.featured_image_url}
-            isEbikeSpecialist={shop.is_ebike_specialist}
-          />
+          <div class="city-shop-item" data-brands={(shop.brand_names || []).join('||').toLowerCase()}>
+            <ShopCard
+              name={shop.name}
+              slug={shop.slug}
+              stateSlug={Astro.params.stateSlug}
+              citySlug={city.slug}
+              address={shop.address_line1 || ''}
+              city={shop.city}
+              stateCode={shop.state_code}
+              rating={shop.google_rating ? Number(shop.google_rating) : null}
+              reviewCount={shop.google_review_count}
+              brands={shop.brand_names || []}
+              services={shop.services || []}
+              featuredImageUrl={shop.featured_image_url}
+              isEbikeSpecialist={shop.is_ebike_specialist}
+            />
+          </div>
         ))}
       </div>
+      <p id="city-shop-filter-empty" class="mt-4 hidden rounded-lg border border-surface-200 bg-surface-50 px-4 py-3 text-sm text-surface-700">
+        No shops in this city are tagged with that brand yet.
+      </p>
     </section>
 
     <!-- State law callout -->
@@ -172,3 +201,41 @@ const mapPins = shops
     )}
   </div>
 </BaseLayout>
+
+<script>
+  const chips = Array.from(document.querySelectorAll<HTMLButtonElement>('.brand-filter-chip'));
+  const shopItems = Array.from(document.querySelectorAll<HTMLElement>('.city-shop-item'));
+  const emptyState = document.getElementById('city-shop-filter-empty');
+
+  function setActiveChip(activeBrand: string) {
+    chips.forEach((chip) => {
+      const isActive = (chip.dataset.brand || '') === activeBrand;
+      chip.classList.toggle('border-brand-300', isActive);
+      chip.classList.toggle('bg-brand-50', isActive);
+      chip.classList.toggle('text-brand-700', isActive);
+      chip.classList.toggle('border-surface-200', !isActive);
+      chip.classList.toggle('bg-white', !isActive);
+      chip.classList.toggle('text-surface-900', !isActive);
+    });
+  }
+
+  function filterShopsByBrand(rawBrand: string) {
+    const brand = rawBrand.trim().toLowerCase();
+    let visible = 0;
+    shopItems.forEach((item) => {
+      const brands = item.dataset.brands || '';
+      const match = !brand || brands.includes(brand);
+      item.style.display = match ? '' : 'none';
+      if (match) visible += 1;
+    });
+    emptyState?.classList.toggle('hidden', visible > 0);
+  }
+
+  chips.forEach((chip) => {
+    chip.addEventListener('click', () => {
+      const brand = chip.dataset.brand || '';
+      setActiveChip(brand);
+      filterShopsByBrand(brand);
+    });
+  });
+</script>

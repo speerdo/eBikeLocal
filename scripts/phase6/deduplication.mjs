@@ -14,7 +14,7 @@
  *   node scripts/phase6/deduplication.mjs --report     # just print current stats
  */
 
-import { sql, log, normalizeAddress, toStateCode, shopSlug, toSlug } from '../scrapers/utils.mjs';
+import { sql, log, normalizeStreetAddressBase, shopSlug } from '../scrapers/utils.mjs';
 
 const DRY_RUN     = process.argv.includes('--dry-run');
 const REPORT_ONLY = process.argv.includes('--report');
@@ -44,6 +44,8 @@ const COORD_BOX = 0.001;
 const NAME_SIM_THRESHOLD = 0.5;
 // Minimum coordinate distance (degrees) to require name similarity too
 const STRONG_COORD_MATCH = 0.0005; // ~55m
+const FALSE_POSITIVE_TERMS = /\b(coffee|cafe|restaurant|bar|hotel|inn|lodge)\b/i;
+const BIKE_TERMS = /\b(bike|bikes|bicycle|bicycles|cycle|cycles|ebike|e-bike)\b/i;
 
 // ── Address parser ────────────────────────────────────────────────────────────
 
@@ -87,6 +89,37 @@ async function makeUniqueSlug(name, city, stateCode, suffix = '') {
   return makeUniqueSlug(name, city, stateCode, nextSuffix);
 }
 
+function shouldFlagPendingReview({ name, rating, reviewCount }) {
+  const lowTrustScore = typeof reviewCount === 'number'
+    && reviewCount < 20
+    && typeof rating === 'number'
+    && rating < 3.5;
+  const maybeWrongBusinessType = FALSE_POSITIVE_TERMS.test(name || '')
+    && !BIKE_TERMS.test(name || '');
+  return lowTrustScore || maybeWrongBusinessType;
+}
+
+function pendingReviewReason({ name, rating, reviewCount }) {
+  const reasons = [];
+  if (
+    typeof reviewCount === 'number'
+    && reviewCount < 20
+    && typeof rating === 'number'
+    && rating < 3.5
+  ) {
+    reasons.push('low_rating_and_low_review_count');
+  }
+  if (FALSE_POSITIVE_TERMS.test(name || '') && !BIKE_TERMS.test(name || '')) {
+    reasons.push('name_matches_non_bike_term');
+  }
+  return reasons.join(',');
+}
+
+function toNullableNumber(value) {
+  const n = Number(value);
+  return Number.isFinite(n) && value != null ? n : null;
+}
+
 // ── Promote Google Places → shops ────────────────────────────────────────────
 
 async function promoteGooglePlaces() {
@@ -115,7 +148,10 @@ async function promoteGooglePlaces() {
 
   let inserted = 0;
   let skippedExisting = 0;
+  let skippedAddressDuplicate = 0;
+  let replacedAddressDuplicate = 0;
   let skippedBadAddress = 0;
+  let pendingReview = 0;
   let errors = 0;
 
   for (const row of rows) {
@@ -136,6 +172,37 @@ async function promoteGooglePlaces() {
 
       const stateName = STATE_NAMES[stateCode];
       const slug = await makeUniqueSlug(row.name, city, stateCode);
+      const normalizedAddress = normalizeStreetAddressBase(addressLine1);
+      if (!normalizedAddress) {
+        skippedBadAddress++;
+        continue;
+      }
+
+      const [existingAddressMatch] = await sql`
+        SELECT id, google_review_count
+        FROM shops
+        WHERE normalized_address = ${normalizedAddress}
+          AND LOWER(TRIM(city)) = LOWER(TRIM(${city}))
+          AND state_code = ${stateCode}
+        LIMIT 1
+      `;
+
+      if (existingAddressMatch) {
+        const existingReviewCount = Number(existingAddressMatch.google_review_count || 0);
+        const incomingReviewCount = Number(row.user_rating_count || 0);
+        if (incomingReviewCount > existingReviewCount) {
+          if (!DRY_RUN) {
+            await sql`
+              DELETE FROM shops
+              WHERE id = ${existingAddressMatch.id}
+            `;
+          }
+          replacedAddressDuplicate++;
+        } else {
+          skippedAddressDuplicate++;
+          continue;
+        }
+      }
 
       // Extract photo URLs from photos JSONB
       let featuredImageUrl = null;
@@ -152,6 +219,18 @@ async function promoteGooglePlaces() {
 
       // Extract googleMapsUri from raw_data if available
       const googleMapsUri = row.raw_data?.googleMapsUri || null;
+      const listingStatus = shouldFlagPendingReview({
+        name: row.name,
+        rating: toNullableNumber(row.rating),
+        reviewCount: toNullableNumber(row.user_rating_count),
+      }) ? 'pending_review' : 'active';
+      const reviewReason = listingStatus === 'pending_review'
+        ? pendingReviewReason({
+          name: row.name,
+          rating: toNullableNumber(row.rating),
+          reviewCount: toNullableNumber(row.user_rating_count),
+        })
+        : null;
 
       if (!DRY_RUN) {
         await sql`
@@ -163,7 +242,11 @@ async function promoteGooglePlaces() {
             google_maps_uri,
             google_rating, google_review_count,
             google_business_status,
+            normalized_address,
+            listing_status,
+            pending_review_reason,
             opening_hours, description,
+            description_generated,
             photos, featured_image_url,
             source, created_at, updated_at
           ) VALUES (
@@ -183,8 +266,12 @@ async function promoteGooglePlaces() {
             ${row.rating},
             ${row.user_rating_count},
             ${row.raw_data?.businessStatus || null},
+            ${normalizedAddress},
+            ${listingStatus},
+            ${reviewReason},
             ${row.opening_hours},
             ${row.editorial_summary},
+            ${!row.editorial_summary},
             ${photoUrls.length > 0 ? sql.array(photoUrls) : null},
             ${featuredImageUrl},
             ${'google_places'},
@@ -193,6 +280,7 @@ async function promoteGooglePlaces() {
           )
         `;
       }
+      if (listingStatus === 'pending_review') pendingReview++;
       inserted++;
     } catch (err) {
       log('dedup', `  Error for ${row.place_id}: ${err.message}`);
@@ -200,7 +288,7 @@ async function promoteGooglePlaces() {
     }
   }
 
-  log('dedup', `Google Places → shops: inserted=${inserted}, already_exists=${skippedExisting}, bad_address=${skippedBadAddress}, errors=${errors}`);
+  log('dedup', `Google Places → shops: inserted=${inserted}, already_exists=${skippedExisting}, replaced_dupe=${replacedAddressDuplicate}, skipped_dupe=${skippedAddressDuplicate}, pending_review=${pendingReview}, bad_address=${skippedBadAddress}, errors=${errors}`);
   return inserted;
 }
 
@@ -311,13 +399,21 @@ async function promoteUnmatchedStaging() {
   for (const record of unmatched) {
     try {
       const stateName = record.state || STATE_NAMES[record.state_code] || record.state_code;
+      const normalizedAddress = normalizeStreetAddressBase(record.address);
+      if (!normalizedAddress) {
+        skipped++;
+        continue;
+      }
 
       // Check if a very similar shop exists (name match in same city)
       const [similar] = await sql`
         SELECT id FROM shops
         WHERE state_code = ${record.state_code}
           AND city ILIKE ${record.city}
-          AND similarity(name, ${record.name}) >= 0.7
+          AND (
+            similarity(name, ${record.name}) >= 0.7
+            OR normalized_address = ${normalizedAddress}
+          )
         LIMIT 1
       `;
       if (similar) {
@@ -334,6 +430,18 @@ async function promoteUnmatchedStaging() {
       }
 
       const slug = await makeUniqueSlug(record.name, record.city, record.state_code);
+      const listingStatus = shouldFlagPendingReview({
+        name: record.name,
+        rating: null,
+        reviewCount: null,
+      }) ? 'pending_review' : 'active';
+      const reviewReason = listingStatus === 'pending_review'
+        ? pendingReviewReason({
+          name: record.name,
+          rating: null,
+          reviewCount: null,
+        })
+        : null;
 
       if (!DRY_RUN) {
         const [newShop] = await sql`
@@ -342,6 +450,10 @@ async function promoteUnmatchedStaging() {
             address_line1, city, state, state_code, zip,
             latitude, longitude,
             phone, website,
+            normalized_address,
+            listing_status,
+            pending_review_reason,
+            description_generated,
             source, created_at, updated_at
           ) VALUES (
             ${record.name},
@@ -355,6 +467,10 @@ async function promoteUnmatchedStaging() {
             ${record.longitude},
             ${record.phone},
             ${record.website},
+            ${normalizedAddress},
+            ${listingStatus},
+            ${reviewReason},
+            ${true},
             ${record.source},
             NOW(),
             NOW()
@@ -413,6 +529,9 @@ async function printReport() {
     SELECT COUNT(*) AS n FROM staging_shops
     WHERE state_code NOT IN (SELECT code FROM states) AND state_code IS NOT NULL
   `;
+  const [pendingReviewCount] = await sql`
+    SELECT COUNT(*) AS n FROM shops WHERE listing_status = 'pending_review'
+  `;
   const bySource = await sql`
     SELECT source, COUNT(*) AS n FROM staging_shops GROUP BY source ORDER BY n DESC
   `;
@@ -426,11 +545,59 @@ async function printReport() {
   log('dedup', `  shops table total:               ${shopCount.n}`);
   log('dedup', `    ↳ from google_places:          ${googleCount.n}`);
   log('dedup', `    ↳ from brand scrapers only:    ${shopCount.n - googleCount.n}`);
+  log('dedup', `    ↳ pending manual review:       ${pendingReviewCount.n}`);
   log('dedup', '  Staging by source:');
   for (const row of bySource) {
     log('dedup', `    ${row.source.padEnd(20)} ${row.n}`);
   }
   log('dedup', '─────────────────────────────────────────────────────');
+}
+
+async function flagExistingPendingReviewShops() {
+  const result = await sql`
+    UPDATE shops
+    SET
+      listing_status = 'pending_review',
+      pending_review_reason = TRIM(BOTH ',' FROM CONCAT_WS(',',
+        CASE
+          WHEN google_review_count IS NOT NULL
+            AND google_review_count < 20
+            AND google_rating IS NOT NULL
+            AND google_rating < 3.5
+          THEN 'low_rating_and_low_review_count'
+          ELSE NULL
+        END,
+        CASE
+          WHEN (
+            LOWER(name) LIKE '%coffee%'
+            OR LOWER(name) LIKE '%cafe%'
+            OR LOWER(name) LIKE '%restaurant%'
+            OR LOWER(name) LIKE '%bar%'
+            OR LOWER(name) LIKE '%hotel%'
+            OR LOWER(name) LIKE '%inn%'
+            OR LOWER(name) LIKE '%lodge%'
+          )
+            AND LOWER(name) NOT LIKE '%bike%'
+            AND LOWER(name) NOT LIKE '%cycle%'
+            AND LOWER(name) NOT LIKE '%ebike%'
+            AND LOWER(name) NOT LIKE '%e-bike%'
+          THEN 'name_matches_non_bike_term'
+          ELSE NULL
+        END
+      ))
+    WHERE (
+        (google_review_count IS NOT NULL AND google_review_count < 20 AND google_rating IS NOT NULL AND google_rating < 3.5)
+        OR (
+          (LOWER(name) LIKE '%coffee%' OR LOWER(name) LIKE '%cafe%' OR LOWER(name) LIKE '%restaurant%' OR LOWER(name) LIKE '%bar%' OR LOWER(name) LIKE '%hotel%' OR LOWER(name) LIKE '%inn%' OR LOWER(name) LIKE '%lodge%')
+          AND LOWER(name) NOT LIKE '%bike%'
+          AND LOWER(name) NOT LIKE '%cycle%'
+          AND LOWER(name) NOT LIKE '%ebike%'
+          AND LOWER(name) NOT LIKE '%e-bike%'
+        )
+      )
+      AND COALESCE(listing_status, 'active') = 'active'
+  `;
+  log('dedup', `Existing shops flagged as pending_review: ${result.count}`);
 }
 
 // ── Entry point ───────────────────────────────────────────────────────────────
@@ -454,6 +621,7 @@ try {
   await promoteGooglePlaces();
   await matchStagingToShops();
   await promoteUnmatchedStaging();
+  await flagExistingPendingReviewShops();
   await printReport();
   log('dedup', 'Deduplication complete.');
 } catch (err) {

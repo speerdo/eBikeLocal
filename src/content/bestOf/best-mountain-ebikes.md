@@ -2,6 +2,7 @@
 title: "Best Mountain eBikes (2026): Top eMTB Picks for Every Trail Rider"
 description: "The best electric mountain bikes in 2026 — from entry-level trail hardtails to full-suspension eMTBs. Expert picks at every budget."
 publishedAt: 2026-04-13
+updatedAt: 2026-04-23
 category: buying-guide
 featured: false
 heroImage: "https://images.pexels.com/photos/90454/pexels-photo-90454.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"

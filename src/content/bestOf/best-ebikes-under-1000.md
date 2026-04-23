@@ -2,6 +2,7 @@
 title: "Best eBikes Under $1,000 (2026): Top Picks for Budget Buyers"
 description: "The best electric bikes under $1,000 in 2026 — honest expert picks with no fluff. We separate the genuine value from the cheap junk."
 publishedAt: 2026-04-13
+updatedAt: 2026-04-23
 category: buying-guide
 priceMax: 1000
 tags: ["best ebike under 1000", "cheap ebike", "budget ebike 2026", "electric bike under 1000", "affordable electric bike"]

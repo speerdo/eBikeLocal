@@ -3,6 +3,7 @@ import BaseLayout from '@layouts/BaseLayout.astro';
 import Breadcrumb from '@components/ui/Breadcrumb.astro';
 import BikeCard from '@components/ui/BikeCard.astro';
 import CTAButton from '@components/ui/CTAButton.astro';
+import AffiliateDisclosureBar from '@components/ui/AffiliateDisclosureBar.astro';
 import sql from '@lib/neon';
 
 export async function getStaticPaths() {
@@ -21,9 +22,17 @@ const bikes = await sql`
   ORDER BY msrp ASC NULLS LAST, model_name ASC
 `;
 
-const dealerCount = await sql`SELECT COUNT(*) as count FROM shop_brands WHERE brand_id = ${brand.id}`;
+const dealerCount = await sql`
+  SELECT COUNT(*) as count
+  FROM shop_brands sb
+  JOIN shops s ON s.id = sb.shop_id
+  WHERE sb.brand_id = ${brand.id}
+    AND COALESCE(s.listing_status, 'active') = 'active'
+`;
 
 const topPicks = bikes.filter((b) => b.best_for).slice(0, 3);
+const featuredBikeSlugs = new Set(topPicks.map((b) => b.slug));
+const catalogBikes = bikes.filter((b) => !featuredBikeSlugs.has(b.slug));
 
 const categories = [...new Set(bikes.map((b) => b.category))];
 
@@ -34,14 +43,28 @@ const dealerCities = await sql`
   JOIN cities c ON c.name = s.city AND c.state_code = s.state_code
   JOIN states st ON st.code = s.state_code
   WHERE sb.brand_id = ${brand.id}
+    AND COALESCE(s.listing_status, 'active') = 'active'
   ORDER BY c.name
   LIMIT 20
 `;
+
+const itemListSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  name: `${brand.name} eBike models`,
+  itemListElement: bikes.slice(0, 50).map((bike, index) => ({
+    '@type': 'ListItem',
+    position: index + 1,
+    url: `${import.meta.env.SITE_URL || 'https://ebikelocal.com'}/bikes/${brand.slug}/${bike.slug}/`,
+    name: `${brand.name} ${bike.model_name}`,
+  })),
+};
 ---
 
 <BaseLayout
   title={`Popular ${brand.name} eBikes — Models, Prices & Local Dealers`}
   description={`Popular ${brand.name} electric bikes we track (not an exhaustive catalog). Compare models, prices from $${brand.price_range_low?.toLocaleString() || '?'} to $${brand.price_range_high?.toLocaleString() || '?'}, and find ${brand.name} dealers near you.`}
+  jsonLd={itemListSchema}
 >
   <div class="mx-auto max-w-7xl px-(--spacing-page) py-8">
     <Breadcrumb items={[
@@ -60,6 +83,16 @@ const dealerCities = await sql`
         {brand.description && <p class="mt-2 text-surface-700">{brand.description}</p>}
       </div>
     </div>
+
+    {brand.slug === 'rad-power-bikes' && (
+      <div class="mt-5 rounded-lg border border-amber-200 bg-amber-50 p-4 text-amber-900">
+        <p class="text-sm font-semibold">Brand status notice</p>
+        <p class="mt-1 text-sm">
+          Dealer status may have changed — Rad Power Bikes filed Chapter 11 in Dec 2025.
+          Confirm current inventory and dealer authorization directly with the shop before visiting.
+        </p>
+      </div>
+    )}
 
     <!-- Quick stats -->
     <div class="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
@@ -84,6 +117,8 @@ const dealerCities = await sql`
         <p class="text-xs text-surface-700">Categories</p>
       </div>
     </div>
+
+    <AffiliateDisclosureBar className="mt-5" />
 
     <!-- Top picks -->
     {topPicks.length > 0 && (
@@ -117,7 +152,7 @@ const dealerCities = await sql`
     <section class="mt-12">
       <h2 class="text-xl font-bold text-surface-900">{brand.name} models in our catalog</h2>
       <div class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        {bikes.map((bike) => (
+        {catalogBikes.map((bike) => (
           <BikeCard
             modelName={bike.model_name}
             brandName={brand.name}

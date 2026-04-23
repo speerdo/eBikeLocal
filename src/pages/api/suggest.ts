@@ -70,6 +70,7 @@ export const GET: APIRoute = async ({ url }) => {
     JOIN states st ON st.code = s.state_code
     WHERE s.name ILIKE ${'%' + q + '%'}
       AND (s.google_business_status IS NULL OR s.google_business_status != 'CLOSED_PERMANENTLY')
+      AND COALESCE(s.listing_status, 'active') = 'active'
     ORDER BY s.google_rating DESC NULLS LAST
     LIMIT 5
   `;

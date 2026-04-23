@@ -2,6 +2,7 @@
 title: "Best Cargo eBikes (2026): Top Picks for Hauling Kids, Groceries & Gear"
 description: "The best cargo electric bikes in 2026 — for families replacing a second car, small businesses, and serious haulers. Expert picks at every price."
 publishedAt: 2026-04-13
+updatedAt: 2026-04-23
 category: buying-guide
 featured: true
 heroImage: "https://images.pexels.com/photos/31638920/pexels-photo-31638920.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"

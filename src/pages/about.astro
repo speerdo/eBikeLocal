@@ -1,0 +1,53 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+import Breadcrumb from '@components/ui/Breadcrumb.astro';
+---
+
+<BaseLayout
+  title="About eBikeLocal — Why We Built This Directory"
+  description="Learn how eBikeLocal aggregates dealer and brand data, how our editorial process works, and how we verify shop listings."
+>
+  <div class="mx-auto max-w-4xl px-(--spacing-page) py-8">
+    <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: 'About' }]} />
+
+    <h1 class="mt-6 text-3xl font-extrabold text-surface-900 md:text-4xl">About eBikeLocal</h1>
+
+    <div class="mt-6 space-y-6 text-surface-700 leading-relaxed">
+      <section>
+        <h2 class="text-xl font-bold text-surface-900">Why this exists</h2>
+        <p class="mt-2">
+          eBikeLocal started from a simple problem: brand dealer locators are fragmented, inconsistent, and hard to compare.
+          Riders were forced to open one brand site after another just to figure out which nearby shops actually carried the bikes they wanted to test.
+        </p>
+        <p class="mt-2">
+          We built eBikeLocal to make that process faster and more transparent: one place to discover local shops, compare brands, and shortlist bikes.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="text-xl font-bold text-surface-900">What makes our data different</h2>
+        <p class="mt-2">
+          Our core dataset aggregates dealer information across 15+ brand locator sources, then enriches and validates those records with geography and Google Places data.
+          That brand-level aggregation is what allows city and shop pages to show which brands are likely available in one view.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="text-xl font-bold text-surface-900">Editorial and data standards</h2>
+        <p class="mt-2">
+          Buying-guide recommendations are based on spec review, category fit, safety-relevant components, and price-to-value analysis.
+          For shop data, we run normalization and deduplication checks, then flag edge cases for manual review.
+          Claimed listings and direct merchant updates can override generated descriptions to improve listing quality over time.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="text-xl font-bold text-surface-900">Disclosure</h2>
+        <p class="mt-2">
+          Some outbound product links may be affiliate links.
+          Read our full policy on the <a href="/disclosure/" class="font-medium text-brand-600 hover:underline">Affiliate Disclosure</a> page.
+        </p>
+      </section>
+    </div>
+  </div>
+</BaseLayout>

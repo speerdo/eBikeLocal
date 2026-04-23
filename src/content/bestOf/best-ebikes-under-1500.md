@@ -2,6 +2,7 @@
 title: "Best eBikes Under $1,500 (2026): Top Picks Tested and Ranked"
 description: "The best electric bikes under $1,500 in 2026 — expert picks across commuter, fat tire, folding, and cargo styles with honest pros and cons."
 publishedAt: 2026-04-01
+updatedAt: 2026-04-23
 category: buying-guide
 priceMax: 1500
 tags: ["best ebike under 1500", "affordable ebike", "budget ebike 2026", "electric bike under 1500"]

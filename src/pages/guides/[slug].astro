@@ -29,12 +29,32 @@ const categoryLabel: Record<string, string> = {
   'education': 'eBike Education',
   'news': 'News & Updates',
 };
+
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: title,
+  description,
+  datePublished: publishedAt.toISOString(),
+  dateModified: (updatedAt ?? publishedAt).toISOString(),
+  image: heroImage || undefined,
+  mainEntityOfPage: `${import.meta.env.SITE_URL || 'https://ebikelocal.com'}/guides/${entry.id}/`,
+  author: {
+    '@type': 'Organization',
+    name: 'eBikeLocal',
+  },
+  publisher: {
+    '@type': 'Organization',
+    name: 'eBikeLocal',
+  },
+};
 ---
 
 <BaseLayout
   title={`${title} | eBikeLocal`}
   description={description}
   ogImage={heroImage}
+  jsonLd={articleSchema}
 >
   <FAQSchema slot="head" items={[]} />
 

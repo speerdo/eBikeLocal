@@ -28,6 +28,17 @@ const categories = await sql`SELECT * FROM categories ORDER BY sort_order, name`
     <h1 class="mt-6 text-3xl font-extrabold text-surface-900 md:text-4xl">eBike Catalog</h1>
     <p class="mt-2 text-lg text-surface-700">Compare {bikes.length} popular models from top brands — a sample catalog, not every bike sold.</p>
 
+    <section class="mt-6 max-w-3xl rounded-xl border border-surface-200 bg-surface-50 p-5 text-sm leading-relaxed text-surface-700">
+      <p>
+        This catalog is designed for side-by-side comparison, not a full OEM inventory dump.
+        We prioritize mainstream models with enough public specs to evaluate value, expected use case, and practical ownership factors like service support and parts availability.
+      </p>
+      <p class="mt-3">
+        Start with category filters, then compare motor output, battery size, estimated range, and pricing.
+        When you find a candidate, open the model page for deeper specs and use dealer pages to confirm local availability before you buy.
+      </p>
+    </section>
+
     <!-- Category filter chips -->
     {categories.length > 0 && (
       <div class="mt-6 flex flex-wrap gap-2">

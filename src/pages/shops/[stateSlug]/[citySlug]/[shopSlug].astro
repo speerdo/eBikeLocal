@@ -20,7 +20,8 @@ export async function getStaticPaths() {
     FROM shops s
     JOIN cities c ON c.name = s.city AND c.state_code = s.state_code
     JOIN states st ON st.code = s.state_code
-    WHERE s.google_business_status IS NULL OR s.google_business_status != 'CLOSED_PERMANENTLY'
+  WHERE (s.google_business_status IS NULL OR s.google_business_status != 'CLOSED_PERMANENTLY')
+    AND COALESCE(s.listing_status, 'active') = 'active'
   `;
 
   return shops.map((s) => ({
@@ -39,6 +40,7 @@ const [shop] = await sql`
   FROM shops s
   JOIN states st ON st.code = s.state_code
   WHERE s.slug = ${shopSlug}
+    AND COALESCE(s.listing_status, 'active') = 'active'
   LIMIT 1
 `;
 
@@ -61,6 +63,7 @@ const nearbyShops = await sql`
   WHERE s.city = ${shop.city} AND s.state_code = ${shop.state_code}
     AND s.id != ${shop.id}
     AND (s.google_business_status IS NULL OR s.google_business_status != 'CLOSED_PERMANENTLY')
+    AND COALESCE(s.listing_status, 'active') = 'active'
   ORDER BY s.google_rating DESC NULLS LAST
   LIMIT 5
 `;
@@ -86,9 +89,13 @@ const aboutText = buildShopAboutText({
   city: shop.city,
   stateCode: shop.state_code,
   editorialDescription: shop.description,
+  descriptionGenerated: shop.description_generated,
   isEbikeSpecialist: !!shop.is_ebike_specialist,
   services: shop.services,
   brandNames,
+  rating: shop.google_rating ? Number(shop.google_rating) : null,
+  reviewCount: shop.google_review_count ? Number(shop.google_review_count) : null,
+  openingHours: shop.opening_hours,
 });
 const metaDescription = truncateForMetaDescription(aboutText);
 const hoursRows = getOpeningHoursRows(shop.opening_hours);
@@ -179,6 +186,14 @@ const hoursRows = getOpeningHoursRows(shop.opening_hours);
                       <img src={brand.logo_url} alt={brand.name} class="h-8 w-8 object-contain" loading="lazy" />
                     )}
                     {brand.name}
+                    {brand.name === 'Rad Power Bikes' && (
+                      <span
+                        class="inline-flex items-center gap-1 rounded bg-amber-50 px-1.5 py-0.5 text-xs text-amber-700 ring-1 ring-amber-200"
+                        title="Dealer status may have changed — Rad Power Bikes filed Chapter 11 in Dec 2025"
+                      >
+                        ⚠️ Status update
+                      </span>
+                    )}
                     {brand.dealer_tier && (
                       <span class="rounded bg-surface-100 px-1.5 py-0.5 text-xs text-surface-700">{brand.dealer_tier}</span>
                     )}

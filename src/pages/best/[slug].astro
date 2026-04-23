@@ -2,6 +2,7 @@
 import { getCollection, render } from 'astro:content';
 import BaseLayout from '@layouts/BaseLayout.astro';
 import Breadcrumb from '@components/ui/Breadcrumb.astro';
+import AffiliateDisclosureBar from '@components/ui/AffiliateDisclosureBar.astro';
 
 export async function getStaticPaths() {
   const entries = await getCollection('bestOf');
@@ -34,12 +35,32 @@ const relatedGuides = allBestOf
     return a.data.title.localeCompare(b.data.title);
   })
   .slice(0, 5);
+
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: title,
+  description,
+  datePublished: publishedAt.toISOString(),
+  dateModified: (updatedAt ?? publishedAt).toISOString(),
+  image: heroImage || undefined,
+  mainEntityOfPage: `${import.meta.env.SITE_URL || 'https://ebikelocal.com'}/best/${entry.id}/`,
+  author: {
+    '@type': 'Organization',
+    name: 'eBikeLocal',
+  },
+  publisher: {
+    '@type': 'Organization',
+    name: 'eBikeLocal',
+  },
+};
 ---
 
 <BaseLayout
   title={`${title} | eBikeLocal`}
   description={description}
   ogImage={heroImage}
+  jsonLd={articleSchema}
 >
   <!-- Hero header -->
   <section class="relative overflow-hidden bg-night-900">
@@ -76,6 +97,7 @@ const relatedGuides = allBestOf
 
   <!-- Article body -->
   <div class="mx-auto max-w-4xl page-x py-10 md:py-14">
+    <AffiliateDisclosureBar className="mb-6" />
     <div class="flex gap-10">
 
       <!-- Main content -->

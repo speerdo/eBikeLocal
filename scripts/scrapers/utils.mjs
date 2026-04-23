@@ -107,13 +107,53 @@ export function normalizeAddress(addr) {
   if (!addr) return '';
   return addr
     .toLowerCase()
+    .replace(/\b\d+\s*\/\s*\d+\b/g, '')
+    .replace(/\b#\s*[a-z0-9-]+\b/gi, '')
     .replace(/\bsuite\b\.?\s*#?\d+/gi, '')
     .replace(/\bste\b\.?\s*#?\d+/gi, '')
     .replace(/\bunit\b\.?\s*#?\d+/gi, '')
+    .replace(/\bapt\b\.?\s*#?\w+/gi, '')
     .replace(/\bfloor\b\.?\s*\d+/gi, '')
+    .replace(/\bbuilding\b\.?\s*\w+/gi, '')
     .replace(/\s+/g, ' ')
     .replace(/,\s*,/g, ',')
     .trim();
+}
+
+/**
+ * Normalize to a stable "street number + base street name" key.
+ * Examples:
+ *  - "2114 1/2 S Congress Ave #2" -> "2114 s congress ave"
+ *  - "500 Main St Suite 300" -> "500 main st"
+ */
+export function normalizeStreetAddressBase(addr) {
+  const cleaned = normalizeAddress(addr)
+    .replace(/,/g, ' ')
+    .replace(/\b(p\.?\s*o\.?|po)\s*box\b.*$/gi, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+  if (!cleaned) return '';
+
+  const numberMatch = cleaned.match(/^\d+/);
+  const streetNumber = numberMatch ? numberMatch[0] : '';
+  const withoutLeadingNumber = streetNumber ? cleaned.slice(streetNumber.length).trim() : cleaned;
+
+  const noDirectionalSuffix = withoutLeadingNumber
+    .replace(/\b(n|s|e|w|ne|nw|se|sw)\b\.?$/gi, '')
+    .trim();
+
+  const compactStreet = noDirectionalSuffix
+    .replace(/\b(street)\b/gi, 'st')
+    .replace(/\b(avenue)\b/gi, 'ave')
+    .replace(/\b(road)\b/gi, 'rd')
+    .replace(/\b(drive)\b/gi, 'dr')
+    .replace(/\b(lane)\b/gi, 'ln')
+    .replace(/\b(boulevard)\b/gi, 'blvd')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+  return `${streetNumber} ${compactStreet}`.trim();
 }
 
 // ── Slug generation ──────────────────────────────────────────────────────────

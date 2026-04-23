@@ -2,6 +2,7 @@
 title: "Best eBikes Under $2,500 (2026): Premium Features, Smart Money"
 description: "The best electric bikes between $2,000 and $2,500 — where mid-drives from major brands become accessible and quality makes a serious jump."
 publishedAt: 2026-04-13
+updatedAt: 2026-04-23
 category: buying-guide
 priceMax: 2500
 tags: ["best ebike under 2500", "premium ebike", "mid drive ebike", "trek ebike", "giant ebike 2026"]

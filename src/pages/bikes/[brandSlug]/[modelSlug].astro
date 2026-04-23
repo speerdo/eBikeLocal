@@ -3,6 +3,7 @@ import BaseLayout from '@layouts/BaseLayout.astro';
 import Breadcrumb from '@components/ui/Breadcrumb.astro';
 import SpecRow from '@components/ui/SpecRow.astro';
 import CTAButton from '@components/ui/CTAButton.astro';
+import AffiliateDisclosureBar from '@components/ui/AffiliateDisclosureBar.astro';
 import ProductSchema from '@components/seo/ProductSchema.astro';
 import sql from '@lib/neon';
 import {
@@ -73,6 +74,7 @@ const dealers = await sql`
 `;
 
 const buyUrls = bike.buy_urls || {};
+const brandArticle = /^[aeiou]/i.test(bike.brand_name) ? 'an' : 'a';
 ---
 
 <BaseLayout
@@ -150,6 +152,8 @@ const buyUrls = bike.buy_urls || {};
           )}
         </div>
 
+        <AffiliateDisclosureBar className="mt-4" />
+
         <div class="mt-4 flex flex-wrap gap-2">
           {bike.affiliate_url && (
             <CTAButton href={bike.affiliate_url} brandName={bike.brand_name} price={bike.sale_price || bike.msrp} />
@@ -210,7 +214,7 @@ const buyUrls = bike.buy_urls || {};
     <!-- Find a dealer -->
     {dealers.length > 0 && (
       <section class="mt-12">
-        <h2 class="text-xl font-bold text-surface-900">Find a {bike.brand_name} Dealer</h2>
+        <h2 class="text-xl font-bold text-surface-900">Find {brandArticle} {bike.brand_name} Dealer</h2>
         <div class="mt-4 grid gap-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
           {dealers.map((d) => (
             <a

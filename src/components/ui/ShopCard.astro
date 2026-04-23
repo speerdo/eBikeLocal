@@ -109,8 +109,12 @@ const starsEmpty = 5 - starsFull - starsHalf;
     {brands.length > 0 && (
       <div class="mt-2 flex flex-wrap gap-1">
         {brands.slice(0, 5).map((brand) => (
-          <span class="inline-flex items-center rounded-md bg-brand-50 px-2 py-0.5 text-[11px] font-600 text-brand-700 ring-1 ring-brand-100">
+          <span
+            class="inline-flex items-center gap-1 rounded-md bg-brand-50 px-2 py-0.5 text-[11px] font-600 text-brand-700 ring-1 ring-brand-100"
+            title={brand === 'Rad Power Bikes' ? 'Dealer status may have changed — Rad Power Bikes filed Chapter 11 in Dec 2025' : undefined}
+          >
             {brand}
+            {brand === 'Rad Power Bikes' ? <span aria-hidden="true">⚠️</span> : null}
           </span>
         ))}
         {brands.length > 5 && (

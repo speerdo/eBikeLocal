@@ -23,6 +23,7 @@ const shops = await sql`
   JOIN cities c ON c.name = s.city AND c.state_code = s.state_code
   WHERE sb.brand_id = ${brand.id}
     AND (s.google_business_status IS NULL OR s.google_business_status != 'CLOSED_PERMANENTLY')
+    AND COALESCE(s.listing_status, 'active') = 'active'
   ORDER BY s.state_code, s.city, s.name
 `;
 

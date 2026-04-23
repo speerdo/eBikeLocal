@@ -24,7 +24,8 @@ export const GET: APIRoute = async ({ site }) => {
       FROM shops s
       JOIN cities c ON c.name = s.city AND c.state_code = s.state_code
       JOIN states st ON st.code = s.state_code
-      WHERE s.google_business_status IS NULL OR s.google_business_status != 'CLOSED_PERMANENTLY'
+      WHERE (s.google_business_status IS NULL OR s.google_business_status != 'CLOSED_PERMANENTLY')
+        AND COALESCE(s.listing_status, 'active') = 'active'
     `,
     sql`SELECT slug FROM brands WHERE is_active = true`,
     sql`SELECT bk.slug as model_slug, br.slug as brand_slug FROM bikes bk JOIN brands br ON br.id = bk.brand_id WHERE bk.is_active = true`,
@@ -39,6 +40,7 @@ export const GET: APIRoute = async ({ site }) => {
     { url: '/categories/', changefreq: 'weekly', priority: '0.7' },
     { url: '/guides/', changefreq: 'weekly', priority: '0.8' },
     { url: '/best/', changefreq: 'weekly', priority: '0.8' },
+    { url: '/about/', changefreq: 'yearly', priority: '0.4' },
     { url: '/disclosure/', changefreq: 'yearly', priority: '0.3' },
     { url: '/terms/', changefreq: 'yearly', priority: '0.3' },
     { url: '/privacy/', changefreq: 'yearly', priority: '0.3' },

@@ -60,8 +60,12 @@ CREATE TABLE shops (
   google_rating DECIMAL(2,1),
   google_review_count INTEGER,
   google_business_status TEXT,
+  normalized_address TEXT,
+  listing_status TEXT NOT NULL DEFAULT 'active',
+  pending_review_reason TEXT,
   opening_hours JSONB,
   description TEXT,
+  description_generated BOOLEAN DEFAULT false,
   is_ebike_specialist BOOLEAN DEFAULT false,
   ebike_confidence_score DECIMAL(3,2),
   services TEXT[],
@@ -202,6 +206,10 @@ CREATE INDEX idx_shops_slug ON shops(slug);
 CREATE INDEX idx_shops_google_place_id ON shops(google_place_id);
 CREATE INDEX idx_shops_ebike_confidence ON shops(ebike_confidence_score DESC);
 CREATE INDEX idx_shops_name_trgm ON shops USING gin(name gin_trgm_ops);
+CREATE INDEX idx_shops_listing_status ON shops(listing_status);
+CREATE UNIQUE INDEX idx_shops_normalized_address_city_state
+  ON shops(normalized_address, city, state_code)
+  WHERE normalized_address IS NOT NULL;
 
 -- Bikes
 CREATE INDEX idx_bikes_brand ON bikes(brand_id);

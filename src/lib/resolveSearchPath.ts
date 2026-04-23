@@ -82,6 +82,7 @@ async function resolveZip(zip: string): Promise<string | null> {
     WHERE s.zip = ${zip}
       AND c.has_dedicated_page = true
       AND (s.google_business_status IS NULL OR s.google_business_status != 'CLOSED_PERMANENTLY')
+      AND COALESCE(s.listing_status, 'active') = 'active'
     ORDER BY s.google_rating DESC NULLS LAST
     LIMIT 1
   `;
@@ -96,6 +97,7 @@ async function resolveZip(zip: string): Promise<string | null> {
     JOIN states st ON st.code = s.state_code
     WHERE s.zip = ${zip}
       AND (s.google_business_status IS NULL OR s.google_business_status != 'CLOSED_PERMANENTLY')
+      AND COALESCE(s.listing_status, 'active') = 'active'
     ORDER BY c.has_dedicated_page DESC, s.google_rating DESC NULLS LAST
     LIMIT 1
   `;
@@ -109,27 +111,58 @@ async function resolveZip(zip: string): Promise<string | null> {
   return `/shops/${row.state_slug}/${row.city_slug}/${row.shop_slug}/`;
 }
 
-function splitCityAndState(term: string): { name: string; state: string } | null {
-  const t = term.trim();
-  const comma = t.match(/^(.+?),\s*([A-Za-z]{2})\s*$/i);
-  if (comma) {
-    return { name: comma[1]!.trim(), state: comma[2]!.toUpperCase() };
+async function resolveStateCodeFromInput(input: string): Promise<string | null> {
+  const term = input.trim();
+  if (!term) return null;
+  if (term.length === 2 && /^[A-Za-z]{2}$/.test(term)) {
+    return term.toUpperCase();
   }
+  const rows = await sql`
+    SELECT code
+    FROM states
+    WHERE LOWER(TRIM(name)) = LOWER(${term})
+    LIMIT 1
+  `;
+  return rows[0]?.code ?? null;
+}
+
+async function splitCityAndState(term: string): Promise<{ name: string; state: string } | null> {
+  const t = term.trim();
+  const comma = t.match(/^(.+?),\s*(.+?)\s*$/i);
+  if (comma) {
+    const stateCode = await resolveStateCodeFromInput(comma[2]!);
+    if (stateCode) {
+      return { name: comma[1]!.trim(), state: stateCode };
+    }
+    return null;
+  }
+
   const parts = t.split(/\s+/).filter(Boolean);
-  if (parts.length >= 2) {
+  if (parts.length >= 2 && /^[A-Za-z]{2}$/i.test(parts[parts.length - 1]!)) {
     const last = parts[parts.length - 1]!;
-    if (/^[A-Za-z]{2}$/i.test(last)) {
+    return {
+      name: parts.slice(0, -1).join(' '),
+      state: last.toUpperCase(),
+    };
+  }
+
+  for (let n = 3; n >= 1; n--) {
+    if (parts.length <= n) continue;
+    const stateCandidate = parts.slice(-n).join(' ');
+    const stateCode = await resolveStateCodeFromInput(stateCandidate);
+    if (stateCode) {
       return {
-        name: parts.slice(0, -1).join(' '),
-        state: last.toUpperCase(),
+        name: parts.slice(0, -n).join(' '),
+        state: stateCode,
       };
     }
   }
+
   return null;
 }
 
 async function resolveCityName(term: string): Promise<string | null> {
-  const parts = splitCityAndState(term);
+  const parts = await splitCityAndState(term);
   if (parts && parts.name.length > 0) {
     const byState = await resolveCityInState(parts.name, parts.state);
     if (byState) return byState;
@@ -213,6 +246,7 @@ async function shopCityFallback(cityName: string, fullTerm: string): Promise<str
         OR s.city % ${fullTerm}
       )
       AND (s.google_business_status IS NULL OR s.google_business_status != 'CLOSED_PERMANENTLY')
+      AND COALESCE(s.listing_status, 'active') = 'active'
     ORDER BY
       CASE WHEN c.has_dedicated_page THEN 0 ELSE 1 END,
       s.google_rating DESC NULLS LAST

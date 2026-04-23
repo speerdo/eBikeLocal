@@ -2,6 +2,7 @@
 title: "Best Fat Tire eBikes (2026): Top Picks for All-Terrain Riding"
 description: "The best fat tire electric bikes in 2026 — for beach, snow, gravel, and trail riding. Expert picks from budget to premium."
 publishedAt: 2026-04-13
+updatedAt: 2026-04-23
 category: buying-guide
 featured: false
 heroImage: "https://images.pexels.com/photos/15009900/pexels-photo-15009900.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"

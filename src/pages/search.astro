@@ -14,5 +14,5 @@ if (path) {
   return Astro.redirect(path, 302);
 }
 
-return Astro.redirect('/shops/', 302);
+return Astro.redirect(`/shops/?q=${encodeURIComponent(q)}`, 302);
 ---

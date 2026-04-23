@@ -6,7 +6,7 @@ import { getBrandLogoUrl } from '@lib/brandLogos';
 import sql from '@lib/neon';
 
 const [shopCount, brandCount, cityCount] = await Promise.all([
-  sql`SELECT COUNT(*) as count FROM shops WHERE google_business_status IS NULL OR google_business_status != 'CLOSED_PERMANENTLY'`,
+  sql`SELECT COUNT(*) as count FROM shops WHERE (google_business_status IS NULL OR google_business_status != 'CLOSED_PERMANENTLY') AND COALESCE(listing_status, 'active') = 'active'`,
   sql`SELECT COUNT(*) as count FROM brands WHERE is_active = true`,
   sql`SELECT COUNT(*) as count FROM cities WHERE has_dedicated_page = true`,
 ]);
@@ -16,8 +16,23 @@ const featuredCities = await sql`
   FROM cities c
   JOIN states s ON s.code = c.state_code
   WHERE c.has_dedicated_page = true AND c.shop_count > 0
-  ORDER BY c.shop_count DESC
-  LIMIT 12
+  ORDER BY
+    CASE
+      WHEN (c.name, s.code) IN (
+        ('Denver', 'CO'),
+        ('Portland', 'OR'),
+        ('Seattle', 'WA'),
+        ('Austin', 'TX'),
+        ('Nashville', 'TN'),
+        ('Boulder', 'CO'),
+        ('Tucson', 'AZ'),
+        ('Minneapolis', 'MN')
+      ) THEN 0
+      ELSE 1
+    END,
+    c.shop_count DESC,
+    c.name ASC
+  LIMIT 20
 `;
 
 const brands = await sql`
@@ -220,7 +235,7 @@ const jsonLd = {
         <div class="flex items-end justify-between mb-8">
           <div>
             <p class="text-xs font-700 uppercase tracking-[0.14em] text-brand-600">Shop Directory</p>
-            <h2 class="font-display mt-2 text-3xl font-700 tracking-tight text-surface-900">Popular Cities</h2>
+            <h2 class="font-display mt-2 text-3xl font-700 tracking-tight text-surface-900">Popular eBike Cities</h2>
           </div>
           <a href="/shops/" class="hidden sm:inline-flex items-center gap-1 text-sm font-600 text-brand-600 hover:text-brand-700 transition-colors">
             All states →
@@ -322,7 +337,7 @@ const jsonLd = {
 
       <div class="grid gap-8 sm:grid-cols-3">
         {[
-          { step: '01', title: 'Search your area', desc: 'Enter your city or zip code to instantly see all eBike shops nearby on an interactive map.', color: 'brand' },
+          { step: '01', title: 'Search your area', desc: 'Enter your city or zip code to see all eBike shops in your area, including addresses, ratings, and brand data.', color: 'brand' },
           { step: '02', title: 'Filter by brand', desc: 'See exactly which brands each shop stocks — Aventon, Trek, Specialized, Giant, and more.', color: 'electric' },
           { step: '03', title: 'Visit or shop online', desc: 'Get directions, hours, and phone — or click through to buy directly from the brand with our affiliate links.', color: 'accent' },
         ].map((item, i) => (

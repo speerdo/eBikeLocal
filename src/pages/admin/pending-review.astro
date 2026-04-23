@@ -1,0 +1,64 @@
+---
+export const prerender = false;
+
+import BaseLayout from '@layouts/BaseLayout.astro';
+import Breadcrumb from '@components/ui/Breadcrumb.astro';
+import sql from '@lib/neon';
+
+const pendingShops = await sql`
+  SELECT s.name, s.slug, s.city, s.state_code, s.google_rating, s.google_review_count, s.pending_review_reason,
+         c.slug as city_slug, st.slug as state_slug
+  FROM shops s
+  JOIN cities c ON c.name = s.city AND c.state_code = s.state_code
+  JOIN states st ON st.code = s.state_code
+  WHERE s.listing_status = 'pending_review'
+  ORDER BY s.updated_at DESC
+  LIMIT 500
+`;
+---
+
+<BaseLayout
+  title="Pending Shop Review Queue | eBikeLocal"
+  description="Internal moderation queue for shop records flagged during data import."
+>
+  <div class="mx-auto max-w-6xl px-(--spacing-page) py-8">
+    <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: 'Admin' }, { label: 'Pending Review' }]} />
+
+    <h1 class="mt-6 text-3xl font-extrabold text-surface-900">Pending Shop Review</h1>
+    <p class="mt-2 text-surface-700">
+      {pendingShops.length} listings flagged by automated filters (low trust score and/or likely non-bike business terms).
+    </p>
+
+    <div class="mt-6 overflow-x-auto rounded-xl border border-surface-200">
+      <table class="min-w-full divide-y divide-surface-200 text-sm">
+        <thead class="bg-surface-50 text-left text-surface-700">
+          <tr>
+            <th class="px-4 py-3 font-semibold">Shop</th>
+            <th class="px-4 py-3 font-semibold">Location</th>
+            <th class="px-4 py-3 font-semibold">Rating</th>
+            <th class="px-4 py-3 font-semibold">Reviews</th>
+            <th class="px-4 py-3 font-semibold">Reason</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-surface-100 bg-white text-surface-800">
+          {pendingShops.map((shop) => (
+            <tr>
+              <td class="px-4 py-3">
+                <a
+                  href={`/shops/${shop.state_slug}/${shop.city_slug}/${shop.slug}/`}
+                  class="font-medium text-brand-600 hover:underline"
+                >
+                  {shop.name}
+                </a>
+              </td>
+              <td class="px-4 py-3">{shop.city}, {shop.state_code}</td>
+              <td class="px-4 py-3">{shop.google_rating ? Number(shop.google_rating).toFixed(1) : '—'}</td>
+              <td class="px-4 py-3">{shop.google_review_count ?? '—'}</td>
+              <td class="px-4 py-3">{shop.pending_review_reason || '—'}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</BaseLayout>

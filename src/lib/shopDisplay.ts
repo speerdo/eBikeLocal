@@ -67,31 +67,53 @@ export function buildShopAboutText(input: {
   city: string;
   stateCode: string;
   editorialDescription: string | null | undefined;
+  descriptionGenerated?: boolean;
   isEbikeSpecialist: boolean;
   services: string[] | null | undefined;
   brandNames: string[];
+  rating?: number | null;
+  reviewCount?: number | null;
+  openingHours?: unknown;
 }): string {
   const editorial = input.editorialDescription?.trim();
-  if (editorial) return editorial;
+  if (editorial && !input.descriptionGenerated) return editorial;
 
   const parts: string[] = [];
+  const compactBrands = input.brandNames.filter(Boolean).slice(0, 3);
+  const hasHighRating =
+    typeof input.rating === 'number'
+    && input.rating >= 4.5
+    && typeof input.reviewCount === 'number'
+    && input.reviewCount >= 50;
+  const openDays = getOpeningHoursRows(input.openingHours)?.length ?? 0;
+  const openMostDays = openDays >= 6;
+  const variantSeed = (input.name.length + input.city.length + input.stateCode.length) % 4;
 
-  parts.push(
-    `${input.name} serves cyclists in ${input.city}, ${input.stateCode}, with bikes, accessories, and in-store support.`
-  );
+  if (compactBrands.length > 0) {
+    const brandList = formatBrandList(compactBrands);
+    if (variantSeed % 2 === 0) {
+      parts.push(`${input.name} is an authorized ${brandList} dealer in ${input.city}, ${input.stateCode}.`);
+    } else {
+      parts.push(`In ${input.city}, ${input.stateCode}, ${input.name} carries ${brandList} and supports riders with in-store help.`);
+    }
+  } else {
+    parts.push(`${input.name} is a local bike shop in ${input.city}, ${input.stateCode} offering sales, service, and accessories.`);
+  }
+
+  if (hasHighRating) {
+    parts.push(`One of ${input.city}'s top-rated bike shops with a ${input.rating!.toFixed(1)} star rating across ${input.reviewCount} reviews.`);
+  }
+
+  if (openMostDays) {
+    parts.push(`Open ${openDays} days a week, ${input.name} helps riders with bike setup, maintenance, and ongoing service support.`);
+  }
 
   if (input.isEbikeSpecialist) {
     parts.push('The shop focuses on electric bikes and related expertise.');
   }
 
-  if (input.brandNames.length > 0) {
-    if (input.brandNames.length <= 4) {
-      parts.push(`Carried brands include ${formatBrandList(input.brandNames)}.`);
-    } else {
-      parts.push(
-        `Carried brands include ${input.brandNames.slice(0, 4).join(', ')}, and others.`
-      );
-    }
+  if (input.brandNames.length > 3) {
+    parts.push(`Additional carried brands include ${input.brandNames.slice(3, 6).join(', ')}${input.brandNames.length > 6 ? ', and others' : ''}.`);
   }
 
   if (input.services && input.services.length > 0) {
