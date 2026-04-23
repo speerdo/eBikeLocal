@@ -1,6 +1,7 @@
 export const prerender = false;
 
 import type { APIRoute } from 'astro';
+import { resolveSearchPath } from '@lib/resolveSearchPath';
 import sql from '@lib/neon';
 
 export const GET: APIRoute = async ({ url }) => {
@@ -11,6 +12,45 @@ export const GET: APIRoute = async ({ url }) => {
       headers: { 'Content-Type': 'application/json' },
     });
   }
+
+  if (/^(\d{5})(?:-\d{4})?$/.test(q)) {
+    const path = await resolveSearchPath(q);
+    if (path) {
+      return new Response(
+        JSON.stringify([
+          {
+            label: `eBike shops in ZIP ${q}`,
+            href: path,
+            type: 'area',
+          },
+        ]),
+        { headers: { 'Content-Type': 'application/json' } }
+      );
+    }
+    // Fall through to empty or city/shop: show nothing for unknown zip
+    return new Response(JSON.stringify([]), {
+      headers: { 'Content-Type': 'application/json' },
+    });
+  }
+
+  // US states (name prefix, or two-letter code)
+  const isTwoLetter = q.length === 2 && /^[A-Za-z]{2}$/i.test(q);
+  const st = q.toUpperCase();
+  const stateRows = isTwoLetter
+    ? await sql`
+        SELECT name, slug, code, shop_count
+        FROM states
+        WHERE code = ${st} OR name ILIKE ${q + '%'}
+        ORDER BY (code = ${st}) DESC, shop_count DESC NULLS LAST
+        LIMIT 5
+      `
+    : await sql`
+        SELECT name, slug, code, shop_count
+        FROM states
+        WHERE name ILIKE ${q + '%'}
+        ORDER BY shop_count DESC NULLS LAST
+        LIMIT 5
+      `;
 
   // Suggest cities and shops matching the query
   const cities = await sql`
@@ -35,6 +75,11 @@ export const GET: APIRoute = async ({ url }) => {
   `;
 
   const results = [
+    ...stateRows.map((s) => ({
+      label: `${s.name} — eBike shops statewide`,
+      href: `/shops/${s.slug}/`,
+      type: 'state',
+    })),
     ...cities.map((c) => ({
       label: `${c.name}, ${c.state_code} (${c.shop_count} shops)`,
       href: `/shops/${c.state_slug}/${c.slug}/`,

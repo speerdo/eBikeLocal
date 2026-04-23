@@ -34,9 +34,7 @@ export const GET: APIRoute = async ({ url }) => {
     shops = await sql`
       SELECT s.name, s.slug, s.city, s.state_code, s.zip, s.google_rating,
              s.address_line1, s.latitude, s.longitude,
-             c.slug as city_slug, st.slug as state_slug,
-             similarity(s.city, ${q}) as city_sim,
-             similarity(s.name, ${q}) as name_sim
+             c.slug as city_slug, st.slug as state_slug
       FROM shops s
       JOIN cities c ON c.name = s.city AND c.state_code = s.state_code
       JOIN states st ON st.code = s.state_code
@@ -45,7 +43,10 @@ export const GET: APIRoute = async ({ url }) => {
         OR s.name % ${q}
       )
         AND (s.google_business_status IS NULL OR s.google_business_status != 'CLOSED_PERMANENTLY')
-      ORDER BY GREATEST(city_sim, name_sim) DESC, s.google_rating DESC NULLS LAST
+      ORDER BY GREATEST(
+        similarity(s.city, ${q}),
+        similarity(s.name, ${q})
+      ) DESC, s.google_rating DESC NULLS LAST
       LIMIT 20
     `;
   }

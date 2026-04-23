@@ -1,0 +1,18 @@
+---
+export const prerender = false;
+
+import { resolveSearchPath } from '@lib/resolveSearchPath';
+
+const q = new URL(Astro.request.url).searchParams.get('q')?.trim() ?? '';
+
+if (q.length < 2) {
+  return Astro.redirect('/shops/', 302);
+}
+
+const path = await resolveSearchPath(q);
+if (path) {
+  return Astro.redirect(path, 302);
+}
+
+return Astro.redirect('/shops/', 302);
+---

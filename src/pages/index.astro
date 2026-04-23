@@ -39,7 +39,7 @@ const jsonLd = {
   description: 'Find eBike shops, brands, and bikes near you.',
   potentialAction: {
     '@type': 'SearchAction',
-    target: 'https://ebikelocal.com/api/search?q={search_term_string}',
+    target: 'https://ebikelocal.com/search?q={search_term_string}',
     'query-input': 'required name=search_term_string',
   },
 };
@@ -100,7 +100,7 @@ const jsonLd = {
 
         <!-- Search bar -->
         <div class="mx-auto mt-10 max-w-xl">
-          <form action="/api/search" method="get">
+          <form action="/search" method="get">
             <div class="flex gap-2">
               <div class="relative flex-1">
                 <svg class="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-night-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
