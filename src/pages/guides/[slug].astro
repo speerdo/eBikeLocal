@@ -189,5 +189,35 @@ const articleSchema = {
         ))}
       </div>
     </div>
+
+    <!-- Cross-links: buying guides + top brands -->
+    <div class="mt-8 grid gap-4 sm:grid-cols-2">
+      <div class="rounded-xl border border-surface-100 bg-surface-50 p-5">
+        <h3 class="text-sm font-700 text-surface-800 mb-3">eBike Buying Guides</h3>
+        <ul class="space-y-2 text-sm">
+          {[
+            { title: 'Best eBikes Under $1,000', href: '/best/best-ebikes-under-1000/' },
+            { title: 'Best eBikes Under $1,500', href: '/best/best-ebikes-under-1500/' },
+            { title: 'Best Commuter eBikes', href: '/best/best-commuter-ebikes/' },
+            { title: 'Best Mountain eBikes', href: '/best/best-mountain-ebikes/' },
+          ].map(g => (
+            <li><a href={g.href} class="text-brand-600 hover:underline">{g.title} →</a></li>
+          ))}
+        </ul>
+      </div>
+      <div class="rounded-xl border border-surface-100 bg-surface-50 p-5">
+        <h3 class="text-sm font-700 text-surface-800 mb-3">Top eBike Brands</h3>
+        <ul class="space-y-2 text-sm">
+          {[
+            { title: 'Aventon eBikes', href: '/brands/aventon/' },
+            { title: 'Trek Electric Bikes', href: '/brands/trek/' },
+            { title: 'Specialized eBikes', href: '/brands/specialized/' },
+            { title: 'Lectric eBikes', href: '/brands/lectric/' },
+          ].map(b => (
+            <li><a href={b.href} class="text-brand-600 hover:underline">{b.title} →</a></li>
+          ))}
+        </ul>
+      </div>
+    </div>
   </div>
 </BaseLayout>

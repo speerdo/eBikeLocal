@@ -182,5 +182,35 @@ const articleSchema = {
         </div>
       </div>
     )}
+
+    <!-- Cross-links: top brands + dealer finder -->
+    <div class="mt-8 grid gap-4 sm:grid-cols-2">
+      <div class="rounded-xl border border-surface-100 bg-surface-50 p-5">
+        <h3 class="text-sm font-700 text-surface-800 mb-3">Find These Bikes Locally</h3>
+        <ul class="space-y-2 text-sm">
+          {[
+            { title: 'Aventon Dealers', href: '/brands/aventon/dealers/' },
+            { title: 'Trek eBike Dealers', href: '/brands/trek/dealers/' },
+            { title: 'Lectric Dealers', href: '/brands/lectric/dealers/' },
+            { title: 'Velotric Dealers', href: '/brands/velotric/dealers/' },
+          ].map(b => (
+            <li><a href={b.href} class="text-brand-600 hover:underline">{b.title} →</a></li>
+          ))}
+        </ul>
+      </div>
+      <div class="rounded-xl border border-surface-100 bg-surface-50 p-5">
+        <h3 class="text-sm font-700 text-surface-800 mb-3">eBike Guides</h3>
+        <ul class="space-y-2 text-sm">
+          {[
+            { title: 'How to Choose an eBike', href: '/guides/how-to-choose-an-ebike/' },
+            { title: 'eBike Tax Credit 2026', href: '/guides/ebike-tax-credit-2026/' },
+            { title: 'eBike Laws by State', href: '/guides/ebike-laws-by-state/' },
+            { title: 'eBike Classes Explained', href: '/guides/ebike-classes-explained/' },
+          ].map(g => (
+            <li><a href={g.href} class="text-brand-600 hover:underline">{g.title} →</a></li>
+          ))}
+        </ul>
+      </div>
+    </div>
   </div>
 </BaseLayout>

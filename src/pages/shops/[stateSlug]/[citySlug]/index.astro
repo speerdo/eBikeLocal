@@ -79,8 +79,8 @@ const itemListSchema = {
 ---
 
 <BaseLayout
-  title={`eBike Shops in ${city.name}, ${city.state_code} — ${shops.length} Local Dealers`}
-  description={`Find ${shops.length} electric bike shops in ${city.name}, ${city.state_code}. Compare brands carried, services, ratings, and more.`}
+  title={`eBike Shops in ${city.name}, ${city.state_code} — Find Local Dealers | eBikeLocal`}
+  description={`${shops.length} eBike ${shops.length === 1 ? 'shop' : 'shops'} in ${city.name}, ${city.state_code}${brandCounts.length > 0 ? ` — carrying ${brandCounts.slice(0, 3).map((b: any) => b.name).join(', ')}` : ''}. Ratings, hours, addresses, and brand data in one place.`}
   jsonLd={itemListSchema}
 >
   <div class="mx-auto max-w-7xl px-(--spacing-page) py-8">
@@ -97,6 +97,15 @@ const itemListSchema = {
     <p class="mt-2 text-lg text-surface-700">
       {shops.length} electric bike {shops.length === 1 ? 'shop' : 'shops'} in {city.name}.
     </p>
+
+    {brandCounts.length > 0 && (
+      <p class="mt-2 max-w-2xl text-surface-600 leading-relaxed">
+        {city.name} dealers carry{' '}
+        {brandCounts.slice(0, 3).map((b: any) => b.name).join(', ')}
+        {brandCounts.length > 3 ? `, and ${brandCounts.length - 3} more brands` : ''}.
+        {' '}Browse the full list below or filter by brand to find a shop near you.
+      </p>
+    )}
 
     <!-- Map -->
     {mapPins.length > 0 && (
@@ -187,7 +196,7 @@ const itemListSchema = {
       <section class="mt-12">
         <h2 class="text-lg font-bold text-surface-900">Nearby Cities with eBike Shops</h2>
         <div class="mt-4 grid gap-3 sm:grid-cols-2 md:grid-cols-4">
-          {nearbyCities.map((nc) => (
+          {nearbyCities.map((nc: any) => (
             <a
               href={`/shops/${nc.state_slug}/${nc.slug}/`}
               class="rounded-lg border border-surface-200 px-4 py-3 text-sm transition-colors hover:border-brand-600 hover:bg-brand-50"
@@ -199,6 +208,22 @@ const itemListSchema = {
         </div>
       </section>
     )}
+
+    <!-- Buying guides cross-link -->
+    <section class="mt-10 rounded-xl border border-surface-100 bg-surface-50 p-5">
+      <h2 class="text-sm font-bold text-surface-800 mb-3">eBike Buying Resources</h2>
+      <div class="flex flex-wrap gap-x-6 gap-y-2 text-sm">
+        {[
+          { title: 'How to Choose an eBike', href: '/guides/how-to-choose-an-ebike/' },
+          { title: 'Best eBikes 2026', href: '/best/' },
+          { title: 'Best Under $1,500', href: '/best/best-ebikes-under-1500/' },
+          { title: 'Best Commuter eBikes', href: '/best/best-commuter-ebikes/' },
+          { title: 'Compare All Brands', href: '/brands/' },
+        ].map(l => (
+          <a href={l.href} class="text-brand-600 hover:underline">{l.title} →</a>
+        ))}
+      </div>
+    </section>
   </div>
 </BaseLayout>
 

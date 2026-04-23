@@ -102,7 +102,7 @@ const hoursRows = getOpeningHoursRows(shop.opening_hours);
 ---
 
 <BaseLayout
-  title={`${shop.name} — eBike Shop in ${shop.city}, ${shop.state_code}`}
+  title={`${shop.name} — eBike Shop in ${shop.city}, ${shop.state_code} | eBikeLocal`}
   description={metaDescription}
 >
   <BikeStoreSchema
@@ -264,7 +264,7 @@ const hoursRows = getOpeningHoursRows(shop.opening_hours);
               <p><a href={`tel:${shop.phone}`} class="text-brand-600 hover:underline">{shop.phone}</a></p>
             )}
             {shop.website && (
-              <p><a href={shop.website} target="_blank" rel="noopener" class="text-brand-600 hover:underline">Visit Website</a></p>
+              <p><a href={shop.website} target="_blank" rel="nofollow noopener" class="text-brand-600 hover:underline">Visit Website</a></p>
             )}
           </div>
 

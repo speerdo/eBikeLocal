@@ -39,8 +39,8 @@ const jsonLd = {
 ---
 
 <BaseLayout
-  title={`eBike Shops in ${state.name} — ${state.shop_count || 0} Dealers & Service Centers`}
-  description={`Browse ${state.shop_count || 0} electric bike shops in ${state.name}. Find local dealers, compare brands, and check ${state.name} eBike laws.`}
+  title={`eBike Shops in ${state.name} — Find Local Dealers | eBikeLocal`}
+  description={`Find ${state.shop_count || 0} electric bike shops across ${cities.length} cities in ${state.name}. Browse by city, filter by brand, and discover local dealers carrying Aventon, Trek, Specialized, and more.`}
   jsonLd={jsonLd}
 >
   <div class="mx-auto max-w-7xl px-(--spacing-page) py-8">
@@ -54,8 +54,22 @@ const jsonLd = {
       eBike Shops in {state.name}
     </h1>
     <p class="mt-2 text-lg text-surface-700">
-      {state.shop_count || 0} electric bike shops across {cities.length} cities.
+      {state.shop_count || 0} electric bike {(state.shop_count || 0) === 1 ? 'shop' : 'shops'} across {cities.length} {cities.length === 1 ? 'city' : 'cities'}.
     </p>
+
+    {(() => {
+      const topBrandNames = topBrands.slice(0, 3).map((b: any) => b.name);
+      const brandStr = topBrandNames.length > 0
+        ? `${topBrandNames.slice(0, -1).join(', ')}${topBrandNames.length > 1 ? ', and ' : ''}${topBrandNames[topBrandNames.length - 1]} are among the most widely carried brands across ${state.name} dealers.`
+        : '';
+      return (
+        <p class="mt-3 max-w-2xl text-surface-600 leading-relaxed">
+          {state.name} has {(state.shop_count || 0).toLocaleString()} electric bike shops spanning {cities.length} cities.{' '}
+          {brandStr}{' '}
+          Browse by city below or use the brand chips on city pages to filter shops by what you want to test-ride.
+        </p>
+      );
+    })()}
 
     <!-- State map with city markers -->
     {(() => {

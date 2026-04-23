@@ -17,7 +17,7 @@ const brands = await sql`
 
 <BaseLayout
   title="eBike Brands — Compare All Electric Bike Manufacturers"
-  description="Browse all eBike brands. Compare prices, affiliate programs, dealer counts, and find local shops for Trek, Specialized, Aventon, Giant, and more."
+  description="Compare all major eBike brands — Trek, Specialized, Aventon, Giant, and more. See price ranges, dealer counts, and find a local shop that carries the brand you want."
 >
   <PageHeader
     eyebrow="Brands"
@@ -76,7 +76,7 @@ const brands = await sql`
                 ~{brand.estimated_us_dealers.toLocaleString()} US locations
               </span>
             )}
-            {brand.affiliate_platform && (
+            {brand.affiliate_platform && brand.affiliate_commission_rate && (
               <span class="rounded-full bg-accent-50 px-2.5 py-1 font-medium text-accent-700 ring-1 ring-accent-100">
                 {brand.affiliate_commission_rate}% affiliate
               </span>

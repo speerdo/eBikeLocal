@@ -78,7 +78,7 @@ const brandArticle = /^[aeiou]/i.test(bike.brand_name) ? 'an' : 'a';
 ---
 
 <BaseLayout
-  title={`${bike.brand_name} ${bike.model_name} — Specs, Price & Where to Buy`}
+  title={`${bike.brand_name} ${bike.model_name} — Specs, Price & Where to Buy | eBikeLocal`}
   description={`${bike.brand_name} ${bike.model_name} eBike. ${bike.msrp ? `$${bike.msrp.toLocaleString()} MSRP.` : ''} ${bike.motor_watts ? `${bike.motor_watts}W motor.` : ''} ${bike.battery_wh ? `${bike.battery_wh}Wh battery.` : ''} ${bike.range_miles_high ? `Up to ${bike.range_miles_high} miles range.` : ''}`}
 >
   <ProductSchema
@@ -120,8 +120,8 @@ const brandArticle = /^[aeiou]/i.test(bike.brand_name) ? 'an' : 'a';
 
         {bikeGalleryThumbs.length > 0 && (
           <div class="mt-3 grid grid-cols-4 gap-2">
-            {bikeGalleryThumbs.map((img: string) => (
-              <img src={img} alt="" class="rounded bg-surface-50 object-contain p-2 aspect-square" loading="lazy" />
+            {bikeGalleryThumbs.map((img: string, i: number) => (
+              <img src={img} alt={`${bike.brand_name} ${bike.model_name} — photo ${i + 2}`} class="rounded bg-surface-50 object-contain p-2 aspect-square" loading="lazy" />
             ))}
           </div>
         )}
