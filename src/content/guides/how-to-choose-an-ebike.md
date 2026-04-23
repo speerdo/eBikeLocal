@@ -35,6 +35,8 @@ If you're riding trails, paths, or just enjoying the outdoors:
 
 Good picks: Aventon Pace 500.3, Lectric XP 3.0, Rad Power RadRover 6 Plus
 
+> Note: Rad Power Bikes filed Chapter 11 in December 2025. Verify current dealer and warranty status before purchasing.
+
 ### Off-Road / Trail Riding
 For dirt trails, gravel, or eMTB riding:
 - **Mid-drive motor** (weight distribution and climbing power)
@@ -51,6 +53,8 @@ If you're hauling kids, groceries, or gear:
 - **Longtail vs. cargo front** (longtails are more common and practical)
 
 Good picks: Tern GSD S10, Rad Power RadWagon 4, Aventon Abound
+
+> Note: Rad Power Bikes filed Chapter 11 in December 2025. Verify current dealer and warranty status before purchasing.
 
 ---
 
@@ -176,6 +180,8 @@ Use our [shop finder](/shops/) to find eBike dealers near you, filtered by brand
 **Cons:** No test ride before buying, limited local service, shipping damage possible.
 
 **Best DTC brands:** Lectric, Velotric, Ride1UP, Rad Power Bikes, Himiway
+
+If considering Rad specifically, confirm present-day dealer and support coverage in your area before placing an order.
 
 ### Big Box Retail (Best Buy)
 Some brands (Lectric, Rad Power) sell through Best Buy. You can see and touch the bike before buying, but staff expertise is limited and service options are minimal.

@@ -84,6 +84,12 @@ const galleryPhotoUrls = (shop.photos ?? []).filter(isHttpImageUrl).map((u: stri
 const schemaImageUrl = heroImageUrl ?? galleryPhotoUrls[0] ?? null;
 
 const brandNames = brands.map((b) => b.name);
+const formatDealerTier = (tier: string | null | undefined) => {
+  if (!tier) return null;
+  const normalized = tier.toLowerCase().trim();
+  if (normalized === 'authorized_online' || normalized === 'authorized') return 'Authorized';
+  return tier.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
+};
 const aboutText = buildShopAboutText({
   name: shop.name,
   city: shop.city,
@@ -194,8 +200,10 @@ const hoursRows = getOpeningHoursRows(shop.opening_hours);
                         ⚠️ Status update
                       </span>
                     )}
-                    {brand.dealer_tier && (
-                      <span class="rounded bg-surface-100 px-1.5 py-0.5 text-xs text-surface-700">{brand.dealer_tier}</span>
+                    {formatDealerTier(brand.dealer_tier) && (
+                      <span class="rounded bg-surface-100 px-1.5 py-0.5 text-xs text-surface-700">
+                        {formatDealerTier(brand.dealer_tier)}
+                      </span>
                     )}
                   </a>
                   {brand.affiliate_program_url && (

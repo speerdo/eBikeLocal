@@ -600,6 +600,57 @@ async function flagExistingPendingReviewShops() {
   log('dedup', `Existing shops flagged as pending_review: ${result.count}`);
 }
 
+async function consolidateExistingAddressDuplicates() {
+  const normalizedUpdate = await sql`
+    UPDATE shops
+    SET normalized_address = COALESCE(
+      NULLIF(normalized_address, ''),
+      LOWER(TRIM(REGEXP_REPLACE(
+        REGEXP_REPLACE(
+          REGEXP_REPLACE(
+            REGEXP_REPLACE(COALESCE(address_line1, ''), '\\m(street)\\M', 'st', 'gi'),
+            '\\m(avenue)\\M', 'ave', 'gi'
+          ),
+          '\\m(road)\\M', 'rd', 'gi'
+        ),
+        '\\s+', ' ', 'g'
+      )))
+    )
+    WHERE normalized_address IS NULL
+      AND address_line1 IS NOT NULL
+      AND address_line1 != ''
+  `;
+  log('dedup', `Backfilled normalized_address on ${normalizedUpdate.count} shops`);
+
+  const demoteResult = await sql`
+    WITH ranked AS (
+      SELECT
+        id,
+        ROW_NUMBER() OVER (
+          PARTITION BY city, state_code, normalized_address
+          ORDER BY google_review_count DESC NULLS LAST, google_rating DESC NULLS LAST, updated_at DESC
+        ) AS rn
+      FROM shops
+      WHERE normalized_address IS NOT NULL
+        AND normalized_address != ''
+    )
+    UPDATE shops s
+    SET
+      listing_status = 'pending_review',
+      pending_review_reason = CASE
+        WHEN COALESCE(s.pending_review_reason, '') = '' THEN 'duplicate_normalized_address'
+        WHEN s.pending_review_reason LIKE '%duplicate_normalized_address%' THEN s.pending_review_reason
+        ELSE s.pending_review_reason || ',duplicate_normalized_address'
+      END
+    FROM ranked r
+    WHERE s.id = r.id
+      AND r.rn > 1
+      AND COALESCE(s.listing_status, 'active') = 'active'
+  `;
+
+  log('dedup', `Duplicate-address listings moved to pending_review: ${demoteResult.count}`);
+}
+
 // ── Entry point ───────────────────────────────────────────────────────────────
 
 if (REPORT_ONLY) {
@@ -621,6 +672,7 @@ try {
   await promoteGooglePlaces();
   await matchStagingToShops();
   await promoteUnmatchedStaging();
+  await consolidateExistingAddressDuplicates();
   await flagExistingPendingReviewShops();
   await printReport();
   log('dedup', 'Deduplication complete.');

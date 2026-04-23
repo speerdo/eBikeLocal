@@ -25,10 +25,30 @@ const topBrands = await sql`
   JOIN brands b ON b.id = sb.brand_id
   JOIN shops s ON s.id = sb.shop_id
   WHERE s.state_code = ${state.code}
+    AND COALESCE(s.listing_status, 'active') = 'active'
   GROUP BY b.id, b.name, b.slug
   ORDER BY shop_count DESC
   LIMIT 10
 `;
+
+const stateContextByCode: Record<string, string> = {
+  CO: 'Colorado riders often split usage between Front Range commuting and mountain-town trail access, so dealer support and service depth matter as much as headline specs.',
+  CA: 'California demand spans dense urban commutes, coastal recreation, and long-distance rail-trail riding, which creates a wide mix of commuter, cargo, and performance setups.',
+  WA: 'Washington riders often balance wet-weather commuting with year-round hill climbs, making component durability and brake quality especially important.',
+  OR: 'Oregon buyers typically prioritize all-weather reliability and practical commuter builds for mixed city and greenway riding.',
+  TX: 'Texas shoppers often focus on higher-speed commuting range and heat-tolerant battery performance across longer suburban distances.',
+};
+
+const stateSpecificSentence = (() => {
+  if (stateContextByCode[state.code]) return stateContextByCode[state.code];
+  if (Array.isArray(state.rebate_programs) && state.rebate_programs.length > 0) {
+    return `${state.name} also has active rebate and incentive programs that can materially change total purchase cost, so check eligibility before you buy.`;
+  }
+  if (cities.length >= 30) {
+    return `${state.name} has broad dealer coverage across major metros and smaller towns, so comparing shops by brand availability can save a lot of time before test rides.`;
+  }
+  return `Local conditions, terrain, and service availability vary across ${state.name}, so comparing dealer coverage by city can help narrow your shortlist faster.`;
+})();
 
 const jsonLd = {
   '@context': 'https://schema.org',
@@ -66,6 +86,7 @@ const jsonLd = {
         <p class="mt-3 max-w-2xl text-surface-600 leading-relaxed">
           {state.name} has {(state.shop_count || 0).toLocaleString()} electric bike shops spanning {cities.length} cities.{' '}
           {brandStr}{' '}
+          {stateSpecificSentence}{' '}
           Browse by city below or use the brand chips on city pages to filter shops by what you want to test-ride.
         </p>
       );

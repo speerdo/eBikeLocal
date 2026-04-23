@@ -59,6 +59,22 @@ function formatBrandList(names: string[]): string {
   return `${names.slice(0, -1).join(', ')}, and ${names[names.length - 1]}`;
 }
 
+function looksLikeReviewSnippet(text: string): boolean {
+  const t = text.trim().toLowerCase();
+  if (!t) return false;
+  const reviewLikePatterns = [
+    /\bboasting\b/,
+    /\bplus repairs?\b/,
+    /\bcozy\b/,
+    /\bquirky\b/,
+    /\bhip\b/,
+    /\bvintage\b/,
+    /\bgoogle users?\b/,
+    /\brated\b.*\bstars?\b/,
+  ];
+  return reviewLikePatterns.some((rx) => rx.test(t));
+}
+
 /**
  * Prefer Google editorial summary; otherwise compose a useful blurb from directory fields.
  */
@@ -76,7 +92,7 @@ export function buildShopAboutText(input: {
   openingHours?: unknown;
 }): string {
   const editorial = input.editorialDescription?.trim();
-  if (editorial && !input.descriptionGenerated) return editorial;
+  if (editorial && !input.descriptionGenerated && !looksLikeReviewSnippet(editorial)) return editorial;
 
   const parts: string[] = [];
   const compactBrands = input.brandNames.filter(Boolean).slice(0, 3);

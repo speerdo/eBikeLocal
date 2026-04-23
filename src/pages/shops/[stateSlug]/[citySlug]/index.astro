@@ -21,17 +21,52 @@ export async function getStaticPaths() {
 }
 
 const { city } = Astro.props;
+const cityLat = Number(city.latitude);
+const cityLng = Number(city.longitude);
+const hasCityCoords = Number.isFinite(cityLat) && Number.isFinite(cityLng);
 
 const shops = await sql`
-  SELECT s.*, array_agg(DISTINCT b.name) FILTER (WHERE b.name IS NOT NULL) as brand_names
-  FROM shops s
-  LEFT JOIN shop_brands sb ON sb.shop_id = s.id
-  LEFT JOIN brands b ON b.id = sb.brand_id
-  WHERE s.city = ${city.name} AND s.state_code = ${city.state_code}
-    AND (s.google_business_status IS NULL OR s.google_business_status != 'CLOSED_PERMANENTLY')
-    AND COALESCE(s.listing_status, 'active') = 'active'
-  GROUP BY s.id
-  ORDER BY s.google_rating DESC NULLS LAST, s.name
+  WITH scoped_shops AS (
+    SELECT
+      s.*,
+      COALESCE(
+        NULLIF(s.normalized_address, ''),
+        LOWER(TRIM(REGEXP_REPLACE(
+          REGEXP_REPLACE(
+            REGEXP_REPLACE(
+              REGEXP_REPLACE(COALESCE(s.address_line1, ''), '\\m(street)\\M', 'st', 'gi'),
+              '\\m(avenue)\\M', 'ave', 'gi'
+            ),
+            '\\m(road)\\M', 'rd', 'gi'
+          ),
+          '\\s+', ' ', 'g'
+        )))
+      ) AS dedup_key
+    FROM shops s
+    WHERE s.city = ${city.name} AND s.state_code = ${city.state_code}
+      AND (s.google_business_status IS NULL OR s.google_business_status != 'CLOSED_PERMANENTLY')
+      AND COALESCE(s.listing_status, 'active') = 'active'
+  ),
+  ranked_shops AS (
+    SELECT
+      ss.*,
+      ROW_NUMBER() OVER (
+        PARTITION BY ss.city, ss.state_code, ss.dedup_key
+        ORDER BY ss.google_review_count DESC NULLS LAST, ss.google_rating DESC NULLS LAST, ss.name ASC
+      ) AS rank_in_address
+    FROM scoped_shops ss
+  )
+  SELECT
+    rs.*,
+    (
+      SELECT array_agg(DISTINCT b.name) FILTER (WHERE b.name IS NOT NULL)
+      FROM shop_brands sb
+      JOIN brands b ON b.id = sb.brand_id
+      WHERE sb.shop_id = rs.id
+    ) AS brand_names
+  FROM ranked_shops rs
+  WHERE rs.rank_in_address = 1
+  ORDER BY rs.google_rating DESC NULLS LAST, rs.google_review_count DESC NULLS LAST, rs.name
 `;
 
 const brandCounts = await sql`
@@ -46,13 +81,19 @@ const brandCounts = await sql`
 `;
 
 const nearbyCities = await sql`
-  SELECT c.name, c.slug, c.shop_count, s.slug as state_slug
+  SELECT
+    c.name,
+    c.slug,
+    c.shop_count,
+    s.slug as state_slug,
+    c.latitude,
+    c.longitude
   FROM cities c
   JOIN states s ON s.code = c.state_code
   WHERE c.state_code = ${city.state_code}
     AND c.slug != ${city.slug}
     AND c.has_dedicated_page = true
-  ORDER BY c.shop_count DESC
+  ORDER BY c.shop_count DESC, c.name
   LIMIT 8
 `;
 
@@ -64,6 +105,40 @@ const mapPins = shops
     latitude: Number(s.latitude),
     longitude: Number(s.longitude),
   }));
+
+const topBrandNames = brandCounts
+  .map((b: any) => (b.name || '').trim())
+  .filter(Boolean)
+  .slice(0, 3);
+
+function haversineMiles(lat1: number, lon1: number, lat2: number, lon2: number) {
+  const toRad = (d: number) => (d * Math.PI) / 180;
+  const R = 3958.8;
+  const dLat = toRad(lat2 - lat1);
+  const dLon = toRad(lon2 - lon1);
+  const a =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon / 2) ** 2;
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return R * c;
+}
+
+const nearbyCitiesSorted = nearbyCities
+  .map((nc: any) => {
+    const lat = Number(nc.latitude);
+    const lng = Number(nc.longitude);
+    const hasCoords = hasCityCoords && Number.isFinite(lat) && Number.isFinite(lng);
+    return {
+      ...nc,
+      distance_miles: hasCoords ? haversineMiles(cityLat, cityLng, lat, lng) : null,
+    };
+  })
+  .sort((a: any, b: any) => {
+    if (a.distance_miles != null && b.distance_miles != null) return a.distance_miles - b.distance_miles;
+    if (a.distance_miles != null) return -1;
+    if (b.distance_miles != null) return 1;
+    return Number(b.shop_count || 0) - Number(a.shop_count || 0);
+  });
 
 const itemListSchema = {
   '@context': 'https://schema.org',
@@ -101,7 +176,7 @@ const itemListSchema = {
     {brandCounts.length > 0 && (
       <p class="mt-2 max-w-2xl text-surface-600 leading-relaxed">
         {city.name} dealers carry{' '}
-        {brandCounts.slice(0, 3).map((b: any) => b.name).join(', ')}
+        {topBrandNames.join(', ')}
         {brandCounts.length > 3 ? `, and ${brandCounts.length - 3} more brands` : ''}.
         {' '}Browse the full list below or filter by brand to find a shop near you.
       </p>
@@ -192,17 +267,20 @@ const itemListSchema = {
     </section>
 
     <!-- Nearby cities -->
-    {nearbyCities.length > 0 && (
+    {nearbyCitiesSorted.length > 0 && (
       <section class="mt-12">
         <h2 class="text-lg font-bold text-surface-900">Nearby Cities with eBike Shops</h2>
         <div class="mt-4 grid gap-3 sm:grid-cols-2 md:grid-cols-4">
-          {nearbyCities.map((nc: any) => (
+          {nearbyCitiesSorted.map((nc: any) => (
             <a
               href={`/shops/${nc.state_slug}/${nc.slug}/`}
               class="rounded-lg border border-surface-200 px-4 py-3 text-sm transition-colors hover:border-brand-600 hover:bg-brand-50"
             >
               <span class="font-medium text-surface-900">{nc.name}</span>
-              <span class="ml-1 text-surface-700">({nc.shop_count})</span>
+              <span class="ml-1 text-surface-700">
+                ({nc.shop_count})
+                {nc.distance_miles != null ? ` • ${Math.round(Number(nc.distance_miles))} mi` : ''}
+              </span>
             </a>
           ))}
         </div>

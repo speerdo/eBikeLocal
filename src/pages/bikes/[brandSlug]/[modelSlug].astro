@@ -52,13 +52,27 @@ const bikeGalleryDisplayUrls = normalizeGalleryImageUrls(bike.gallery_images, bi
 const bikeGalleryThumbs = bikeHeroDisplayUrl
   ? bikeGalleryDisplayUrls.filter((u) => u !== bikeHeroDisplayUrl).slice(0, 4)
   : bikeGalleryDisplayUrls.slice(0, 4);
+const targetPrice = Number(bike.sale_price || bike.msrp || 0);
 
 const relatedBikes = await sql`
   SELECT bk.*, br.name as brand_name, br.slug as brand_slug
   FROM bikes bk
   JOIN brands br ON br.id = bk.brand_id
   WHERE bk.category = ${bike.category} AND bk.id != ${bike.id} AND bk.is_active = true
-  ORDER BY bk.msrp ASC NULLS LAST, bk.model_name ASC
+    AND (
+      ${targetPrice} = 0
+      OR bk.msrp IS NULL
+      OR ABS(COALESCE(bk.sale_price, bk.msrp) - ${targetPrice}) <= GREATEST(500, ${targetPrice} * 0.45)
+    )
+  ORDER BY
+    (bk.brand_id = ${bike.brand_id}) DESC,
+    CASE
+      WHEN ${targetPrice} > 0 AND COALESCE(bk.sale_price, bk.msrp) IS NOT NULL
+      THEN ABS(COALESCE(bk.sale_price, bk.msrp) - ${targetPrice})
+      ELSE 999999
+    END ASC,
+    bk.expert_rating DESC NULLS LAST,
+    bk.model_name ASC
   LIMIT 4
 `;
 

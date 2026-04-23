@@ -59,6 +59,12 @@ const itemListSchema = {
     name: `${brand.name} ${bike.model_name}`,
   })),
 };
+
+const editorialParagraphs = [
+  `${brand.name} sits in the ${brand.price_range_low && brand.price_range_high ? `$${brand.price_range_low.toLocaleString()}-$${brand.price_range_high.toLocaleString()}` : 'entry-to-premium'} segment of the eBike market and is typically compared against brands with similar dealer support and component quality. In practice, most shoppers cross-shop this lineup based on intended use case: commuting, fitness, cargo, or mixed-surface riding.`,
+  `When evaluating ${brand.name} models, focus on frame geometry, motor feel, battery size, and after-sale service access in your region. A strong local service network can matter as much as the raw spec sheet, especially for riders depending on their bike for daily transportation.`,
+  `Our catalog here is a practical shortlist, not an exhaustive manufacturer archive. Use the featured picks and model grid below to narrow options, then validate stock and fit with local dealers. If you are comparing this brand to competitors, prioritize test rides and consider long-term ownership factors like warranty support, replacement parts, and nearby authorized service.`
+];
 ---
 
 <BaseLayout
@@ -119,6 +125,15 @@ const itemListSchema = {
     </div>
 
     <AffiliateDisclosureBar className="mt-5" />
+
+    <section class="mt-6 rounded-lg border border-surface-200 bg-surface-50 p-5">
+      <h2 class="text-lg font-bold text-surface-900">Is {brand.name} a good eBike brand?</h2>
+      <div class="mt-2 space-y-3 text-sm leading-relaxed text-surface-700">
+        {editorialParagraphs.map((p) => (
+          <p>{p}</p>
+        ))}
+      </div>
+    </section>
 
     <!-- Top picks -->
     {topPicks.length > 0 && (
