@@ -41,6 +41,7 @@ export const GET: APIRoute = async ({ site }) => {
     { url: '/guides/', changefreq: 'weekly', priority: '0.8' },
     { url: '/best/', changefreq: 'weekly', priority: '0.8' },
     { url: '/about/', changefreq: 'yearly', priority: '0.4' },
+    { url: '/contact/', changefreq: 'yearly', priority: '0.3' },
     { url: '/disclosure/', changefreq: 'yearly', priority: '0.3' },
     { url: '/terms/', changefreq: 'yearly', priority: '0.3' },
     { url: '/privacy/', changefreq: 'yearly', priority: '0.3' },

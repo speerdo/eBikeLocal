@@ -1,0 +1,214 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+import Breadcrumb from '@components/ui/Breadcrumb.astro';
+
+const WEB3FORMS_KEY = import.meta.env.WEB3FORM_API_KEY;
+---
+
+<BaseLayout
+  title="Contact eBikeLocal — Questions, Corrections & Shop Inquiries"
+  description="Get in touch with the eBikeLocal team. Report a shop listing issue, ask about advertising, or send general feedback."
+>
+
+  <!-- Hero -->
+  <section class="relative overflow-hidden bg-night-900">
+    <div class="absolute inset-0 bg-circuit pointer-events-none opacity-60"></div>
+    <div class="absolute -top-24 right-0 h-72 w-72 rounded-full bg-brand-400/8 blur-3xl pointer-events-none"></div>
+
+    <div class="relative mx-auto max-w-7xl page-x py-12 md:py-16">
+      <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: 'Contact' }]} />
+      <div class="mt-5">
+        <div class="mb-4 w-10 h-[3px] rounded-full bg-gradient-to-r from-brand-400 to-electric-400"></div>
+        <h1 class="font-display text-3xl font-700 tracking-tight text-white md:text-4xl">
+          Get in Touch
+        </h1>
+        <p class="mt-3 max-w-xl text-lg text-night-300 leading-relaxed">
+          Shop listing corrections, partnership inquiries, or general feedback — we read everything.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Content -->
+  <div class="mx-auto max-w-7xl page-x py-12 md:py-16">
+    <div class="grid gap-12 lg:grid-cols-5">
+
+      <!-- Form -->
+      <div class="lg:col-span-3">
+        <form
+          id="contact-form"
+          method="POST"
+          action="https://api.web3forms.com/submit"
+          class="space-y-5"
+        >
+          <input type="hidden" name="access_key" value={WEB3FORMS_KEY} />
+          <input type="hidden" name="subject" value="eBikeLocal contact form submission" />
+          <input type="hidden" name="from_name" value="eBikeLocal Contact Form" />
+          <!-- Honeypot -->
+          <input type="checkbox" name="botcheck" class="hidden" style="display:none" />
+
+          <div class="grid gap-5 sm:grid-cols-2">
+            <div>
+              <label for="contact-name" class="block text-sm font-600 text-surface-800 mb-1.5">
+                Name <span class="text-red-500">*</span>
+              </label>
+              <input
+                type="text"
+                id="contact-name"
+                name="name"
+                required
+                autocomplete="name"
+                placeholder="Your name"
+                class="w-full rounded-xl border border-surface-200 px-4 py-3 text-sm text-surface-900 placeholder-surface-400 shadow-sm focus:border-brand-400 focus:outline-none focus:ring-2 focus:ring-brand-400/20 transition-colors"
+              />
+            </div>
+            <div>
+              <label for="contact-email" class="block text-sm font-600 text-surface-800 mb-1.5">
+                Email <span class="text-red-500">*</span>
+              </label>
+              <input
+                type="email"
+                id="contact-email"
+                name="email"
+                required
+                autocomplete="email"
+                placeholder="you@example.com"
+                class="w-full rounded-xl border border-surface-200 px-4 py-3 text-sm text-surface-900 placeholder-surface-400 shadow-sm focus:border-brand-400 focus:outline-none focus:ring-2 focus:ring-brand-400/20 transition-colors"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label for="contact-subject" class="block text-sm font-600 text-surface-800 mb-1.5">
+              Topic
+            </label>
+            <select
+              id="contact-subject"
+              name="topic"
+              class="w-full rounded-xl border border-surface-200 px-4 py-3 text-sm text-surface-900 shadow-sm focus:border-brand-400 focus:outline-none focus:ring-2 focus:ring-brand-400/20 transition-colors bg-white"
+            >
+              <option value="general">General question</option>
+              <option value="listing-correction">Shop listing correction</option>
+              <option value="add-shop">Add a shop</option>
+              <option value="partnership">Partnership / advertising</option>
+              <option value="data">Data or accuracy issue</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="contact-message" class="block text-sm font-600 text-surface-800 mb-1.5">
+              Message <span class="text-red-500">*</span>
+            </label>
+            <textarea
+              id="contact-message"
+              name="message"
+              required
+              rows="6"
+              placeholder="Tell us what's on your mind..."
+              class="w-full rounded-xl border border-surface-200 px-4 py-3 text-sm text-surface-900 placeholder-surface-400 shadow-sm focus:border-brand-400 focus:outline-none focus:ring-2 focus:ring-brand-400/20 transition-colors resize-y"
+            ></textarea>
+          </div>
+
+          <!-- Success state -->
+          <div id="form-success" class="hidden rounded-xl border border-accent-200 bg-accent-50 px-5 py-4">
+            <p class="text-sm font-600 text-accent-700">Message sent — we'll be in touch soon.</p>
+          </div>
+
+          <!-- Error state -->
+          <div id="form-error" class="hidden rounded-xl border border-red-200 bg-red-50 px-5 py-4">
+            <p class="text-sm font-600 text-red-700">Something went wrong. Please try again or email us directly.</p>
+          </div>
+
+          <button
+            type="submit"
+            id="submit-btn"
+            class="btn-volt rounded-xl px-8 py-3.5 text-sm w-full sm:w-auto"
+          >
+            Send Message
+          </button>
+        </form>
+      </div>
+
+      <!-- Sidebar -->
+      <aside class="lg:col-span-2 space-y-6">
+        <div class="rounded-2xl border border-surface-200 bg-surface-50 p-6">
+          <h2 class="font-display text-base font-700 text-surface-900 mb-4">Common reasons to reach out</h2>
+          <ul class="space-y-3 text-sm text-surface-700">
+            {[
+              { icon: '🏪', text: 'Report a closed or incorrect shop listing' },
+              { icon: '➕', text: 'Suggest a shop that should be added' },
+              { icon: '📋', text: 'Question about an eBike law or guide' },
+              { icon: '🤝', text: 'Partnership or Verified Partner inquiries' },
+              { icon: '📊', text: 'Data accuracy issues or corrections' },
+            ].map(item => (
+              <li class="flex items-start gap-2.5">
+                <span class="shrink-0 mt-0.5">{item.icon}</span>
+                <span>{item.text}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div class="rounded-2xl border border-surface-200 bg-surface-50 p-6">
+          <h2 class="font-display text-base font-700 text-surface-900 mb-2">Response time</h2>
+          <p class="text-sm text-surface-600 leading-relaxed">
+            We typically respond within 1–2 business days. Shop listing corrections are usually processed within 48 hours.
+          </p>
+        </div>
+
+        <div class="rounded-2xl border border-surface-100 bg-white p-6">
+          <h2 class="font-display text-base font-700 text-surface-900 mb-2">Legal & disclosure</h2>
+          <ul class="space-y-2 text-sm">
+            {[
+              { label: 'Affiliate Disclosure', href: '/disclosure/' },
+              { label: 'Privacy Policy', href: '/privacy/' },
+              { label: 'Terms of Service', href: '/terms/' },
+            ].map(l => (
+              <li><a href={l.href} class="text-brand-600 hover:underline">{l.label} →</a></li>
+            ))}
+          </ul>
+        </div>
+      </aside>
+
+    </div>
+  </div>
+</BaseLayout>
+
+<script>
+  const form = document.getElementById('contact-form') as HTMLFormElement | null;
+  const submitBtn = document.getElementById('submit-btn') as HTMLButtonElement | null;
+  const successEl = document.getElementById('form-success');
+  const errorEl = document.getElementById('form-error');
+
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!submitBtn) return;
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Sending…';
+    successEl?.classList.add('hidden');
+    errorEl?.classList.add('hidden');
+
+    try {
+      const res = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        body: new FormData(form),
+      });
+      const data = await res.json();
+
+      if (data.success) {
+        successEl?.classList.remove('hidden');
+        form.reset();
+        submitBtn.textContent = 'Send Message';
+        submitBtn.disabled = false;
+      } else {
+        throw new Error(data.message || 'Submission failed');
+      }
+    } catch {
+      errorEl?.classList.remove('hidden');
+      submitBtn.textContent = 'Send Message';
+      submitBtn.disabled = false;
+    }
+  });
+</script>
