@@ -360,6 +360,28 @@ const jsonLd = {
   </section>
 
   <!-- ═══════════════════════════════════════════════════════════
+       LIFESTYLE PHOTOS — full-bleed strip
+  ══════════════════════════════════════════════════════════════ -->
+  <div class="grid grid-cols-2 lg:grid-cols-4 overflow-hidden">
+    {[
+      { id: '15009884', alt: 'Woman riding an electric bike along a scenic coastal path on a sunny day',        objPos: 'object-center' },
+      { id: '15009950', alt: 'Couple enjoying a ride on electric bikes along an open road',                     objPos: 'object-center' },
+      { id: '15020562', alt: 'Man commuting through a suburban neighborhood on an electric bike',               objPos: 'object-top'    },
+      { id: '15009961', alt: 'Rider exploring a wooded nature trail on an electric mountain bike',              objPos: 'object-center' },
+    ].map(photo => (
+      <div class="relative h-52 md:h-64 lg:h-80 overflow-hidden group">
+        <img
+          src={`https://images.pexels.com/photos/${photo.id}/pexels-photo-${photo.id}.jpeg?auto=compress&cs=tinysrgb&w=800&dpr=1`}
+          alt={photo.alt}
+          class={`h-full w-full object-cover ${photo.objPos} transition-transform duration-700 group-hover:scale-105`}
+          loading="lazy"
+        />
+        <div class="absolute inset-0 bg-night-900/20 group-hover:bg-night-900/5 transition-colors duration-500"></div>
+      </div>
+    ))}
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════
        GUIDES / CONTENT — dark section
   ══════════════════════════════════════════════════════════════ -->
   <section class="section-y bg-night-900 relative overflow-hidden">

@@ -9,7 +9,9 @@ import BikeStoreSchema from '@components/seo/BikeStoreSchema.astro';
 import sql from '@lib/neon';
 import {
   buildShopAboutText,
+  formatShopWebsiteLink,
   getOpeningHoursRows,
+  humanizeShopAttribute,
   truncateForMetaDescription,
 } from '@lib/shopDisplay';
 
@@ -105,6 +107,11 @@ const aboutText = buildShopAboutText({
 });
 const metaDescription = truncateForMetaDescription(aboutText);
 const hoursRows = getOpeningHoursRows(shop.opening_hours);
+const websiteLink = formatShopWebsiteLink(shop.website);
+const shopTypeLabel = humanizeShopAttribute(shop.shop_type);
+const priceTierLabel = humanizeShopAttribute(shop.price_tier);
+const email = (shop.email ?? '').trim() || null;
+const hasQuickContact = !!(shop.phone || websiteLink || email);
 ---
 
 <BaseLayout
@@ -153,6 +160,45 @@ const hoursRows = getOpeningHoursRows(shop.opening_hours);
             </span>
           )}
         </div>
+
+        {(hasQuickContact || shopTypeLabel || priceTierLabel) && (
+          <div class="mt-4 space-y-2">
+            {hasQuickContact && (
+              <p class="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-surface-700">
+                {shop.phone && (
+                  <a href={`tel:${String(shop.phone).replace(/\s/g, '')}`} class="font-medium text-brand-600 hover:underline">
+                    {shop.phone}
+                  </a>
+                )}
+                {shop.phone && (websiteLink || email) && <span class="text-surface-300" aria-hidden="true">·</span>}
+                {websiteLink && (
+                  <a
+                    href={websiteLink.href}
+                    target="_blank"
+                    rel="nofollow noopener"
+                    class="font-medium text-brand-600 hover:underline"
+                    title={websiteLink.href}
+                  >
+                    {websiteLink.label}
+                  </a>
+                )}
+                {websiteLink && email && <span class="text-surface-300" aria-hidden="true">·</span>}
+                {email && (
+                  <a href={`mailto:${email}`} class="font-medium text-brand-600 hover:underline break-all">
+                    {email}
+                  </a>
+                )}
+              </p>
+            )}
+            {(shopTypeLabel || priceTierLabel) && (
+              <p class="flex flex-wrap gap-x-3 gap-y-1 text-sm text-surface-600">
+                {shopTypeLabel && <span>Store: {shopTypeLabel}</span>}
+                {shopTypeLabel && priceTierLabel && <span class="text-surface-300" aria-hidden="true">·</span>}
+                {priceTierLabel && <span>Price: {priceTierLabel}</span>}
+              </p>
+            )}
+          </div>
+        )}
 
         {heroImageUrl && (
           <div class="mt-6 overflow-hidden rounded-lg border border-surface-200 bg-surface-50">
@@ -264,17 +310,83 @@ const hoursRows = getOpeningHoursRows(shop.opening_hours);
         <div class="rounded-lg border border-surface-200 p-4 space-y-3">
           <h3 class="font-bold text-surface-900">Contact Info</h3>
 
-          <div class="text-sm text-surface-700 space-y-2">
+          {(shop.is_verified || shop.is_partner || shop.is_claimed) && (
+            <p class="flex flex-wrap gap-1.5 text-xs text-surface-600">
+              {shop.is_verified && (
+                <span class="rounded bg-emerald-50 px-2 py-0.5 font-medium text-emerald-800 ring-1 ring-emerald-200/80">Verified</span>
+              )}
+              {shop.is_partner && (
+                <span class="rounded bg-brand-50 px-2 py-0.5 font-medium text-brand-800 ring-1 ring-brand-200/80">Partner</span>
+              )}
+              {shop.is_claimed && (
+                <span class="rounded bg-surface-100 px-2 py-0.5 font-medium text-surface-800 ring-1 ring-surface-200">Claimed</span>
+              )}
+            </p>
+          )}
+
+          <dl class="text-sm text-surface-700 space-y-2">
             {shop.address_line1 && (
-              <p>{shop.address_line1}{shop.address_line2 ? `, ${shop.address_line2}` : ''}<br/>{shop.city}, {shop.state_code} {shop.zip}</p>
+              <div>
+                <dt class="text-xs font-medium uppercase tracking-wide text-surface-500">Address</dt>
+                <dd class="mt-0.5">
+                  {shop.address_line1}{shop.address_line2 ? `, ${shop.address_line2}` : ''}
+                  <br />
+                  {shop.city}, {shop.state_code} {shop.zip}
+                  {shop.country && String(shop.country).trim() && String(shop.country).toUpperCase() !== 'US' && (
+                    <><br />{String(shop.country).toUpperCase()}</>
+                  )}
+                </dd>
+              </div>
             )}
             {shop.phone && (
-              <p><a href={`tel:${shop.phone}`} class="text-brand-600 hover:underline">{shop.phone}</a></p>
+              <div>
+                <dt class="text-xs font-medium uppercase tracking-wide text-surface-500">Phone</dt>
+                <dd class="mt-0.5">
+                  <a href={`tel:${shop.phone.replace(/\s/g, '')}`} class="font-medium text-brand-600 hover:underline">
+                    {shop.phone}
+                  </a>
+                </dd>
+              </div>
             )}
-            {shop.website && (
-              <p><a href={shop.website} target="_blank" rel="nofollow noopener" class="text-brand-600 hover:underline">Visit Website</a></p>
+            {email && (
+              <div>
+                <dt class="text-xs font-medium uppercase tracking-wide text-surface-500">Email</dt>
+                <dd class="mt-0.5 break-all">
+                  <a href={`mailto:${email}`} class="font-medium text-brand-600 hover:underline">
+                    {email}
+                  </a>
+                </dd>
+              </div>
             )}
-          </div>
+            {websiteLink && (
+              <div>
+                <dt class="text-xs font-medium uppercase tracking-wide text-surface-500">Website</dt>
+                <dd class="mt-0.5 break-all">
+                  <a
+                    href={websiteLink.href}
+                    target="_blank"
+                    rel="nofollow noopener"
+                    class="font-medium text-brand-600 hover:underline"
+                    title={websiteLink.href}
+                  >
+                    {websiteLink.href}
+                  </a>
+                </dd>
+              </div>
+            )}
+            {shopTypeLabel && (
+              <div>
+                <dt class="text-xs font-medium uppercase tracking-wide text-surface-500">Store type</dt>
+                <dd class="mt-0.5 text-surface-800">{shopTypeLabel}</dd>
+              </div>
+            )}
+            {priceTierLabel && (
+              <div>
+                <dt class="text-xs font-medium uppercase tracking-wide text-surface-500">Price</dt>
+                <dd class="mt-0.5 text-surface-800">{priceTierLabel}</dd>
+              </div>
+            )}
+          </dl>
 
           <!-- Hours (Google Places regularOpeningHours.weekdayDescriptions) -->
           {hoursRows && (

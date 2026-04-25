@@ -47,6 +47,45 @@ const topStates = [...states].sort((a, b) => (b.shop_count || 0) - (a.shop_count
     )}
 
     <section class="mt-10">
+      <div class="mb-4 flex items-end justify-between">
+        <h2 class="font-display text-lg font-bold text-surface-900">eBike Riding Moments</h2>
+        <span class="text-xs font-semibold uppercase tracking-wide text-surface-400">Across city and trail</span>
+      </div>
+      <div class="grid gap-4 md:grid-cols-3">
+        {[
+          {
+            id: '15009884',
+            alt: 'Rider on an electric bike along a coastal road',
+            caption: 'Commute-ready rides for daily miles',
+          },
+          {
+            id: '15009950',
+            alt: 'Two people riding electric bikes on an open road',
+            caption: 'Weekend routes and group rides',
+          },
+          {
+            id: '15009961',
+            alt: 'Person riding an electric bike on a wooded trail',
+            caption: 'Trail-capable eBikes for adventure',
+          },
+        ].map((photo) => (
+          <div class="group overflow-hidden rounded-2xl border border-surface-200 bg-white shadow-card">
+            <div class="relative h-52 overflow-hidden">
+              <img
+                src={`https://images.pexels.com/photos/${photo.id}/pexels-photo-${photo.id}.jpeg?auto=compress&cs=tinysrgb&w=900&dpr=1`}
+                alt={photo.alt}
+                class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                loading="lazy"
+              />
+              <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-night-900/40 via-transparent to-transparent"></div>
+            </div>
+            <p class="px-4 py-3 text-sm font-medium text-surface-700">{photo.caption}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <section class="mt-10">
       <h2 class="font-display text-lg font-bold text-surface-900">Browse by State</h2>
       <div class="mt-4 grid gap-2 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
         {states.map((state) => (

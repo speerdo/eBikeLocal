@@ -159,3 +159,37 @@ export function truncateForMetaDescription(text: string, max = 158): string {
   const base = (lastSpace > 40 ? cut.slice(0, lastSpace) : cut).trimEnd();
   return `${base}…`;
 }
+
+/** First URL if multiple are accidentally concatenated (matches scraper cleanup). */
+function firstTokenUrl(raw: string): string {
+  return raw.trim().split(/\s+/)[0] ?? '';
+}
+
+/**
+ * Href and short label for a shop website link (visible domain, stable href).
+ * Returns null if the value is empty or not parseable as an http(s) URL.
+ */
+export function formatShopWebsiteLink(website: string | null | undefined): { href: string; label: string } | null {
+  const first = firstTokenUrl(website ?? '');
+  if (!first) return null;
+  let href = first;
+  if (!/^https?:\/\//i.test(href)) {
+    href = `https://${href}`;
+  }
+  try {
+    const u = new URL(href);
+    if (u.protocol !== 'http:' && u.protocol !== 'https:') return null;
+    const host = u.hostname.replace(/^www\./i, '');
+    const label = host || u.href;
+    return { href: u.href, label };
+  } catch {
+    return null;
+  }
+}
+
+/** Human-readable shop_type / price_tier (underscores → spaces, trimmed). */
+export function humanizeShopAttribute(value: string | null | undefined): string | null {
+  const t = (value ?? '').trim();
+  if (!t) return null;
+  return t.replace(/[_-]+/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
+}
