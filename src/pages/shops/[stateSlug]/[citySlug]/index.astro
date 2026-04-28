@@ -239,6 +239,7 @@ const itemListSchema = {
     <!-- Shop list -->
     <section class="mt-8">
       <h2 class="text-lg font-bold text-surface-900">All Shops</h2>
+      <p id="city-shop-count" class="sr-only" aria-live="polite" aria-atomic="true"></p>
       <div class="mt-4 space-y-3" id="city-shop-list">
         {shops.map((shop) => (
           <div class="city-shop-item" data-brands={(shop.brand_names || []).join('||').toLowerCase()}>
@@ -326,6 +327,7 @@ const itemListSchema = {
   const chips = Array.from(document.querySelectorAll<HTMLButtonElement>('.brand-filter-chip'));
   const shopItems = Array.from(document.querySelectorAll<HTMLElement>('.city-shop-item'));
   const emptyState = document.getElementById('city-shop-filter-empty');
+  const liveRegion = document.getElementById('city-shop-count');
 
   function setActiveChip(activeBrand: string) {
     chips.forEach((chip) => {
@@ -349,6 +351,11 @@ const itemListSchema = {
       if (match) visible += 1;
     });
     emptyState?.classList.toggle('hidden', visible > 0);
+    if (liveRegion) {
+      liveRegion.textContent = brand
+        ? `Showing ${visible} shop${visible !== 1 ? 's' : ''} carrying ${rawBrand.trim()}`
+        : `Showing all ${visible} shop${visible !== 1 ? 's' : ''}`;
+    }
   }
 
   chips.forEach((chip) => {

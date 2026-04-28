@@ -2,6 +2,7 @@
 import { getCollection, render } from 'astro:content';
 import BaseLayout from '@layouts/BaseLayout.astro';
 import Breadcrumb from '@components/ui/Breadcrumb.astro';
+import FAQSchema from '@components/seo/FAQSchema.astro';
 
 export async function getStaticPaths() {
   const entries = await getCollection('guides');
@@ -14,7 +15,7 @@ export async function getStaticPaths() {
 const { entry } = Astro.props;
 const { Content, headings } = await render(entry);
 
-const { title, description, publishedAt, updatedAt, heroImage, category, tags } = entry.data;
+const { title, description, publishedAt, updatedAt, heroImage, category, tags, faqs } = entry.data;
 
 // Format date
 const dateStr = (updatedAt ?? publishedAt).toLocaleDateString('en-US', {
@@ -101,7 +102,7 @@ const articleSchema = {
         prose-h2:text-2xl prose-h2:mt-10 prose-h2:mb-4 prose-h2:text-surface-900
         prose-h3:text-xl prose-h3:mt-8 prose-h3:mb-3 prose-h3:text-surface-900
         prose-p:text-surface-700 prose-p:leading-relaxed prose-p:mb-4
-        prose-a:text-brand-600 prose-a:font-500 prose-a:no-underline hover:prose-a:underline
+        prose-a:text-brand-600 prose-a:font-500 prose-a:no-underline [&_a:hover]:underline
         prose-strong:text-surface-900 prose-strong:font-700
         prose-ul:text-surface-700 prose-ol:text-surface-700
         prose-li:mb-1.5
@@ -111,6 +112,7 @@ const articleSchema = {
         prose-blockquote:border-l-brand-400 prose-blockquote:bg-brand-50/50 prose-blockquote:rounded-r-lg prose-blockquote:py-1
         prose-code:text-brand-700 prose-code:bg-brand-50 prose-code:px-1.5 prose-code:rounded
         prose-hr:border-surface-200
+        prose-figure:my-0 prose-img:rounded-xl prose-img:shadow-card
       ">
         <Content />
       </article>
@@ -221,3 +223,5 @@ const articleSchema = {
     </div>
   </div>
 </BaseLayout>
+
+{faqs && faqs.length > 0 && <FAQSchema items={faqs} />}

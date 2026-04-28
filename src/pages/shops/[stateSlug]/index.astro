@@ -19,6 +19,71 @@ export async function getStaticPaths() {
 
 const { state, cities } = Astro.props;
 
+// Live deduplicated shop counts — mirrors the dedup logic in [citySlug]/index.astro
+const liveCountRows = await sql`
+  WITH normalized AS (
+    SELECT
+      s.city,
+      COALESCE(
+        NULLIF(s.normalized_address, ''),
+        LOWER(TRIM(REGEXP_REPLACE(
+          REGEXP_REPLACE(
+            REGEXP_REPLACE(
+              REGEXP_REPLACE(
+                REGEXP_REPLACE(
+                  REGEXP_REPLACE(
+                    REGEXP_REPLACE(
+                      REGEXP_REPLACE(COALESCE(s.address_line1, ''), '\\m(street)\\M', 'st', 'gi'),
+                      '\\m(avenue)\\M', 'ave', 'gi'
+                    ),
+                    '\\m(road)\\M', 'rd', 'gi'
+                  ),
+                  ',?\\s*#\\s*[a-z0-9]+', '', 'gi'
+                ),
+                ',?\\s*\\m(ste|suite|unit|apt|apartment)\\M\\.?\\s*#?\\s*[a-z0-9]*', '', 'gi'
+              ),
+              '\\s+[a-z]\\s*$', '', 'g'
+            ),
+            ',', ' '
+          ),
+          '\\s+', ' ', 'g'
+        )))
+      ) AS dedup_key,
+      s.google_review_count,
+      s.google_rating,
+      s.name AS shop_name
+    FROM shops s
+    WHERE s.state_code = ${state.code}
+      AND (s.google_business_status IS NULL OR s.google_business_status != 'CLOSED_PERMANENTLY')
+      AND COALESCE(s.listing_status, 'active') = 'active'
+  ),
+  ranked AS (
+    SELECT
+      n.city,
+      ROW_NUMBER() OVER (
+        PARTITION BY n.city, n.dedup_key
+        ORDER BY n.google_review_count DESC NULLS LAST, n.google_rating DESC NULLS LAST, n.shop_name ASC
+      ) AS rn
+    FROM normalized n
+  )
+  SELECT city, COUNT(*) AS live_count
+  FROM ranked
+  WHERE rn = 1
+  GROUP BY city
+`;
+
+const liveCountMap = new Map<string, number>(
+  liveCountRows.map((r: any) => [r.city as string, Number(r.live_count)])
+);
+
+const liveStateTotal = liveCountRows.reduce((sum: number, r: any) => sum + Number(r.live_count), 0);
+
+// Alphabetical default; count-sorted available for the client-side toggle
+const citiesByName = [...cities].sort((a: any, b: any) =>
+  String(a.name).localeCompare(String(b.name))
+);
+const sortedCities = citiesByName; // alias used by map/count references below
+
 const topBrands = await sql`
   SELECT b.name, b.slug, COUNT(*) as shop_count
   FROM shop_brands sb
@@ -54,13 +119,13 @@ const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'CollectionPage',
   name: `eBike Shops in ${state.name}`,
-  description: `Find ${state.shop_count || 0} eBike shops in ${state.name}.`,
+  description: `Find ${liveStateTotal} eBike shops in ${state.name}.`,
 };
 ---
 
 <BaseLayout
   title={`eBike Shops in ${state.name} — Find Local Dealers | eBikeLocal`}
-  description={`Find ${state.shop_count || 0} electric bike shops across ${cities.length} cities in ${state.name}. Browse by city, filter by brand, and discover local dealers carrying Aventon, Trek, Specialized, and more.`}
+  description={`Find ${liveStateTotal} electric bike shops across ${sortedCities.length} cities in ${state.name}. Browse by city, filter by brand, and discover local dealers carrying Aventon, Trek, Specialized, and more.`}
   jsonLd={jsonLd}
 >
   <div class="mx-auto max-w-7xl px-(--spacing-page) py-8">
@@ -74,7 +139,7 @@ const jsonLd = {
       eBike Shops in {state.name}
     </h1>
     <p class="mt-2 text-lg text-surface-700">
-      {state.shop_count || 0} electric bike {(state.shop_count || 0) === 1 ? 'shop' : 'shops'} across {cities.length} {cities.length === 1 ? 'city' : 'cities'}.
+      {liveStateTotal} electric bike {liveStateTotal === 1 ? 'shop' : 'shops'} across {sortedCities.length} {sortedCities.length === 1 ? 'city' : 'cities'}.
     </p>
 
     {(() => {
@@ -84,7 +149,7 @@ const jsonLd = {
         : '';
       return (
         <p class="mt-3 max-w-2xl text-surface-600 leading-relaxed">
-          {state.name} has {(state.shop_count || 0).toLocaleString()} electric bike shops spanning {cities.length} cities.{' '}
+          {state.name} has {liveStateTotal.toLocaleString()} electric bike shops spanning {sortedCities.length} cities.{' '}
           {brandStr}{' '}
           {stateSpecificSentence}{' '}
           Browse by city below or use the brand chips on city pages to filter shops by what you want to test-ride.
@@ -94,14 +159,17 @@ const jsonLd = {
 
     <!-- State map with city markers -->
     {(() => {
-      const cityPins = cities
+      const cityPins = sortedCities
         .filter((c: any) => c.latitude && c.longitude)
-        .map((c: any) => ({
-          name: `${c.name} (${c.shop_count} shops)`,
-          href: `/shops/${state.slug}/${c.slug}/`,
-          latitude: Number(c.latitude),
-          longitude: Number(c.longitude),
-        }));
+        .map((c: any) => {
+          const liveCount = liveCountMap.get(c.name) ?? Number(c.shop_count ?? 0);
+          return {
+            name: `${c.name} (${liveCount} shop${liveCount !== 1 ? 's' : ''})`,
+            href: `/shops/${state.slug}/${c.slug}/`,
+            latitude: Number(c.latitude),
+            longitude: Number(c.longitude),
+          };
+        });
       return cityPins.length > 0 ? (
         <div class="mt-6">
           <MultiPinMap pins={cityPins} zoom={7} height="380px" />
@@ -111,21 +179,75 @@ const jsonLd = {
 
     <!-- Cities grid -->
     <section class="mt-10">
-      <h2 class="text-xl font-bold text-surface-900">Cities with eBike Shops</h2>
-      <div class="mt-4 grid gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-        {cities.map((city) => (
-          <a
-            href={`/shops/${state.slug}/${city.slug}/`}
-            class="flex items-center justify-between rounded-lg border border-surface-200 px-4 py-3 transition-colors hover:border-brand-600 hover:bg-brand-50"
-          >
-            <span class="font-medium text-surface-900">{city.name}</span>
-            {city.shop_count > 0 && (
-              <span class="text-sm text-surface-700">{city.shop_count}</span>
-            )}
-          </a>
-        ))}
+      <div class="flex items-center justify-between">
+        <h2 class="text-xl font-bold text-surface-900">Cities with eBike Shops</h2>
+        <div class="flex rounded-lg border border-surface-200 text-sm font-medium overflow-hidden">
+          <button
+            id="sort-alpha"
+            data-sort="alpha"
+            class="px-3 py-1.5 bg-brand-600 text-white transition-colors"
+          >A–Z</button>
+          <button
+            id="sort-count"
+            data-sort="count"
+            class="px-3 py-1.5 bg-white text-surface-700 hover:bg-surface-50 transition-colors"
+          ># Shops</button>
+        </div>
+      </div>
+      <div id="cities-grid" class="mt-4 grid gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+        {sortedCities.map((city: any) => {
+          const liveCount = liveCountMap.get(city.name) ?? Number(city.shop_count ?? 0);
+          return (
+            <a
+              href={`/shops/${state.slug}/${city.slug}/`}
+              data-name={city.name}
+              data-count={liveCount}
+              class="flex items-center justify-between rounded-lg border border-surface-200 px-4 py-3 transition-colors hover:border-brand-600 hover:bg-brand-50"
+            >
+              <span class="font-medium text-surface-900">{city.name}</span>
+              {liveCount > 0 && (
+                <span class="text-sm text-surface-700">{liveCount}</span>
+              )}
+            </a>
+          );
+        })}
       </div>
     </section>
+
+    <script>
+      const grid = document.getElementById('cities-grid')!;
+      const btnAlpha = document.getElementById('sort-alpha')!;
+      const btnCount = document.getElementById('sort-count')!;
+
+      function applySort(mode: 'alpha' | 'count') {
+        const cards = Array.from(grid.children) as HTMLElement[];
+        cards.sort((a, b) => {
+          if (mode === 'alpha') {
+            return (a.dataset.name ?? '').localeCompare(b.dataset.name ?? '');
+          }
+          return Number(b.dataset.count ?? 0) - Number(a.dataset.count ?? 0);
+        });
+        cards.forEach((el) => grid.appendChild(el));
+
+        const activeClass = ['bg-brand-600', 'text-white'];
+        const inactiveClass = ['bg-white', 'text-surface-700', 'hover:bg-surface-50'];
+
+        if (mode === 'alpha') {
+          btnAlpha.classList.add(...activeClass);
+          btnAlpha.classList.remove(...inactiveClass);
+          btnCount.classList.add(...inactiveClass);
+          btnCount.classList.remove(...activeClass);
+        } else {
+          btnCount.classList.add(...activeClass);
+          btnCount.classList.remove(...inactiveClass);
+          btnAlpha.classList.add(...inactiveClass);
+          btnAlpha.classList.remove(...activeClass);
+        }
+      }
+
+      btnAlpha.addEventListener('click', () => applySort('alpha'));
+      btnCount.addEventListener('click', () => applySort('count'));
+    </script>
 
     <!-- Top brands in state -->
     {topBrands.length > 0 && (

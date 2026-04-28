@@ -5,7 +5,7 @@ import Breadcrumb from '@components/ui/Breadcrumb.astro';
 
 <BaseLayout
   title="About eBikeLocal — Why We Built This Directory"
-  description="Learn how eBikeLocal aggregates dealer and brand data, how our editorial process works, and how we verify shop listings."
+  description="Learn how eBikeLocal aggregates dealer and brand data from 15+ brands, how our editorial process works, and how we verify shop listings across 8,000+ US dealers."
 >
   <div class="mx-auto max-w-4xl px-(--spacing-page) py-8">
     <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: 'About' }]} />
@@ -16,36 +16,47 @@ import Breadcrumb from '@components/ui/Breadcrumb.astro';
       <section>
         <h2 class="text-xl font-bold text-surface-900">Why this exists</h2>
         <p class="mt-2">
-          eBikeLocal started from a simple problem: brand dealer locators are fragmented, inconsistent, and hard to compare.
-          Riders were forced to open one brand site after another just to figure out which nearby shops actually carried the bikes they wanted to test.
+          eBikeLocal started from a simple frustration: if you wanted to buy an eBike and test-ride it locally, you had to open a dozen brand websites — each with its own dealer locator, each showing only its own brands, with no way to compare which shops near you carried multiple brands.
         </p>
         <p class="mt-2">
-          We built eBikeLocal to make that process faster and more transparent: one place to discover local shops, compare brands, and shortlist bikes.
+          We spent over a year aggregating dealer data from more than 15 brand locator APIs and cross-referencing those records with Google Places data, address normalization, and geographic deduplication. The result is the only directory that answers the question: <strong>"Which shops near me carry Aventon, Trek, and Specialized — all in one place?"</strong>
         </p>
       </section>
 
       <section>
         <h2 class="text-xl font-bold text-surface-900">What makes our data different</h2>
         <p class="mt-2">
-          Our core dataset aggregates dealer information across 15+ brand locator sources, then enriches and validates those records with geography and Google Places data.
-          That brand-level aggregation is what allows city and shop pages to show which brands are likely available in one view.
+          Every other shop directory either lists general bike shops without brand specifics, or comes directly from a single brand's locator. eBikeLocal is built on a <strong>brand-level junction dataset</strong> — for each shop in our database, we track which brands that shop is an authorized dealer for.
+        </p>
+        <p class="mt-2">
+          Our data pipeline pulls directly from brand dealer APIs (including Beeline Connect, Trek OCC, Specialized's Yext GraphQL endpoint, Giant's bounding-box locator, and others), normalizes addresses, deduplicates records across sources, and enriches each listing with Google Places ratings, hours, and photos. As of launch, the database covers <strong>8,000+ active eBike dealers across 1,500+ US cities</strong>.
         </p>
       </section>
 
       <section>
-        <h2 class="text-xl font-bold text-surface-900">Editorial and data standards</h2>
+        <h2 class="text-xl font-bold text-surface-900">Editorial and buying guide standards</h2>
         <p class="mt-2">
-          Buying-guide recommendations are based on spec review, category fit, safety-relevant components, and price-to-value analysis.
-          For shop data, we run normalization and deduplication checks, then flag edge cases for manual review.
-          Claimed listings and direct merchant updates can override generated descriptions to improve listing quality over time.
+          Our buying guides and best-picks lists are written based on spec review, category fit, component safety, and price-to-value analysis — not manufacturer relationships or affiliate revenue. When a brand undergoes a material change (like Rad Power Bikes' Chapter 11 filing in late 2025), we update the content and surface warnings to readers rather than quietly removing recommendations.
+        </p>
+        <p class="mt-2">
+          Guide content is reviewed periodically and each guide displays a "last updated" date. For time-sensitive topics like tax credits and state rebate programs, we treat anything older than three months as overdue for review.
         </p>
       </section>
 
       <section>
-        <h2 class="text-xl font-bold text-surface-900">Disclosure</h2>
+        <h2 class="text-xl font-bold text-surface-900">Claiming or updating your shop listing</h2>
         <p class="mt-2">
-          Some outbound product links may be affiliate links.
-          Read our full policy on the <a href="/disclosure/" class="font-medium text-brand-600 hover:underline">Affiliate Disclosure</a> page.
+          If you own or manage an eBike shop that appears in our directory, you can request a listing update, add your hours, or claim the listing to control the description. Use the <a href="/contact/" class="font-medium text-brand-600 hover:underline">Contact page</a> to reach us — include your shop name, city, and the correction or update you'd like made.
+        </p>
+        <p class="mt-2">
+          Verified Partner listings are also available for shops that want enhanced placement and direct traffic from city pages. <a href="/contact/" class="font-medium text-brand-600 hover:underline">Contact us</a> for details.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="text-xl font-bold text-surface-900">Affiliate disclosure</h2>
+        <p class="mt-2">
+          Some outbound product links on brand and bike pages are affiliate links — clicking them and making a purchase may earn us a commission at no cost to you. This doesn't influence our editorial recommendations or shop listings. Read our full policy on the <a href="/disclosure/" class="font-medium text-brand-600 hover:underline">Affiliate Disclosure</a> page.
         </p>
       </section>
     </div>

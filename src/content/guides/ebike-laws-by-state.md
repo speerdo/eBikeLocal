@@ -28,6 +28,11 @@ The key variables that differ by state:
 | Registration required | Only a few states require it |
 | License required | Generally no |
 
+<figure class="article-figure">
+  <img src="https://images.pexels.com/photos/7650393/pexels-photo-7650393.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="Modern electric bike parked on a paved pathway" loading="lazy" />
+  <figcaption>Unlike cars, eBikes face no federal regulation — rules are set state by state. Photo: Erik Mclean / Pexels</figcaption>
+</figure>
+
 ---
 
 ## The Three-Class System Explained
@@ -39,6 +44,11 @@ Most US states have codified the three-class system:
 - **Class 3:** Pedal assist up to 28 mph. Generally road/bike lane only; restricted from pedestrian paths in most states.
 
 See our detailed [eBike Classes Explained](/guides/ebike-classes-explained/) guide for a full breakdown.
+
+<figure class="article-figure">
+  <img src="https://images.pexels.com/photos/12265482/pexels-photo-12265482.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="Close-up of a black electric bicycle motor and frame" loading="lazy" />
+  <figcaption>The three-class system is defined by motor power and top assisted speed. Class 3 eBikes top out at 28 mph and face the most restrictions. Photo: G-FORCE Bike / Pexels</figcaption>
+</figure>
 
 ---
 
@@ -71,7 +81,7 @@ Click your state for complete local law details including:
 
 <div class="state-grid">
 
-[Alabama](/guides/ebike-laws/alabama/) · [Alaska](/guides/ebike-laws/alaska/) · [Arizona](/guides/ebike-laws/arizona/) · [Arkansas](/guides/ebike-laws/arkansas/) · [California](/guides/ebike-laws/california/) · [Colorado](/guides/ebike-laws/colorado/) · [Connecticut](/guides/ebike-laws/connecticut/) · [Delaware](/guides/ebike-laws/delaware/) · [Florida](/guides/ebike-laws/florida/) · [Georgia](/guides/ebike-laws/georgia/) · [Hawaii](/guides/ebike-laws/hawaii/) · [Idaho](/guides/ebike-laws/idaho/) · [Illinois](/guides/ebike-laws/illinois/) · [Indiana](/guides/ebike-laws/indiana/) · [Iowa](/guides/ebike-laws/iowa/) · [Kansas](/guides/ebike-laws/kansas/) · [Kentucky](/guides/ebike-laws/kentucky/) · [Louisiana](/guides/ebike-laws/louisiana/) · [Maine](/guides/ebike-laws/maine/) · [Maryland](/guides/ebike-laws/maryland/) · [Massachusetts](/guides/ebike-laws/massachusetts/) · [Michigan](/guides/ebike-laws/michigan/) · [Minnesota](/guides/ebike-laws/minnesota/) · [Mississippi](/guides/ebike-laws/mississippi/) · [Missouri](/guides/ebike-laws/missouri/) · [Montana](/guides/ebike-laws/montana/) · [Nebraska](/guides/ebike-laws/nebraska/) · [Nevada](/guides/ebike-laws/nevada/) · [New Hampshire](/guides/ebike-laws/new-hampshire/) · [New Jersey](/guides/ebike-laws/new-jersey/) · [New Mexico](/guides/ebike-laws/new-mexico/) · [New York](/guides/ebike-laws/new-york/) · [North Carolina](/guides/ebike-laws/north-carolina/) · [North Dakota](/guides/ebike-laws/north-dakota/) · [Ohio](/guides/ebike-laws/ohio/) · [Oklahoma](/guides/ebike-laws/oklahoma/) · [Oregon](/guides/ebike-laws/oregon/) · [Pennsylvania](/guides/ebike-laws/pennsylvania/) · [Rhode Island](/guides/ebike-laws/rhode-island/) · [South Carolina](/guides/ebike-laws/south-carolina/) · [South Dakota](/guides/ebike-laws/south-dakota/) · [Tennessee](/guides/ebike-laws/tennessee/) · [Texas](/guides/ebike-laws/texas/) · [Utah](/guides/ebike-laws/utah/) · [Vermont](/guides/ebike-laws/vermont/) · [Virginia](/guides/ebike-laws/virginia/) · [Washington](/guides/ebike-laws/washington/) · [West Virginia](/guides/ebike-laws/west-virginia/) · [Wisconsin](/guides/ebike-laws/wisconsin/) · [Wyoming](/guides/ebike-laws/wyoming/) · [Washington D.C.](/guides/ebike-laws/district-of-columbia/)
+[Alabama](/guides/ebike-laws/alabama/) [Alaska](/guides/ebike-laws/alaska/) [Arizona](/guides/ebike-laws/arizona/) [Arkansas](/guides/ebike-laws/arkansas/) [California](/guides/ebike-laws/california/) [Colorado](/guides/ebike-laws/colorado/) [Connecticut](/guides/ebike-laws/connecticut/) [Delaware](/guides/ebike-laws/delaware/) [Florida](/guides/ebike-laws/florida/) [Georgia](/guides/ebike-laws/georgia/) [Hawaii](/guides/ebike-laws/hawaii/) [Idaho](/guides/ebike-laws/idaho/) [Illinois](/guides/ebike-laws/illinois/) [Indiana](/guides/ebike-laws/indiana/) [Iowa](/guides/ebike-laws/iowa/) [Kansas](/guides/ebike-laws/kansas/) [Kentucky](/guides/ebike-laws/kentucky/) [Louisiana](/guides/ebike-laws/louisiana/) [Maine](/guides/ebike-laws/maine/) [Maryland](/guides/ebike-laws/maryland/) [Massachusetts](/guides/ebike-laws/massachusetts/) [Michigan](/guides/ebike-laws/michigan/) [Minnesota](/guides/ebike-laws/minnesota/) [Mississippi](/guides/ebike-laws/mississippi/) [Missouri](/guides/ebike-laws/missouri/) [Montana](/guides/ebike-laws/montana/) [Nebraska](/guides/ebike-laws/nebraska/) [Nevada](/guides/ebike-laws/nevada/) [New Hampshire](/guides/ebike-laws/new-hampshire/) [New Jersey](/guides/ebike-laws/new-jersey/) [New Mexico](/guides/ebike-laws/new-mexico/) [New York](/guides/ebike-laws/new-york/) [North Carolina](/guides/ebike-laws/north-carolina/) [North Dakota](/guides/ebike-laws/north-dakota/) [Ohio](/guides/ebike-laws/ohio/) [Oklahoma](/guides/ebike-laws/oklahoma/) [Oregon](/guides/ebike-laws/oregon/) [Pennsylvania](/guides/ebike-laws/pennsylvania/) [Rhode Island](/guides/ebike-laws/rhode-island/) [South Carolina](/guides/ebike-laws/south-carolina/) [South Dakota](/guides/ebike-laws/south-dakota/) [Tennessee](/guides/ebike-laws/tennessee/) [Texas](/guides/ebike-laws/texas/) [Utah](/guides/ebike-laws/utah/) [Vermont](/guides/ebike-laws/vermont/) [Virginia](/guides/ebike-laws/virginia/) [Washington](/guides/ebike-laws/washington/) [West Virginia](/guides/ebike-laws/west-virginia/) [Wisconsin](/guides/ebike-laws/wisconsin/) [Wyoming](/guides/ebike-laws/wyoming/) [Washington D.C.](/guides/ebike-laws/district-of-columbia/)
 
 </div>
 
@@ -99,6 +109,11 @@ The National Park Service allows eBikes (Class 1, 2, and 3) on roads and in area
 
 The US Forest Service and Bureau of Land Management (BLM) have their own rules that vary by land unit. Always check with the specific park or ranger district before riding trails.
 
+<figure class="article-figure">
+  <img src="https://images.pexels.com/photos/90454/pexels-photo-90454.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="Cyclist in riding jacket on an off-road trail" loading="lazy" />
+  <figcaption>Class 1 eBikes have the broadest trail access in most national parks — but individual parks may restrict all eBikes on certain trails. Always check posted rules. Photo: Irene Lasus / Pexels</figcaption>
+</figure>
+
 ---
 
 ## Local Rules Override State Rules
@@ -110,6 +125,11 @@ State law sets the minimum standard, but cities, counties, and parks can be more
 - **Denver parks** have specific eBike policies separate from Colorado state rules
 
 When in doubt, check the specific location's posted rules or contact the managing agency.
+
+<figure class="article-figure">
+  <img src="https://images.pexels.com/photos/15020561/pexels-photo-15020561.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="Couple riding electric bikes down a street" loading="lazy" />
+  <figcaption>Cities like New York, San Francisco, and Denver often have eBike rules stricter than their state's baseline — especially in parks and on shared paths. Photo: Team EVELO / Pexels</figcaption>
+</figure>
 
 ---
 

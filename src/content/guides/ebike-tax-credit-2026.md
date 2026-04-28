@@ -7,6 +7,15 @@ category: news
 tags: ["ebike tax credit", "ebike rebate 2026", "electric bike tax credit", "E-BIKE Act", "ebike incentive"]
 featured: true
 heroImage: "https://images.pexels.com/photos/13344226/pexels-photo-13344226.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+faqs:
+  - question: "Is there a federal tax credit for electric bikes in 2026?"
+    answer: "No. As of April 2026, the E-BIKE Act has not been signed into law. No federal tax credit for eBike purchases is currently available."
+  - question: "What is the E-BIKE Act?"
+    answer: "The E-BIKE Act is proposed federal legislation that would create a 30% tax credit (up to $1,500) for new eBike purchases. It has been introduced multiple times since 2021 but has not passed into law."
+  - question: "Can I deduct my eBike on my taxes?"
+    answer: "Not as a consumer purchase, unless you use the bike for business purposes. Employers can reimburse commuting employees up to $30/month tax-free. Consult a tax professional for your specific situation."
+  - question: "Where can I find authorized eBike dealers for rebate programs?"
+    answer: "Use the eBikeLocal shop finder at ebikelocal.com/shops/ to locate authorized dealers in your area. Most state rebate programs require purchase from a participating retailer."
 ---
 
 One of the most-searched questions in the eBike world: **Is there a federal eBike tax credit in 2026?**

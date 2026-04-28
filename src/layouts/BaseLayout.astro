@@ -12,7 +12,7 @@ interface Props {
 const {
   title,
   description = 'Find eBike shops, brands, and bikes near you. Compare dealers, check which brands they carry, and shop the best electric bikes.',
-  canonicalUrl = `${(import.meta.env.SITE_URL || 'https://ebikelocal.com').replace(/\/$/, '')}${Astro.url.pathname}`,
+  canonicalUrl = `${(import.meta.env.SITE_URL || 'https://ebikelocal.com').replace(/\/$/, '')}${Astro.url.pathname.endsWith('/') ? Astro.url.pathname : Astro.url.pathname + '/'}`,
   ogImage = '/og-default.png',
   jsonLd,
 } = Astro.props;
@@ -57,13 +57,29 @@ const navLinks = [
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 
+    <!-- Theme color for mobile browser chrome -->
+    <meta name="theme-color" content="#0d1120" />
+
+    <!-- Google Fonts — preconnect first for non-blocking load -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:ital,opsz,wght@0,14..32,400;0,14..32,500;0,14..32,600;0,14..32,700;0,14..32,800;1,14..32,400&display=swap" />
+
     <!-- JSON-LD -->
-    {jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
+    {jsonLd && <script is:inline type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
 
     <slot name="head" />
   </head>
 
   <body class="min-h-screen bg-white text-surface-900 font-sans antialiased">
+
+    <!-- Skip to main content — keyboard navigation (WCAG 2.4.1) -->
+    <a
+      href="#main-content"
+      class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[200] focus:rounded-lg focus:bg-brand-400 focus:px-4 focus:py-2 focus:text-night-900 focus:font-700 focus:shadow-volt"
+    >
+      Skip to content
+    </a>
 
     <!-- ══════════════════════════════════════════════════════════
          NAVIGATION — dark with volt green accents
@@ -136,6 +152,7 @@ const navLinks = [
               class="lg:hidden flex h-9 w-9 items-center justify-center rounded-lg text-night-300 hover:bg-white/[0.07] hover:text-white transition-colors"
               aria-label="Open menu"
               aria-expanded="false"
+              aria-controls="mobile-menu"
             >
               <svg id="menu-icon"  class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
               <svg id="close-icon" class="h-5 w-5 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
@@ -169,7 +186,7 @@ const navLinks = [
     </header>
 
     <!-- Main content -->
-    <main>
+    <main id="main-content">
       <slot />
     </main>
 

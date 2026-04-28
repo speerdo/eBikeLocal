@@ -5,6 +5,7 @@ import vercel from '@astrojs/vercel';
 export default defineConfig({
   site: 'https://ebikelocal.com',
   output: 'static',
+  trailingSlash: 'always',
   adapter: vercel(),
   vite: {
     plugins: [tailwindcss()],
