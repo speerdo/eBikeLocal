@@ -178,7 +178,7 @@ const itemListSchema = {
   description={`${shops.length} eBike ${shops.length === 1 ? 'shop' : 'shops'} in ${city.name}, ${city.state_code}${brandCounts.length > 0 ? ` — carrying ${brandCounts.slice(0, 3).map((b: any) => b.name).join(', ')}` : ''}. Ratings, hours, addresses, and brand data in one place.`}
   jsonLd={itemListSchema}
 >
-  <div class="mx-auto max-w-7xl px-(--spacing-page) py-8">
+  <div class="mx-auto max-w-7xl page-x py-8">
     <Breadcrumb items={[
       { label: 'Home', href: '/' },
       { label: 'Shops', href: '/shops/' },

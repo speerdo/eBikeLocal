@@ -12,6 +12,9 @@
  *  4. Ridepanda PandaHub Seattle — company shut down 2023, mark as CLOSED_PERMANENTLY
  *  5. Cañon City slug — fix caon-city-co → canon-city-co in cities table
  *  6. Backfill missing city coordinates from shop averages
+ *  7. Rad Retail - Denver — remove duplicate of Rad Power Bikes at same 3863 Steele St address
+ *  8. Denver Fit Loft & Tribella — flag as pending_review (confidence 0.30, likely fitness studio)
+ *  9. Campus Cycles — upgrade website URL from http:// to https://
  */
 
 import { sql, log } from './scrapers/utils.mjs';
@@ -164,6 +167,56 @@ await run(
         OR c.longitude IS NULL
         OR (ABS(c.latitude) < 0.001 AND ABS(c.longitude) < 0.001)
       )
+  `
+);
+
+// ── 7. Rad Retail - Denver duplicate ─────────────────────────────────────────
+// Same physical address as "Rad Power Bikes - Ebike Sales & Service Center" (google_places source).
+// The rad-source entry has lower confidence (0.30 vs 0.45); remove it.
+
+await run(
+  'Remove Rad Retail - Denver (duplicate of Rad Power Bikes at 3863 Steele St)',
+  () => sql`
+    UPDATE shops
+    SET listing_status = 'removed',
+        is_active = false,
+        pending_review_reason = 'Duplicate of Rad Power Bikes - Ebike Sales & Service Center (google_places source) at 3863 Steele St, Denver.'
+    WHERE name = 'Rad Retail - Denver'
+      AND city = 'Denver'
+      AND state_code = 'CO'
+      AND source = 'rad'
+      AND listing_status = 'active'
+  `
+);
+
+// ── 8. Denver Fit Loft & Tribella — pending review ────────────────────────────
+// Confidence score 0.30; name suggests fitness/yoga studio, not an eBike dealer.
+// Website points to Trek store 629477 — requires manual verification.
+
+await run(
+  'Flag Denver Fit Loft & Tribella as pending_review (likely not an eBike shop)',
+  () => sql`
+    UPDATE shops
+    SET listing_status = 'pending_review',
+        pending_review_reason = 'Name suggests a fitness/yoga studio rather than an eBike dealer. Confidence score 0.30. Website links to Trek store 629477 — verify manually.'
+    WHERE name = 'Denver Fit Loft & Tribella'
+      AND city = 'Denver'
+      AND state_code = 'CO'
+      AND listing_status = 'active'
+  `
+);
+
+// ── 9. Campus Cycles — upgrade HTTP to HTTPS ──────────────────────────────────
+
+await run(
+  'Upgrade Campus Cycles website from http:// to https://',
+  () => sql`
+    UPDATE shops
+    SET website = REPLACE(website, 'http://', 'https://')
+    WHERE name = 'Campus Cycles'
+      AND city = 'Denver'
+      AND state_code = 'CO'
+      AND website LIKE 'http://%'
   `
 );
 

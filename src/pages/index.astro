@@ -290,16 +290,12 @@ const jsonLd = {
               class="group card-hover flex flex-col rounded-2xl border border-surface-200 bg-white p-5 shadow-card"
             >
               <!-- Logo placeholder -->
-              <div class="flex h-14 items-center">
+              <div class="flex h-14 w-full items-center overflow-hidden">
                 {getBrandLogoUrl(brand) ? (
                   <img
                     src={getBrandLogoUrl(brand)!}
                     alt={brand.name}
-                    class={brand.slug === 'velotric'
-                      ? 'h-8 w-auto max-w-[170px] object-contain'
-                      : brand.slug === 'aventon'
-                        ? 'h-10 w-auto max-w-[190px] object-contain'
-                        : 'max-h-10 max-w-full object-contain'}
+                    class="max-h-10 w-auto max-w-full object-contain"
                     loading="lazy"
                   />
                 ) : (

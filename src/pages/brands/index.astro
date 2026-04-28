@@ -36,16 +36,12 @@ const brands = await sql`
           class="group card-hover flex flex-col rounded-2xl border border-surface-200 bg-white p-6 shadow-card"
         >
           <!-- Logo area -->
-          <div class="flex h-12 items-center">
+          <div class="flex h-12 w-full items-center overflow-hidden">
             {getBrandLogoUrl(brand) ? (
               <img
                 src={getBrandLogoUrl(brand)!}
                 alt={brand.name}
-                class={brand.slug === 'velotric'
-                  ? 'h-8 w-auto max-w-[150px] object-contain'
-                  : brand.slug === 'aventon'
-                    ? 'h-10 w-auto max-w-[180px] object-contain'
-                    : 'max-h-10 max-w-[160px] object-contain'}
+                class="max-h-10 w-auto max-w-full object-contain"
                 loading="lazy"
               />
             ) : (

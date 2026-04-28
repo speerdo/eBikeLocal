@@ -19,7 +19,7 @@ const categories = await sql`SELECT * FROM categories ORDER BY sort_order, name`
   title="eBike Catalog — Compare Electric Bikes by Brand, Price & Category"
   description="Browse popular electric bikes from top brands in our catalog (not exhaustive). Filter by category, price, and specs."
 >
-  <div class="mx-auto max-w-7xl px-(--spacing-page) py-8">
+  <div class="mx-auto max-w-7xl page-x py-8">
     <Breadcrumb items={[
       { label: 'Home', href: '/' },
       { label: 'Bikes' },

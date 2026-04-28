@@ -134,7 +134,7 @@ const brandArticle = /^[aeiou]/i.test(bike.brand_name) ? 'an' : 'a';
     url={`${import.meta.env.SITE_URL}/bikes/${brandSlug}/${modelSlug}/`}
   />
 
-  <div class="mx-auto max-w-7xl px-(--spacing-page) py-8">
+  <div class="mx-auto max-w-7xl page-x py-8">
     <Breadcrumb items={[
       { label: 'Home', href: '/' },
       { label: 'Bikes', href: '/bikes/' },
