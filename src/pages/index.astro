@@ -3,13 +3,10 @@ export const prerender = false;
 
 import BaseLayout from '@layouts/BaseLayout.astro';
 import { getBrandLogoUrl } from '@lib/brandLogos';
+import { getSiteStats } from '@lib/siteStats';
 import sql from '@lib/neon';
 
-const [shopCount, brandCount, cityCount] = await Promise.all([
-  sql`SELECT COUNT(*) as count FROM shops WHERE (google_business_status IS NULL OR google_business_status != 'CLOSED_PERMANENTLY') AND COALESCE(listing_status, 'active') = 'active'`,
-  sql`SELECT COUNT(*) as count FROM brands WHERE is_active = true`,
-  sql`SELECT COUNT(*) as count FROM cities WHERE has_dedicated_page = true`,
-]);
+const { shopCount: totalShops, brandCount: totalBrands, cityPageCount: totalCities } = await getSiteStats();
 
 const featuredCities = await sql`
   SELECT c.name, c.slug, c.shop_count, s.slug as state_slug, s.code as state_code, s.name as state_name
@@ -42,9 +39,18 @@ const brands = await sql`
   LIMIT 8
 `;
 
-const totalShops = Number(shopCount[0].count);
-const totalBrands = Number(brandCount[0].count);
-const totalCities = Number(cityCount[0].count);
+const moreExampleBrands = Math.max(0, totalBrands - 4);
+const heroBrandLine =
+  totalBrands > 0
+    ? `We aggregate dealer data from ${totalBrands.toLocaleString()} brands so you can see exactly which shops near you carry Aventon, Trek, Specialized, and more.`
+    : 'We aggregate dealer data from major eBike brands so you can see exactly which shops near you carry the lines you are comparing.';
+
+const brandFeatureDesc =
+  totalBrands > 4
+    ? `See exactly which eBike brands each shop carries — Aventon, Trek, Specialized, Giant, and ${moreExampleBrands.toLocaleString()} more. No one else has this.`
+    : totalBrands > 0
+      ? `See exactly which eBike brands each shop carries across ${totalBrands.toLocaleString()} tracked brands — no other directory aggregates dealer data this way.`
+      : 'See exactly which eBike brands each shop carries — no other directory aggregates brand-level dealer data this way.';
 
 const jsonLd = {
   '@context': 'https://schema.org',
@@ -62,7 +68,7 @@ const jsonLd = {
 
 <BaseLayout
   title="eBikeLocal — Find eBike Shops, Brands & Bikes Near You"
-  description={`Find ${totalShops > 0 ? totalShops.toLocaleString() : 'thousands of'} eBike shops across ${totalCities > 0 ? totalCities : 'hundreds of'} cities. Compare local dealers, see which brands they carry, and discover the best electric bikes.`}
+  description={`Find ${totalShops.toLocaleString()} eBike shops across ${totalCities.toLocaleString()} cities with dedicated directory pages. Compare local dealers, see which brands they carry, and discover the best electric bikes.`}
   jsonLd={jsonLd}
 >
 
@@ -107,7 +113,7 @@ const jsonLd = {
         </h1>
 
         <p class="mx-auto mt-6 max-w-xl text-lg text-night-300 md:text-xl leading-relaxed">
-          We aggregate dealer data from 15+ brands so you can see exactly which shops near you carry Aventon, Trek, Specialized, and more.
+          {heroBrandLine}
         </p>
 
         <!-- Search bar -->
@@ -167,9 +173,9 @@ const jsonLd = {
     <div class="mx-auto max-w-7xl page-x">
       <div class="grid grid-cols-3 divide-x divide-white/[0.05]">
         {[
-          { value: totalShops > 0 ? `${totalShops.toLocaleString()}+` : '8,000+', label: 'eBike Shops', icon: '📍' },
-          { value: String(totalBrands || 15),                                      label: 'Brands Tracked', icon: '⚡' },
-          { value: totalCities > 0 ? `${totalCities}+` : '1,500+',               label: 'Cities Covered', icon: '🗺️' },
+          { value: totalShops.toLocaleString(), label: 'eBike Shops', icon: '📍' },
+          { value: totalBrands.toLocaleString(), label: 'Brands Tracked', icon: '⚡' },
+          { value: totalCities.toLocaleString(), label: 'Cities w/ Pages', icon: '🗺️' },
         ].map(stat => (
           <div class="py-6 text-center">
             <p class="stat-number text-2xl md:text-3xl text-brand-400">{stat.value}</p>
@@ -200,12 +206,12 @@ const jsonLd = {
           {
             iconPath: 'M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7',
             title: 'Brand-Level Dealer Data',
-            desc: 'See exactly which eBike brands each shop carries — Aventon, Trek, Specialized, Giant, and 11 more. No one else has this.',
+            desc: brandFeatureDesc,
           },
           {
             iconPath: 'M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z M15 11a3 3 0 11-6 0 3 3 0 016 0z',
-            title: '1,500+ City Pages',
-            desc: 'Every major US city gets its own page — local shop map, brands available, eBike laws summary, and nearby cities.',
+            title: `${totalCities.toLocaleString()} city pages`,
+            desc: 'Each page includes a local shop map, brands available nearby, an eBike law summary, and links to neighboring cities.',
           },
           {
             iconPath: 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z',
@@ -468,7 +474,7 @@ const jsonLd = {
         Ready to find your local<br class="hidden sm:block" /> eBike dealer?
       </h2>
       <p class="mx-auto mt-4 max-w-md text-night-300">
-        {totalShops > 0 ? `${totalShops.toLocaleString()}+` : 'Thousands of'} shops across the US. Free, no account required.
+        {totalShops.toLocaleString()} shops across the US in our database. Free, no account required.
       </p>
       <div class="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
         <a href="/shops/" class="btn-volt rounded-xl px-8 py-3.5 text-sm">

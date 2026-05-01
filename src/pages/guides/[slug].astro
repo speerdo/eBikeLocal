@@ -3,6 +3,7 @@ import { getCollection, render } from 'astro:content';
 import BaseLayout from '@layouts/BaseLayout.astro';
 import Breadcrumb from '@components/ui/Breadcrumb.astro';
 import FAQSchema from '@components/seo/FAQSchema.astro';
+import { getSiteStats } from '@lib/siteStats';
 
 export async function getStaticPaths() {
   const entries = await getCollection('guides');
@@ -14,6 +15,8 @@ export async function getStaticPaths() {
 
 const { entry } = Astro.props;
 const { Content, headings } = await render(entry);
+
+const { shopCount } = await getSiteStats();
 
 const { title, description, publishedAt, updatedAt, heroImage, category, tags, faqs } = entry.data;
 
@@ -163,7 +166,7 @@ const articleSchema = {
         <div class="mb-3 w-8 h-[3px] rounded-full bg-gradient-to-r from-brand-400 to-electric-400"></div>
         <h3 class="font-display text-lg font-700 text-white">Find eBike Dealers Near You</h3>
         <p class="mt-1.5 text-sm text-night-400 max-w-md">
-          Search our directory of 8,000+ shops across the US. Filter by brand, see ratings, and get directions.
+          Search our directory of {shopCount.toLocaleString()} shops across the US. Filter by brand, see ratings, and get directions.
         </p>
         <a href="/shops/" class="btn-volt inline-flex mt-4 rounded-xl px-6 py-2.5 text-sm">
           Find a Shop →

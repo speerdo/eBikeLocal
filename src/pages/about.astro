@@ -1,11 +1,15 @@
 ---
 import BaseLayout from '@layouts/BaseLayout.astro';
 import Breadcrumb from '@components/ui/Breadcrumb.astro';
+import { getSiteStats } from '@lib/siteStats';
+
+const { shopCount, brandCount, cityPageCount } = await getSiteStats();
+const aboutDesc = `Learn how eBikeLocal aggregates dealer and brand data from ${brandCount.toLocaleString()} tracked brands and ${shopCount.toLocaleString()} US shop listings, how our editorial process works, and how we verify listings.`;
 ---
 
 <BaseLayout
   title="About eBikeLocal — Why We Built This Directory"
-  description="Learn how eBikeLocal aggregates dealer and brand data from 15+ brands, how our editorial process works, and how we verify shop listings across 8,000+ US dealers."
+  description={aboutDesc}
 >
   <div class="mx-auto max-w-4xl page-x py-8">
     <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: 'About' }]} />
@@ -19,7 +23,7 @@ import Breadcrumb from '@components/ui/Breadcrumb.astro';
           eBikeLocal started from a simple frustration: if you wanted to buy an eBike and test-ride it locally, you had to open a dozen brand websites — each with its own dealer locator, each showing only its own brands, with no way to compare which shops near you carried multiple brands.
         </p>
         <p class="mt-2">
-          We spent over a year aggregating dealer data from more than 15 brand locator APIs and cross-referencing those records with Google Places data, address normalization, and geographic deduplication. The result is the only directory that answers the question: <strong>"Which shops near me carry Aventon, Trek, and Specialized — all in one place?"</strong>
+          We spent over a year aggregating dealer data from {brandCount.toLocaleString()} tracked brands via locator APIs and cross-referencing those records with Google Places data, address normalization, and geographic deduplication. The result is the only directory that answers the question: <strong>"Which shops near me carry Aventon, Trek, and Specialized — all in one place?"</strong>
         </p>
       </section>
 
@@ -29,7 +33,7 @@ import Breadcrumb from '@components/ui/Breadcrumb.astro';
           Every other shop directory either lists general bike shops without brand specifics, or comes directly from a single brand's locator. eBikeLocal is built on a <strong>brand-level junction dataset</strong> — for each shop in our database, we track which brands that shop is an authorized dealer for.
         </p>
         <p class="mt-2">
-          Our data pipeline pulls directly from brand dealer APIs (including Beeline Connect, Trek OCC, Specialized's Yext GraphQL endpoint, Giant's bounding-box locator, and others), normalizes addresses, deduplicates records across sources, and enriches each listing with Google Places ratings, hours, and photos. As of launch, the database covers <strong>8,000+ active eBike dealers across 1,500+ US cities</strong>.
+          Our data pipeline pulls directly from brand dealer APIs (including Beeline Connect, Trek OCC, Specialized's Yext GraphQL endpoint, Giant's bounding-box locator, and others), normalizes addresses, deduplicates records across sources, and enriches each listing with Google Places ratings, hours, and photos. Today the database covers <strong>{shopCount.toLocaleString()} active eBike shop listings</strong> with <strong>{cityPageCount.toLocaleString()} cities that have dedicated directory pages</strong>.
         </p>
       </section>
 

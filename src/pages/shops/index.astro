@@ -3,6 +3,7 @@ import BaseLayout from '@layouts/BaseLayout.astro';
 import Breadcrumb from '@components/ui/Breadcrumb.astro';
 import PageHeader from '@components/ui/PageHeader.astro';
 import sql from '@lib/neon';
+import { getSiteStats } from '@lib/siteStats';
 
 const states = await sql`
   SELECT code, name, slug, shop_count
@@ -10,25 +11,25 @@ const states = await sql`
   ORDER BY name
 `;
 
-const totalShops = states.reduce((sum, s) => sum + (s.shop_count || 0), 0);
+const { shopCount } = await getSiteStats();
 const topStates = [...states].sort((a, b) => (b.shop_count || 0) - (a.shop_count || 0)).slice(0, 6);
 ---
 
 <BaseLayout
   title="eBike Shop Directory — All 50 States"
-  description={`Find eBike shops in every US state. ${totalShops > 0 ? totalShops.toLocaleString() + ' shops' : 'Thousands of shops'} listed with brand data, ratings, and contact info.`}
+  description={`Find eBike shops in every US state. ${shopCount.toLocaleString()} shops listed with brand data, ratings, and contact info.`}
 >
   <PageHeader
     eyebrow="Shop Directory"
     title="Find eBike Shops Near You"
-    subtitle={`${totalShops > 0 ? totalShops.toLocaleString() + ' electric bike shops' : 'Thousands of shops'} across all 50 states — with brand data no other directory has.`}
+    subtitle={`${shopCount.toLocaleString()} electric bike shops across all 50 states — with brand data no other directory has.`}
     imageUrl="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1200&q=70&auto=format&fit=crop"
   />
 
   <div class="mx-auto max-w-7xl page-x py-8">
     <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: 'Shops' }]} />
 
-    {topStates.length > 0 && totalShops > 0 && (
+    {topStates.length > 0 && shopCount > 0 && (
       <section class="mt-8">
         <h2 class="font-display text-lg font-bold text-surface-900">Most Active States</h2>
         <div class="mt-3 grid gap-3 sm:grid-cols-3 lg:grid-cols-6">
