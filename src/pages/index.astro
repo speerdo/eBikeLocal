@@ -1,6 +1,7 @@
 ---
 export const prerender = false;
 
+import { Image } from 'astro:assets';
 import BaseLayout from '@layouts/BaseLayout.astro';
 import { getBrandLogoUrl } from '@lib/brandLogos';
 import { getSiteStats } from '@lib/siteStats';
@@ -78,9 +79,12 @@ const jsonLd = {
   <section class="relative overflow-hidden bg-night-900">
     <!-- Pexels hero photo — man riding electric bike, side view -->
     <div class="absolute inset-0 pointer-events-none">
-      <img
+      <Image
         src="https://images.pexels.com/photos/13344226/pexels-photo-13344226.jpeg?auto=compress&cs=tinysrgb&w=1600&dpr=1"
-        alt=""
+        alt="Man riding an electric bicycle in profile on a sunny street — hero background"
+        width={1600}
+        height={1067}
+        sizes="100vw"
         class="h-full w-full object-cover opacity-25"
         loading="eager"
         fetchpriority="high"
@@ -374,9 +378,12 @@ const jsonLd = {
       { id: '15009961', alt: 'Rider exploring a wooded nature trail on an electric mountain bike',              objPos: 'object-center' },
     ].map(photo => (
       <div class="relative h-52 md:h-64 lg:h-80 overflow-hidden group">
-        <img
+        <Image
           src={`https://images.pexels.com/photos/${photo.id}/pexels-photo-${photo.id}.jpeg?auto=compress&cs=tinysrgb&w=800&dpr=1`}
           alt={photo.alt}
+          width={800}
+          height={533}
+          sizes="(max-width: 1024px) 50vw, 25vw"
           class={`h-full w-full object-cover ${photo.objPos} transition-transform duration-700 group-hover:scale-105`}
           loading="lazy"
         />
@@ -451,9 +458,12 @@ const jsonLd = {
   <section class="relative overflow-hidden py-20">
     <!-- Background photo -->
     <div class="absolute inset-0 pointer-events-none">
-      <img
+      <Image
         src="https://images.pexels.com/photos/15206179/pexels-photo-15206179.jpeg?auto=compress&cs=tinysrgb&w=1400&dpr=1"
-        alt=""
+        alt="People riding eBikes on a city street — decorative section background"
+        width={1400}
+        height={933}
+        sizes="100vw"
         class="h-full w-full object-cover opacity-20"
         loading="lazy"
       />

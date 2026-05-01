@@ -4,6 +4,14 @@
 
 export type OpeningHoursRow = { day: string; hours: string };
 
+/**
+ * True when a value is an absolute http(s) URL. Shop `photos` / featured fields may hold
+ * unresolved Places resource names until tooling resolves them to HTTPS URLs.
+ */
+export function isHttpImageUrl(u: unknown): u is string {
+  return typeof u === 'string' && /^https?:\/\//i.test(u.trim());
+}
+
 const GOOGLE_HOURS_METADATA_KEYS = new Set([
   'openNow',
   'periods',

@@ -7,6 +7,12 @@ export default defineConfig({
   output: 'static',
   trailingSlash: 'always',
   adapter: vercel(),
+  image: {
+    remotePatterns: [
+      { protocol: 'https', hostname: 'images.pexels.com' },
+      { protocol: 'https', hostname: 'images.unsplash.com' },
+    ],
+  },
   vite: {
     plugins: [tailwindcss()],
     // Prevent chunk hash mismatches when pre-rendering thousands of pages in parallel

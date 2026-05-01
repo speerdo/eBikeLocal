@@ -1,4 +1,6 @@
 ---
+import { isHttpImageUrl } from '@lib/shopDisplay';
+
 interface Props {
   name: string;
   slug: string;
@@ -33,6 +35,8 @@ const {
 
 const href = `/shops/${stateSlug}/${citySlug}/${slug}/`;
 
+const listingThumbUrl = isHttpImageUrl(featuredImageUrl) ? featuredImageUrl.trim() : null;
+
 const serviceLabels: Record<string, string> = {
   sales: 'Sales', repair: 'Repair', rental: 'Rental',
   test_rides: 'Test Rides', fitting: 'Fitting', assembly: 'Assembly',
@@ -48,10 +52,10 @@ const starsEmpty = 5 - starsFull - starsHalf;
 
   <!-- Shop image / placeholder -->
   <div class="shrink-0">
-    {featuredImageUrl ? (
+    {listingThumbUrl ? (
       <img
-        src={featuredImageUrl}
-        alt={`${name} — eBike shop in ${city}, ${stateCode}`}
+        src={listingThumbUrl}
+        alt={`${name} — listing photo, ${city}, ${stateCode}`}
         class="h-[88px] w-[88px] rounded-xl object-cover"
         loading="lazy"
       />

@@ -1,4 +1,5 @@
 ---
+import { Image } from 'astro:assets';
 import BaseLayout from '@layouts/BaseLayout.astro';
 import Breadcrumb from '@components/ui/Breadcrumb.astro';
 import PageHeader from '@components/ui/PageHeader.astro';
@@ -24,6 +25,7 @@ const topStates = [...states].sort((a, b) => (b.shop_count || 0) - (a.shop_count
     title="Find eBike Shops Near You"
     subtitle={`${shopCount.toLocaleString()} electric bike shops across all 50 states — with brand data no other directory has.`}
     imageUrl="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1200&q=70&auto=format&fit=crop"
+    imageAlt="Rows of bicycles parked at indoor bike racks in a shop"
   />
 
   <div class="mx-auto max-w-7xl page-x py-8">
@@ -72,9 +74,12 @@ const topStates = [...states].sort((a, b) => (b.shop_count || 0) - (a.shop_count
         ].map((photo) => (
           <div class="group overflow-hidden rounded-2xl border border-surface-200 bg-white shadow-card">
             <div class="relative h-52 overflow-hidden">
-              <img
+              <Image
                 src={`https://images.pexels.com/photos/${photo.id}/pexels-photo-${photo.id}.jpeg?auto=compress&cs=tinysrgb&w=900&dpr=1`}
                 alt={photo.alt}
+                width={900}
+                height={600}
+                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                 class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                 loading="lazy"
               />

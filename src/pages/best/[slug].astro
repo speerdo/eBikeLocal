@@ -1,4 +1,5 @@
 ---
+import { Image } from 'astro:assets';
 import { getCollection, render } from 'astro:content';
 import BaseLayout from '@layouts/BaseLayout.astro';
 import Breadcrumb from '@components/ui/Breadcrumb.astro';
@@ -66,7 +67,15 @@ const articleSchema = {
   <section class="relative overflow-hidden bg-night-900">
     {heroImage && (
       <div class="absolute inset-0 pointer-events-none">
-        <img src={heroImage} alt="" class="h-full w-full object-cover opacity-20" loading="eager" />
+        <Image
+          src={heroImage}
+          alt={`${title} — article hero photograph`}
+          width={1260}
+          height={750}
+          sizes="100vw"
+          class="h-full w-full object-cover opacity-20"
+          loading="eager"
+        />
         <div class="absolute inset-0 bg-gradient-to-r from-night-900 via-night-900/85 to-night-900/50"></div>
         <div class="absolute inset-0 bg-gradient-to-t from-night-900/60 to-transparent"></div>
       </div>

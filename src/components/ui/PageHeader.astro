@@ -1,4 +1,7 @@
 ---
+import { Image } from 'astro:assets';
+import { isOptimizedRemoteImageUrl } from '@lib/astroImageHosts';
+
 /**
  * Reusable page hero header for directory hub pages.
  * Dark background with volt green accents and circuit texture.
@@ -8,11 +11,15 @@ interface Props {
   title: string;
   subtitle?: string;
   imageUrl?: string;
+  /** Describe the header photo for screen readers and image SEO (optional; defaults from title when imageUrl is set) */
+  imageAlt?: string;
   /** Show the volt accent bar above the eyebrow */
   showBar?: boolean;
 }
 
-const { eyebrow, title, subtitle, imageUrl, showBar = true } = Astro.props;
+const { eyebrow, title, subtitle, imageUrl, imageAlt, showBar = true } = Astro.props;
+const headerImageAlt =
+  imageUrl ? (imageAlt ?? `Decorative header photograph for ${title}`) : '';
 ---
 
 <section class="relative overflow-hidden bg-night-900">
@@ -20,7 +27,19 @@ const { eyebrow, title, subtitle, imageUrl, showBar = true } = Astro.props;
   <!-- Background photo with darkening overlay -->
   {imageUrl && (
     <div class="absolute inset-0 pointer-events-none">
-      <img src={imageUrl} alt="" class="h-full w-full object-cover opacity-15" loading="lazy" />
+      {isOptimizedRemoteImageUrl(imageUrl) ? (
+        <Image
+          src={imageUrl}
+          alt={headerImageAlt}
+          width={1600}
+          height={1070}
+          sizes="100vw"
+          loading="lazy"
+          class="h-full w-full object-cover opacity-15"
+        />
+      ) : (
+        <img src={imageUrl} alt={headerImageAlt} class="h-full w-full object-cover opacity-15" loading="lazy" />
+      )}
       <div class="absolute inset-0 bg-gradient-to-r from-night-900 via-night-900/85 to-night-900/50"></div>
     </div>
   )}
