@@ -1,5 +1,6 @@
 ---
 import '@/styles/global.css';
+import Analytics from '@vercel/analytics/astro';
 
 interface Props {
   title: string;
@@ -67,6 +68,14 @@ const navLinks = [
 
     <!-- JSON-LD -->
     {jsonLd && <script is:inline type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
+
+    <!-- Ahrefs Web Analytics -->
+    <script
+      is:inline
+      src="https://analytics.ahrefs.com/analytics.js"
+      data-key="J6i6j1bP9jBdvlUqWIagpA"
+      async
+    />
 
     <slot name="head" />
   </head>
@@ -302,5 +311,7 @@ const navLinks = [
         }
       }, { passive: true });
     </script>
+
+    <Analytics />
   </body>
 </html>
